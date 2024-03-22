@@ -1,10 +1,10 @@
 # name of php docker container - get it using `docker ps`
-container := "api-php-1"
+container := "api_php_1"
 docker_exec := "docker exec -it -u climber " + container
 symfony := docker_exec + " symfony "
 console := symfony + "console "
 
-init:
+up:
     docker-compose up -d
 #    docker exec -it -u climber {{container}} composer install
 #    docker exec -it -u climber {{container}} yarn install

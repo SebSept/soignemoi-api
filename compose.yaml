@@ -16,7 +16,7 @@ services:
 #      - 8000
     ports:
       - target: 8000
-#        published: 8000
+        published: 32771
 #    configs:
 #      - source: maconfig
 #        target: /dockerconfig
@@ -43,7 +43,7 @@ services:
       - 5432
     ports:
       - target: 5432
-#        published: 5432
+        published: 32770
     #    volumes:
     #      - type: volume
     #        source: postgres_data
