@@ -10,6 +10,7 @@ up:
 #    docker exec -it -u climber {{container}} yarn install
 #    docker exec -it -u climber {{container}} yarn encore dev
 
+# open a fish shell on the container
 fish:
     docker exec -it -u climber {{container}} fish
 
