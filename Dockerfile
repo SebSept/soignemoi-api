@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:labs
-# You can redefined theses valuiable in the docker-compose.yml file.
+# You can redefined theses values in the compose.yml file.
 ARG COMPOSER_VERSION=2.6.5
 ARG PHP_VERSION=8.2
 ARG BOX_VERSION=4.5.1
@@ -76,12 +76,12 @@ RUN curl -1sLf 'https://dl.cloudsmith.io/public/symfony/stable/setup.alpine.sh' 
     && apk add symfony-cli \
     && symfony local:check:requirements
 
+USER climber
 # configure git (needed for symnfony cli)
 RUN git config --global user.email "${GIT_EMAIL}" \
     && git config --global user.name "${GIT_USERNAME}"
 
 # Add composer binaries to path
-USER climber
 RUN ["fish", "-c fish_add_path /app/vendor/bin"]
 
 # @todo clean entrypoint needed
