@@ -1,5 +1,2 @@
 workers:
   # https://symfony.com/doc/current/setup/symfony_server.html#symfony-server_configuring-workers
-  npm_encore_watch:
-    cmd: [ 'yarn', 'dev', '--watch' ]
-    # ceci marche aussi cmd: ['yarn', 'encore', 'dev', '--watch']
