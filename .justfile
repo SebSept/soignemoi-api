@@ -1,14 +1,21 @@
 # name of php docker container - get it using `docker ps`
-container := "api_php_1"
+#container := "api_php_1"
+container := "api-php-1"
 docker_exec := "docker exec -it -u climber " + container
 symfony := docker_exec + " symfony "
 console := symfony + "console "
+
+nginx_container := "api-nginx-1"
+docker_exec_nginx := "docker exec -it -u root " + nginx_container
 
 up:
     docker-compose up -d
 #    docker exec -it -u climber {{container}} composer install
 #    docker exec -it -u climber {{container}} yarn install
 #    docker exec -it -u climber {{container}} yarn encore dev
+
+reload_nginx:
+   {{docker_exec_nginx}} nginx -s reload
 
 # open a fish shell on the container
 fish:

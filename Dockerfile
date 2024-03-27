@@ -1,14 +1,14 @@
 # syntax=docker/dockerfile:labs
 # You can redefined theses values in the compose.yml file.
 ARG COMPOSER_VERSION=2.6.5
-ARG PHP_VERSION=8.2
+ARG PHP_VERSION=8.3.4
 ARG BOX_VERSION=4.5.1
 ARG BOX_CHECKSUM=c24c400c424a68041d7af146c71943bf1acc0c5abafa45297c503b832b9c6b16
 ARG GIT_EMAIL="seb@local.fr"
 ARG GIT_USERNAME="seb"
-ARG ALPINE_VERSION=3.19
+ARG ALPINE_VERSION=3.18
 
-FROM php:${PHP_VERSION}-cli-alpine${ALPINE_VERSION} AS php
+FROM php:${PHP_VERSION}-fpm-alpine${ALPINE_VERSION} AS php
 
 # config system
 RUN apk update \
@@ -83,6 +83,3 @@ RUN git config --global user.email "${GIT_EMAIL}" \
 
 # Add composer binaries to path
 RUN ["fish", "-c fish_add_path /app/vendor/bin"]
-
-# @todo clean entrypoint needed
-CMD ["tail", "-f", "/dev/null"]
