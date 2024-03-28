@@ -39,8 +39,12 @@ drop-schema:
     {{console}} doctrine:database:create
     {{console}} doctrine:migrations:migrate --no-interaction
 
-fixtures:
-    {{console}} make:fixtures
+# Création des classes de fixtures
+fixtures-make entity:
+    {{console}} make:fixtures {{entity}}Fixtures
+
+# Insertion des fixtures en base de données
+fixtures-load:
     {{console}} doctrine:fixture:load
     # {{console}} doctrine:fixture:load --append
 
