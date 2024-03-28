@@ -26,7 +26,7 @@ class Patient
     #[ORM\Column(length: 255)]
     private ?string $address1 = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(length: 255)]
     private ?string $address2 = null;
 
     #[ORM\Column(length: 255)]
@@ -89,7 +89,7 @@ class Patient
         return $this;
     }
 
-    public function getAddress2(): ?string
+    public function getAddress2(): string
     {
         return $this->address2;
     }

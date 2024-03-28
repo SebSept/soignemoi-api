@@ -24,7 +24,7 @@ class Doctor
     private ?string $lastname = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $medicalSpecialty = null;
+    private ?string $medicalSpeciality = null;
 
     #[ORM\Column(length: 25)]
     private ?string $employeeId = null;
@@ -77,14 +77,14 @@ class Doctor
         return $this;
     }
 
-    public function getMedicalSpecialty(): ?string
+    public function getMedicalSpeciality(): ?string
     {
-        return $this->medicalSpecialty;
+        return $this->medicalSpeciality;
     }
 
-    public function setMedicalSpecialty(string $medicalSpecialty): static
+    public function setMedicalSpeciality(string $medicalSpeciality): static
     {
-        $this->medicalSpecialty = $medicalSpecialty;
+        $this->medicalSpeciality = $medicalSpeciality;
 
         return $this;
     }

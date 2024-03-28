@@ -40,6 +40,7 @@ drop-schema:
     {{console}} doctrine:database:drop --force
     {{console}} doctrine:database:create
     {{console}} doctrine:migrations:migrate --no-interaction
+    echo "Base de données recréée"
 
 # Création des classes de fixtures
 fixtures-make entity:
@@ -47,7 +48,7 @@ fixtures-make entity:
 
 # Insertion des fixtures en base de données
 fixtures-load:
-    {{console}} doctrine:fixture:load
+    {{console}} doctrine:fixture:load --no-interaction
     # {{console}} doctrine:fixture:load --append
 
 # composer require
