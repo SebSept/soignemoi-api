@@ -1,12 +1,8 @@
-# name of php docker container - get it using `docker ps`
-#container := "api_php_1"
-container := "api-php-1"
-docker_exec := "docker exec -it -u climber " + container
-symfony := docker_exec + " symfony "
+docker_php_exec := "docker compose exec -it -u climber php"
+symfony := docker_php_exec + " symfony "
 console := symfony + "console "
 
-nginx_container := "api-nginx-1"
-docker_exec_nginx := "docker exec -it -u root " + nginx_container
+docker_exec_nginx := "docker compose exec -it -u root nginx"
 
 up:
     docker-compose up -d
@@ -19,7 +15,11 @@ reload_nginx:
 
 # open a fish shell on the container
 fish:
-    docker exec -it -u climber {{container}} fish
+    docker compose exec -it -u climber php fish
+
+[private]
+fish_root:
+    docker compose exec -it -u root php fish
 
 serve:
     {{symfony}} server:start --no-tls --daemon
@@ -40,18 +40,3 @@ fixtures:
 # composer require
 req package:
     {{symfony}} composer req {{package}}
-
-test:
-    #!/bin/bash
-
-    # Récupérer les IDs des conteneurs créés par Docker Compose
-    container_ids=$(docker-compose ps -q)
-
-    # Parcourir les IDs et obtenir les noms des conteneurs
-    for container_id in $container_ids
-    do
-        container_name=$(docker inspect --format='{{{{.Name}}' $container_id)
-        # Supprimer le slash "/" ajouté par Docker dans le nom du conteneur
-        container_name=${container_name:1}
-        echo "Nom du conteneur: $container_name"
-    done
