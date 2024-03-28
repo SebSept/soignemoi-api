@@ -7,6 +7,7 @@ ARG BOX_CHECKSUM=c24c400c424a68041d7af146c71943bf1acc0c5abafa45297c503b832b9c6b1
 ARG GIT_EMAIL="seb@local.fr"
 ARG GIT_USERNAME="seb"
 ARG ALPINE_VERSION=3.18
+ARG PHP_CS_FIXER_VERSION=3.52.1
 
 FROM php:${PHP_VERSION}-fpm-alpine${ALPINE_VERSION} AS php
 
@@ -34,6 +35,7 @@ RUN adduser -D -s /usr/bin/fish -h /home/climber -u 1000 climber
 
 # Add composer
 # We may also use `install-php-extensions @composer` (not tested)
+# or get the binary from the composer docker image
 ARG COMPOSER_VERSION
 ADD --chown=climber:climber \
     --chmod=744 \
@@ -71,7 +73,7 @@ RUN wget https://github.com/bobthecow/psysh/releases/download/v0.12.0/psysh-v0.1
     && chown climber /usr/local/bin/psysh \
     && psysh --version
 
-# symfony cli
+# Add symfony cli
 RUN curl -1sLf 'https://dl.cloudsmith.io/public/symfony/stable/setup.alpine.sh' | bash \
     && apk add symfony-cli \
     && symfony local:check:requirements
@@ -81,5 +83,15 @@ USER climber
 RUN git config --global user.email "${GIT_EMAIL}" \
     && git config --global user.name "${GIT_USERNAME}"
 
+# Add php-cs-fixer
+ARG PHP_CS_FIXER_VERSION
+ADD --chown=climber:climber \
+    --chmod=744 \
+    https://github.com/PHP-CS-Fixer/PHP-CS-Fixer/releases/download/v${PHP_CS_FIXER_VERSION}/php-cs-fixer.phar \
+    /usr/local/bin/php-cs-fixer
+
 # Add composer binaries to path
 RUN ["fish", "-c fish_add_path /app/vendor/bin"]
+
+# switch back to www-data user ?
+

@@ -12,6 +12,7 @@ services:
         ARG GIT_EMAIL: "seb@local.fr"
         ARG GIT_USERNAME: "seb"
         ARG ALPINE_VERSION: 3.19
+        ARG PHP_CS_FIXER_VERSION: 3.52.1
 #    expose:
 #      - 8000
     expose:

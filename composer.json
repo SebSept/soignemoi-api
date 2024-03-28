@@ -89,6 +89,11 @@
       "cache:clear": "symfony-cmd",
       "assets:install %PUBLIC_DIR%": "symfony-cmd",
       "importmap:install": "symfony-cmd"
-    }
+    },
+    "cs-fixer": "php-cs-fixer fix ./src/",
+    "quality": [
+      "@cs-fixer",
+      "symfony composer normalize"
+    ]
   }
 }

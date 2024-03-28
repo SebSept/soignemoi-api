@@ -1,14 +1,16 @@
 docker_php_exec := "docker compose exec -it -u climber php"
 symfony := docker_php_exec + " symfony "
 console := symfony + "console "
-
+composer := docker_php_exec + " composer "
 docker_exec_nginx := "docker compose exec -it -u root nginx"
 
 up:
     docker-compose up -d
 #    docker exec -it -u climber {{container}} composer install
-#    docker exec -it -u climber {{container}} yarn install
-#    docker exec -it -u climber {{container}} yarn encore dev
+
+[private]
+up-build:
+    docker-compose up -d --build
 
 reload_nginx:
    {{docker_exec_nginx}} nginx -s reload
@@ -50,8 +52,12 @@ fixtures-load:
 
 # composer require
 req package:
-    {{symfony}} composer req {{package}}
+    {{composer}} req {{package}}
 
 # composer require --dev
 req-dev package:
-    {{symfony}} composer req {{package}} --dev
+    {{composer}} req {{package}} --dev
+
+# Lancement scripts d'outil de qualité via composer
+quality:
+    {{composer}} quality
