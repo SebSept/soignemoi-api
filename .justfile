@@ -51,3 +51,7 @@ fixtures-load:
 # composer require
 req package:
     {{symfony}} composer req {{package}}
+
+# composer require --dev
+req-dev package:
+    {{symfony}} composer req {{package}} --dev
