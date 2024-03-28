@@ -21,6 +21,7 @@ fish:
 fish_root:
     docker compose exec -it -u root php fish
 
+[confirm("Démarrer le serveur symfony (et pas le serveur nginx), êtes-vous sûr ?")]
 serve:
     {{symfony}} server:start --no-tls --daemon
 
@@ -30,7 +31,13 @@ new-controller:
 new-api:
     {{console}} make:entity --api-resource
     {{console}} make:migration
-    {{console}} doctrine:migrations:migrate
+    {{console}} doctrine:migrations:migrate --no-interaction
+
+# recréer une base de données
+drop-schema:
+    {{console}} doctrine:database:drop --force
+    {{console}} doctrine:database:create
+    {{console}} doctrine:migrations:migrate --no-interaction
 
 fixtures:
     {{console}} make:fixtures

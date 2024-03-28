@@ -34,6 +34,14 @@ class HospitalStay
     #[ORM\Column(length: 255)]
     private ?string $medicalSpeciality = null;
 
+    #[ORM\ManyToOne(inversedBy: 'hospitalStays')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Patient $patient = null;
+
+    #[ORM\ManyToOne(inversedBy: 'hospitalStays')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Doctor $doctor = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -107,6 +115,30 @@ class HospitalStay
     public function setMedicalSpeciality(string $medicalSpeciality): static
     {
         $this->medicalSpeciality = $medicalSpeciality;
+
+        return $this;
+    }
+
+    public function getPatient(): ?Patient
+    {
+        return $this->patient;
+    }
+
+    public function setPatient(?Patient $patient): static
+    {
+        $this->patient = $patient;
+
+        return $this;
+    }
+
+    public function getDoctor(): ?Doctor
+    {
+        return $this->doctor;
+    }
+
+    public function setDoctor(?Doctor $doctor): static
+    {
+        $this->doctor = $doctor;
 
         return $this;
     }
