@@ -1,7 +1,8 @@
 docker_php_exec := "docker compose exec -it -u climber php"
 symfony := docker_php_exec + " symfony "
-console := symfony + "console "
+# peut-être utiliser symfony + "composer"
 composer := docker_php_exec + " composer "
+console := symfony + "console "
 docker_exec_nginx := "docker compose exec -it -u root nginx"
 
 up:
@@ -17,7 +18,7 @@ reload_nginx:
 
 # open a fish shell on the container
 fish:
-    docker compose exec -it -u climber php fish
+    {{docker_php_exec}} fish
 
 [private]
 fish_root:
@@ -36,18 +37,23 @@ new-api:
     {{console}} doctrine:migrations:migrate --no-interaction
 
 # recréer une base de données
-drop-schema:
+db-drop-schema:
     {{console}} doctrine:database:drop --force
     {{console}} doctrine:database:create
+    # on ne doit pas avoir besoin de lancer les migrations dans le cas d'une création
     {{console}} doctrine:migrations:migrate --no-interaction
     echo "Base de données recréée"
 
+db-create-test-schema:
+    {{console}} doctrine:database:create --env=test
+    {{console}} doctrine:schema:create --env=test
+
 # Création des classes de fixtures
-fixtures-make entity:
+db-fixtures-make entity:
     {{console}} make:fixtures {{entity}}Fixtures
 
 # Insertion des fixtures en base de données
-fixtures-load:
+db-fixtures-load:
     {{console}} doctrine:fixture:load --no-interaction
     # {{console}} doctrine:fixture:load --append
 
