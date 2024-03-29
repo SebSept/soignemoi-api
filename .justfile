@@ -10,8 +10,10 @@ up:
 #    docker exec -it -u climber {{container}} composer install
 
 [private]
-up-build:
+update:
+    git pull
     docker-compose up -d --build
+    {{composer}} install
 
 reload_nginx:
    {{docker_exec_nginx}} nginx -s reload
@@ -57,6 +59,8 @@ db-fixtures-load:
     {{console}} doctrine:fixture:load --no-interaction
     # {{console}} doctrine:fixture:load --append
 
+console command:
+    {{console}} {{command}}
 # composer require
 req package:
     {{composer}} req {{package}}
