@@ -68,3 +68,10 @@ req-dev package:
 # Lancement scripts d'outil de qualité via composer
 quality:
     {{composer}} quality
+
+tests:
+    {{docker_php_exec}} php bin/phpunit
+
+# exécution d'une requête SQL
+sql query env='dev':
+    {{console}} dbal:run-sql "{{query}}" --env {{env}}
