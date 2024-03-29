@@ -28,7 +28,7 @@ class PrescriptionFixtures extends Fixture implements DependentFixtureInterface
             'patient' => $patientRepository->random(),
         ]);
 
-        $this->generateAndGetItems($prescriptions);
+        $this->generateItems($prescriptions);
     }
 
     public function getDependencies(): array
@@ -39,7 +39,7 @@ class PrescriptionFixtures extends Fixture implements DependentFixtureInterface
         ];
     }
 
-    private function generateAndGetItems(array $prescriptions): void
+    private function generateItems(array $prescriptions): void
     {
         $factory = anonymous(PrescriptionItem::class);
         $factory->createMany(count($prescriptions) * (rand(1, 2)), fn () => [
