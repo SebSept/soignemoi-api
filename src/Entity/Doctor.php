@@ -3,13 +3,39 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Post;
+use App\Controller\RecentDoctors;
 use App\Repository\DoctorRepository;
+use ContainerUWOM2sD\getMedicalOpinionRepositoryService;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Attribute\Groups;
+use Symfony\Component\Serializer\Attribute\Ignore;
 
 #[ORM\Entity(repositoryClass: DoctorRepository::class)]
-#[ApiResource]
+//#[GetCollection(uriTemplate: '/doctors/recent', controller: RecentDoctors::class, normalizationContext: ['groups' => ['read']], name: 'recent',)]
+#[ApiResource(
+    operations: [
+        new GetCollection(),
+        // non défini ici, ne fonctionne pas, finalement oui... mais uniquement si on a pas de Get() avant.
+        new GetCollection(
+            uriTemplate: '/doctors/recent',
+            controller: RecentDoctors::class,
+            name: 'recent', // method
+        ),
+        new Get(),
+        new Post(),
+        new Patch(),
+    ],
+    normalizationContext: ['groups' => ['read']],
+    denormalizationContext: ['groups' => ['write']]
+)
+
+]
 class Doctor
 {
     #[ORM\Id]
@@ -18,26 +44,34 @@ class Doctor
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['read', 'write'])]
     private ?string $firstname = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['read', 'write'])]
     private ?string $lastname = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['read', 'write'])]
     private ?string $medicalSpeciality = null;
 
     #[ORM\Column(length: 25)]
+    #[Groups(['read', 'write'])]
     private ?string $employeeId = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['write'])]
     private ?string $password = null;
 
+    // @todo supprimer tout simplement ?
     #[ORM\OneToMany(targetEntity: MedicalOpinion::class, mappedBy: 'doctor')]
     private Collection $medicalOpinions;
 
+    // @todo supprimer tout simplement ?
     #[ORM\OneToMany(targetEntity: HospitalStay::class, mappedBy: 'doctor')]
     private Collection $hospitalStays;
 
+    // @todo supprimer tout simplement ?
     #[ORM\OneToMany(targetEntity: Prescription::class, mappedBy: 'doctor')]
     private Collection $prescriptions;
 

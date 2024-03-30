@@ -15,6 +15,7 @@ update:
     docker-compose up -d --build
     {{composer}} install
 
+
 reload_nginx:
    {{docker_exec_nginx}} nginx -s reload
 
