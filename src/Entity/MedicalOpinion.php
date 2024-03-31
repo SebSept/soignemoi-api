@@ -3,12 +3,24 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Post;
 use App\Repository\MedicalOpinionRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: MedicalOpinionRepository::class)]
-#[ApiResource]
+#[ApiResource(
+    operations: [
+        new GetCollection(),
+        new Get(),
+        new Post(),
+        new Patch(),
+    ]
+)
+]
 class MedicalOpinion
 {
     #[ORM\Id]
@@ -25,11 +37,11 @@ class MedicalOpinion
     #[ORM\Column(type: Types::TEXT)]
     private ?string $description = null;
 
-    #[ORM\ManyToOne(inversedBy: 'medicalOpinions')]
+    #[ORM\ManyToOne(targetEntity: 'Doctor')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Doctor $doctor = null;
 
-    #[ORM\ManyToOne(inversedBy: 'medicalOpinions')]
+    #[ORM\ManyToOne(targetEntity: 'Patient')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Patient $patient = null;
 

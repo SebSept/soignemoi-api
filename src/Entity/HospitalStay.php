@@ -3,12 +3,23 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Post;
 use App\Repository\HospitalStayRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: HospitalStayRepository::class)]
-#[ApiResource]
+#[ApiResource(
+    operations: [
+    new GetCollection(),
+    new Get(),
+    new Post(),
+    new Patch(),
+]
+)]
 class HospitalStay
 {
     #[ORM\Id]
