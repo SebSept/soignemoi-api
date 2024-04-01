@@ -7,6 +7,7 @@ use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\Post;
 use App\Repository\PrescriptionItemRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Entity(repositoryClass: PrescriptionItemRepository::class)]
 #[ApiResource(
@@ -23,9 +24,11 @@ class PrescriptionItem
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['prescription:read'])]
     private ?string $drug = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['prescription:read'])]
     private ?string $dosage = null;
 
     #[ORM\ManyToOne(inversedBy: 'items')]

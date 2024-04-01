@@ -22,6 +22,7 @@ use Symfony\Component\Serializer\Attribute\Groups;
         new Post(),
         new Patch(),
     ],
+    normalizationContext: ['groups' => 'prescription:read']
 )]
 class Prescription
 {
@@ -31,17 +32,21 @@ class Prescription
     private ?int $id = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
+    #[Groups(['prescription:read'])]
     private ?\DateTimeInterface $date = null;
 
     #[ORM\ManyToOne(targetEntity: Patient::class, inversedBy: 'prescriptions')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['prescription:read'])]
     private ?Patient $patient = null;
 
     #[ORM\ManyToOne(targetEntity: Doctor::class)]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['prescription:read'])]
     private ?Doctor $doctor = null;
 
     #[ORM\OneToMany(targetEntity: PrescriptionItem::class, mappedBy: 'prescription')]
+    #[Groups(['prescription:read'])]
     private Collection $items;
 
     public function __construct()
