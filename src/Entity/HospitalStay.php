@@ -7,6 +7,7 @@ use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
+use App\Controller\HospitalStayTodayEntries;
 use App\Repository\HospitalStayRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
@@ -14,12 +15,15 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: HospitalStayRepository::class)]
 #[ApiResource(
     operations: [
-    new GetCollection(),
-    new Get(),
-    new Post(),
-    new Patch(),
-]
+        new GetCollection(),
+        new GetCollection(uriTemplate: 'hospital_stays/today_entries', controller: HospitalStayTodayEntries::class),
+        new Get(),
+        new Post(),
+        new Patch(),
+    ],
+    //    paginationItemsPerPage: 5,
 )]
+//#[ApiFilter(DateFilter::class, properties: ['startDate'])]
 class HospitalStay
 {
     #[ORM\Id]
@@ -49,7 +53,7 @@ class HospitalStay
     #[ORM\JoinColumn(nullable: false)]
     private ?Patient $patient = null;
 
-    #[ORM\ManyToOne(inversedBy: 'hospitalStays')]
+    #[ORM\ManyToOne(targetEntity: 'Doctor')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Doctor $doctor = null;
 
