@@ -4,6 +4,7 @@ namespace App\Factory;
 
 use App\Entity\HospitalStay;
 use App\Repository\HospitalStayRepository;
+use DateTime;
 use Zenstruck\Foundry\ModelFactory;
 use Zenstruck\Foundry\Proxy;
 use Zenstruck\Foundry\RepositoryProxy;
@@ -50,6 +51,21 @@ final class HospitalStayFactory extends ModelFactory
             'patient' => PatientFactory::new(),
             'reason' => self::faker()->text(255),
         ];
+    }
+
+    public function entryBeforeToday(): self
+    {
+        return $this->addState(['startDate' => new DateTime('-' . rand(1, 25) . ' days')]);
+    }
+
+    public function entryAfterToday(): self
+    {
+        return $this->addState(['startDate' => new DateTime('+' . rand(1, 25) . ' days')]);
+    }
+
+    public function entryToday(): self
+    {
+        return $this->addState(['startDate' => new DateTime()]);
     }
 
     /**

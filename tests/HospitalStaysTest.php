@@ -4,10 +4,7 @@ namespace App\Tests;
 
 use ApiPlatform\Symfony\Bundle\Test\ApiTestCase;
 use App\Factory\HospitalStayFactory;
-use DateTime;
-use DateTimeImmutable;
 use Zenstruck\Foundry\Test\Factories;
-use Zenstruck\Foundry\Test\ResetDatabase;
 
 class HospitalStaysTest extends ApiTestCase
 {
@@ -22,22 +19,12 @@ class HospitalStaysTest extends ApiTestCase
         $this->assertJsonContains(['@id' => '/hospital_stays/today_entries']);
     }
 
-    public function testCountStays()
+    public function testCountTodayEntries()
     {
         // Arrange
-        // hospital stays starting before Today
-        // @todo a mettre dans la factory
-        HospitalStayFactory::createMany(3, [
-            'startDate' => new DateTime('-' . rand(1, 25) . ' days')
-        ]);
-
-        HospitalStayFactory::createMany(3 , [
-            'startDate' => new DateTime('+' . rand(1, 25) . ' days')
-        ]);
-
-        HospitalStayFactory::createMany( 5, [
-            'startDate' => new DateTime()
-        ]);
+        HospitalStayFactory::new()->entryBeforeToday()->many(3)->create();
+        HospitalStayFactory::new()->entryToday()->many(5)->create();
+        HospitalStayFactory::new()->entryAfterToday()->many(3)->create();
 
         // Act
         static::createClient()->request('GET', 'hospital_stays/today_entries');
