@@ -37,11 +37,11 @@ class MedicalOpinion
     #[ORM\Column(type: Types::TEXT)]
     private ?string $description = null;
 
-    #[ORM\ManyToOne(targetEntity: 'Doctor')]
+    #[ORM\ManyToOne(targetEntity: 'doctor')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Doctor $doctor = null;
 
-    #[ORM\ManyToOne(targetEntity: 'Patient')]
+    #[ORM\ManyToOne(targetEntity: 'Patient', inversedBy: 'medicalOpinions')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Patient $patient = null;
 
