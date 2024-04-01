@@ -44,8 +44,8 @@ final class DoctorFactory extends ModelFactory
     protected function getDefaults(): array
     {
         return [
-            'firstname' => self::faker()->firstName,
-            'lastname' => self::faker()->lastName,
+            'firstname' => self::faker()->firstName(),
+            'lastname' => self::faker()->lastName(),
             'medicalSpeciality' => self::faker()
                 ->randomElement([
                     'cardilolgie', 'oncologie', 'dermatologie', 'pédiatrie', 'gynécologie', 'urologie', 'neurologie', 'psychiatrie', 'ophtalmologie', 'ORL']),
