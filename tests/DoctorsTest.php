@@ -5,10 +5,12 @@ namespace App\Tests;
 use ApiPlatform\Symfony\Bundle\Test\ApiTestCase;
 use App\Factory\DoctorFactory;
 use Zenstruck\Foundry\Test\Factories;
+use Zenstruck\Foundry\Test\ResetDatabase;
 
 class DoctorsTest extends ApiTestCase
 {
     use Factories;
+    use ResetDatabase;
 
     public function testGetDoctors(): void
     {
