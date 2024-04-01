@@ -24,6 +24,7 @@ class HospitalStaysTest extends ApiTestCase
         // Arrange
         HospitalStayFactory::new()->entryBeforeToday()->many(3)->create();
         HospitalStayFactory::new()->entryToday()->many(5)->create();
+        HospitalStayFactory::new()->exitToday()->many(2)->create();
         HospitalStayFactory::new()->entryAfterToday()->many(3)->create();
 
         // Act
@@ -39,6 +40,7 @@ class HospitalStaysTest extends ApiTestCase
         // Arrange
         HospitalStayFactory::new()->exitBeforeToday()->many(3)->create();
         HospitalStayFactory::new()->exitToday()->many(2)->create();
+        HospitalStayFactory::new()->entryToday()->many(2)->create();
         HospitalStayFactory::new()->exitAfterToday()->many(3)->create();
 
         // Act
@@ -46,6 +48,6 @@ class HospitalStaysTest extends ApiTestCase
 
         // Assert
         $this->assertResponseIsSuccessful();
-        $this->assertJsonContains(['hydra:totalItems' => 5]);
+        $this->assertJsonContains(['hydra:totalItems' => 2]);
     }
 }

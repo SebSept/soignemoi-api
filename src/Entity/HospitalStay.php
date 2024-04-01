@@ -8,6 +8,7 @@ use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use App\Controller\HospitalStayTodayEntries;
+use App\Controller\HospitalStayTodayExits;
 use App\Repository\HospitalStayRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
@@ -17,6 +18,7 @@ use Doctrine\ORM\Mapping as ORM;
     operations: [
         new GetCollection(),
         new GetCollection(uriTemplate: 'hospital_stays/today_entries', controller: HospitalStayTodayEntries::class),
+        new GetCollection(uriTemplate: 'hospital_stays/today_exits', controller: HospitalStayTodayExits::class),
         new Get(),
         new Post(),
         new Patch(),
