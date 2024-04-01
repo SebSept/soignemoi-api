@@ -33,4 +33,19 @@ class HospitalStaysTest extends ApiTestCase
         $this->assertResponseIsSuccessful();
         $this->assertJsonContains(['hydra:totalItems' => 5]);
     }
+
+    public function testCountTodayExits()
+    {
+        // Arrange
+        HospitalStayFactory::new()->exitBeforeToday()->many(3)->create();
+        HospitalStayFactory::new()->exitToday()->many(2)->create();
+        HospitalStayFactory::new()->exitAfterToday()->many(3)->create();
+
+        // Act
+        static::createClient()->request('GET', 'hospital_stays/today_exits');
+
+        // Assert
+        $this->assertResponseIsSuccessful();
+        $this->assertJsonContains(['hydra:totalItems' => 5]);
+    }
 }

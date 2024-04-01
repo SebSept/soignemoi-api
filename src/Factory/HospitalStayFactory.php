@@ -68,6 +68,21 @@ final class HospitalStayFactory extends ModelFactory
         return $this->addState(['startDate' => new DateTime()]);
     }
 
+    public function exitBeforeToday(): self
+    {
+        return $this->addState(['endDate' => new DateTime('-' . rand(1, 25) . ' days')]);
+    }
+
+    public function exitAfterToday(): self
+    {
+        return $this->addState(['endDate' => new DateTime('+' . rand(1, 25) . ' days')]);
+    }
+
+    public function exitToday(): self
+    {
+        return $this->addState(['endDate' => new DateTime()]);
+    }
+
     /**
      * @see https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html#initialization
      */
