@@ -12,10 +12,17 @@ class DoctorsTest extends ApiTestCase
     use Factories;
     use ResetDatabase;
 
+    public function testAuthRequired(): void
+    {
+        static::createClient()->request('GET', '/doctors');
+
+        $this->assertResponseStatusCodeSame(401);
+    }
+
     public function testGetDoctors(): void
     {
         $count = 2;
-        DoctorFactory::createMany($count); // @todo utiliser des stories pour générer des données variables éventuellement
+        DoctorFactory::createMany($count);
 
         static::createClient()->request('GET', '/doctors');
 
