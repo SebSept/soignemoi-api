@@ -15,7 +15,7 @@ class DoctorsTest extends ApiTestCase
 
     public function testAuthRequired(): void
     {
-        static::createClient()->request('GET', '/doctors');
+        static::createClient()->request('GET', '/api/doctors');
 
         $this->assertResponseStatusCodeSame(401);
     }
@@ -31,7 +31,7 @@ class DoctorsTest extends ApiTestCase
                 'token_expiration' => new \DateTime('+30 day'),
             ]
         );
-        static::createClient()->request('GET', '/doctors', ['headers' => ['Authorization' => 'Bearer '.$validToken]]);
+        static::createClient()->request('GET', '/api/doctors', ['headers' => ['Authorization' => 'Bearer '.$validToken]]);
 
         $this->assertResponseStatusCodeSame(200);
     }
@@ -48,7 +48,7 @@ class DoctorsTest extends ApiTestCase
                 'token_expiration' => new \DateTime('+30 day'),
             ]
         );
-        static::createClient()->request('GET', '/doctors', ['headers' => ['Authorization' => 'Bearer invalid-token']]);
+        static::createClient()->request('GET', '/api/doctors', ['headers' => ['Authorization' => 'Bearer invalid-token']]);
 
         $this->assertResponseStatusCodeSame(401);
     }
@@ -59,7 +59,7 @@ class DoctorsTest extends ApiTestCase
         DoctorFactory::createMany($count);
 
         static::createClient()->request(',
-            GET', '/doctors');
+            GET', '/api/doctors');
 
         $this->assertResponseIsSuccessful();
         $this->assertJsonContains(['@id' => '/doctors']);
