@@ -58,7 +58,6 @@ db-fixtures-make entity:
 # Insertion des fixtures en base de données
 db-fixtures-load:
     {{console}} doctrine:fixture:load --no-interaction
-    # {{console}} doctrine:fixture:load --append
 
 console command:
     {{console}} {{command}}

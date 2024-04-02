@@ -19,3 +19,9 @@ api_platform:
             rfc_7807_compliant_errors: true
     event_listeners_backward_compatibility_layer: false
     keep_legacy_inflector: false
+    # utilisation d'une méthode d'authentification dans la doc
+    swagger:
+        api_keys:
+            access_token:
+                name: Authorization
+                type: header
