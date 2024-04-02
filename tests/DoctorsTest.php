@@ -2,9 +2,7 @@
 
 namespace App\Tests;
 
-use ApiPlatform\Symfony\Bundle\Test\ApiTestCase;
 use App\Factory\DoctorFactory;
-use App\Factory\UserFactory;
 use Zenstruck\Foundry\Test\Factories;
 use Zenstruck\Foundry\Test\ResetDatabase;
 
@@ -16,23 +14,12 @@ class DoctorsTest extends ApiTestCase
     public function testAuthRequired(): void
     {
         static::createClient()->request('GET', '/api/doctors');
-
         $this->assertResponseStatusCodeSame(401);
     }
 
     public function testAuthSuccessWithValidToken(): void
     {
-        $validToken = 'this-is-a-valid-token-value';
-        UserFactory::new()->create([
-                'email' => 'test@test.com',
-                'password' => 'hello',
-                'roles' => ['ROLE_ADMIN'],
-                'access_token' => $validToken,
-                'token_expiration' => new \DateTime('+30 day'),
-            ]
-        );
-        static::createClient()->request('GET', '/api/doctors', ['headers' => ['Authorization' => 'Bearer '.$validToken]]);
-
+        static::createClientWithValidAuthHeaders()->request('GET', '/api/doctors');
         $this->assertResponseStatusCodeSame(200);
     }
 
@@ -40,29 +27,19 @@ class DoctorsTest extends ApiTestCase
 
     public function testAuthFailsWithInValidToken(): void
     {
-        UserFactory::new()->create([
-                'email' => 'test@test.com',
-                'password' => 'hello',
-                'roles' => ['ROLE_ADMIN'],
-                'access_token' => 'this-is-a-valid-token-value',
-                'token_expiration' => new \DateTime('+30 day'),
-            ]
-        );
-        static::createClient()->request('GET', '/api/doctors', ['headers' => ['Authorization' => 'Bearer invalid-token']]);
-
+        static::createClientWithInvalidAuthHeaders()->request('GET', '/api/doctors');
         $this->assertResponseStatusCodeSame(401);
     }
 
     public function testGetDoctors(): void
     {
         $count = 2;
-        DoctorFactory::createMany($count);
+        DoctorFactory::new()->many($count)->create();
 
-        static::createClient()->request(',
-            GET', '/api/doctors');
+        static::createClientWithValidAuthHeaders()->request('GET', '/api/doctors');
 
         $this->assertResponseIsSuccessful();
-        $this->assertJsonContains(['@id' => '/doctors']);
+        $this->assertJsonContains(['@id' => '/api/doctors']);
         $this->assertJsonContains(['hydra:totalItems' => $count]);
     }
 }

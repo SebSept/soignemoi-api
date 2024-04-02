@@ -16,7 +16,7 @@ class UserFixtures extends Fixture
                 'email' => 'test@test.com',
                 'password' => 'hello',
                 'roles' => ['ROLE_ADMIN'],
-                'access_token' => str_repeat('a', 32),
+                'access_token' => UserFactory::VALID_TOKEN,
                 'token_expiration' => new \DateTime('+30 day'),
             ]
         );

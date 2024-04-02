@@ -30,6 +30,9 @@ use Zenstruck\Foundry\RepositoryProxy;
  */
 final class UserFactory extends ModelFactory
 {
+    public const VALID_TOKEN = 'this-is-a-valid-token-value';
+    public const INVALID_TOKEN = 'this-is-another-token';
+
     /**
      * @see https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html#factories-as-services
      */
@@ -59,8 +62,20 @@ final class UserFactory extends ModelFactory
     {
         return $this->afterInstantiate(function (User $user): void {
             $user->setPassword($this->hasher->hashPassword($user, $user->getPassword()));
-        })
-        ;
+        });
+    }
+
+    public function withValidToken(): self
+    {
+        return $this->addState(
+            [
+//                'email' => 'test@test.com',
+//                'password' => 'hello',
+                'roles' => ['ROLE_ADMIN'],
+                'access_token' => self::VALID_TOKEN,
+                'token_expiration' => new \DateTime('+30 day'),
+            ]
+        );
     }
 
     protected static function getClass(): string

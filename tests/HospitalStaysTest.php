@@ -2,7 +2,6 @@
 
 namespace App\Tests;
 
-use ApiPlatform\Symfony\Bundle\Test\ApiTestCase;
 use App\Factory\HospitalStayFactory;
 use Zenstruck\Foundry\Test\Factories;
 
@@ -13,10 +12,11 @@ class HospitalStaysTest extends ApiTestCase
 
     public function testIRIreachable(): void
     {
-        static::createClient()->request('GET', 'hospital_stays/today_entries');
+        static::createClientWithValidAuthHeaders()
+            ->request('GET', '/api/hospital_stays/today_entries');
 
         $this->assertResponseIsSuccessful();
-        $this->assertJsonContains(['@id' => '/hospital_stays/today_entries']);
+        $this->assertJsonContains(['@id' => '/api/hospital_stays/today_entries']);
     }
 
     public function testCountTodayEntries()
@@ -28,7 +28,8 @@ class HospitalStaysTest extends ApiTestCase
         HospitalStayFactory::new()->entryAfterToday()->many(3)->create();
 
         // Act
-        static::createClient()->request('GET', 'hospital_stays/today_entries');
+        static::createClientWithValidAuthHeaders()
+            ->request('GET', '/api/hospital_stays/today_entries');
 
         // Assert
         $this->assertResponseIsSuccessful();
@@ -44,7 +45,7 @@ class HospitalStaysTest extends ApiTestCase
         HospitalStayFactory::new()->exitAfterToday()->many(3)->create();
 
         // Act
-        static::createClient()->request('GET', 'hospital_stays/today_exits');
+        static::createClientWithValidAuthHeaders()->request('GET', '/api/hospital_stays/today_exits');
 
         // Assert
         $this->assertResponseIsSuccessful();

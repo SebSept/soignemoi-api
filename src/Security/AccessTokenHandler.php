@@ -20,6 +20,8 @@ readonly class AccessTokenHandler implements AccessTokenHandlerInterface
      */
     public function getUserBadgeFrom(#[\SensitiveParameter] string $accessToken): UserBadge
     {
+        // "Bearer " est déjà retiré par Symfony
+        //        $accessToken = str_replace('Bearer ', '', $accessToken);
         /** @var \App\Entity\User $user */
         $user = $this->userRepository->findOneBy(['accessToken' => $accessToken]);
         if(empty($user)) {
