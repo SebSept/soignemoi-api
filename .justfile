@@ -40,14 +40,14 @@ new-api:
     {{console}} doctrine:migrations:migrate --no-interaction
 
 # recréer une base de données
-db-drop-schema:
-    {{console}} doctrine:database:drop --force
-    {{console}} doctrine:database:create
-    # on ne doit pas avoir besoin de lancer les migrations dans le cas d'une création
-    {{console}} doctrine:migrations:migrate --no-interaction
+db-create:
+    {{console}} doctrine:database:drop --quiet --no-interaction --if-exists --force
+    {{console}} doctrine:database:create --quiet --no-interaction
+    {{console}} doctrine:schema:create --quiet --no-interaction
     echo "Base de données recréée"
 
-db-create-test-schema:
+db-create-test:
+    {{console}} doctrine:database:drop --env=test --force --if-exists
     {{console}} doctrine:database:create --env=test
     {{console}} doctrine:schema:create --env=test
 
