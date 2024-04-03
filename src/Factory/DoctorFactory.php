@@ -51,6 +51,7 @@ final class DoctorFactory extends ModelFactory
                     'cardilolgie', 'oncologie', 'dermatologie', 'pédiatrie', 'gynécologie', 'urologie', 'neurologie', 'psychiatrie', 'ophtalmologie', 'ORL']),
             'employeeId' => self::faker()->numerify('##-####-###'),
             'password' => password_hash(self::faker()->unique()->password(), null, ['cost' => 4]),
+            'user' => null,
         ];
 
 

@@ -50,6 +50,10 @@ class Doctor
     #[Groups(['write'])]
     private ?string $password = null;
 
+    #[ORM\OneToOne(targetEntity: User::class, inversedBy: 'doctor')]
+    #[ORM\JoinColumn(name: 'user_id', referencedColumnName: 'id')]
+    private ?User $user = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -111,6 +115,18 @@ class Doctor
     public function setPassword(string $password): static
     {
         $this->password = $password;
+
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): static
+    {
+        $this->user = $user;
 
         return $this;
     }

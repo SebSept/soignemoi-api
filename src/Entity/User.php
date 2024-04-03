@@ -23,14 +23,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 180)]
     private ?string $email = null;
 
-    /**
-     * @var list<string> The user roles
-     */
+    /** @var string[] The user roles */
     #[ORM\Column]
     private array $roles = [];
 
     /**
-     * @var string The hashed password
+     * @var ?string The hashed password
      */
     #[ORM\Column]
     private ?string $password = null;
@@ -40,6 +38,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $tokenExpiration = null;
+
+    #[ORM\OneToOne(targetEntity: Doctor::class, mappedBy: 'user')]
+    private ?Doctor $doctor = null;
 
     public function getId(): ?int
     {
@@ -76,14 +77,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getRoles(): array
     {
         $roles = $this->roles;
-        // guarantee every user at least has ROLE_USER
         $roles[] = 'ROLE_USER';
+        if($this->isDoctor()) {
+            $roles[] = 'ROLE_DOCTOR';
+        }
 
         return array_unique($roles);
     }
 
     /**
-     * @param list<string> $roles
+     * @param string[] $roles
      */
     public function setRoles(array $roles): static
     {
@@ -154,5 +157,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         } catch (\Exception $e) {
             throw new \RuntimeException('Could not generate random token : '. $e->getMessage());
         }
+    }
+
+    private function isDoctor(): bool
+    {
+        return $this->doctor !== null;
     }
 }
