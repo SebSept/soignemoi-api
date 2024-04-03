@@ -46,6 +46,9 @@ db-create:
     {{console}} doctrine:schema:create --quiet --no-interaction
     echo "Base de données recréée"
 
+db-migrate:
+    {{console}} doctrine:migrations:migrate --no-interaction
+
 db-create-test:
     {{console}} doctrine:database:drop --env=test --force --if-exists
     {{console}} doctrine:database:create --env=test
@@ -76,6 +79,15 @@ quality:
 tests:
     {{docker_php_exec}} php bin/phpunit
 
+# création d'un test
+# The test type must be one of "TestCase", "KernelTestCase", "WebTestCase", "ApiTestCase", "PantherTestCase"
+make-test name type='ApiTestCase':
+    {{console}} make:test {{type}} {{name}}
+
 # exécution d'une requête SQL
 sql query env='dev':
     {{console}} dbal:run-sql "{{query}}" --env {{env}}
+
+# interactive php shell
+psysh:
+    {{console}} psysh

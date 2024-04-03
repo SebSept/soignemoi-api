@@ -7,12 +7,14 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
+    public const EXPIRATION_DELAY_DAYS = '30';
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -119,6 +121,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return true; // @todo implement me
     }
 
+    #[Groups('user:token')]
     public function getAccessToken(): ?string
     {
         return $this->accessToken;
@@ -141,5 +144,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->tokenExpiration = $tokenExpiration;
 
         return $this;
+    }
+
+    public function generateToken(): void
+    {
+        try {
+            $this->accessToken = bin2hex(random_bytes(32));
+            $this->tokenExpiration = new \DateTime('+' . self::EXPIRATION_DELAY_DAYS . ' day');
+        } catch (\Exception $e) {
+            throw new \RuntimeException('Could not generate random token : '. $e->getMessage());
+        }
     }
 }

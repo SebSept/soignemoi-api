@@ -19,7 +19,7 @@ class DoctorsTest extends ApiTestCase
 
     public function testAuthSuccessWithValidToken(): void
     {
-        static::createClientWithValidAuthHeaders()->request('GET', '/api/doctors');
+        static::createClientAndUserWithValidAuthHeaders()->request('GET', '/api/doctors');
         $this->assertResponseStatusCodeSame(200);
     }
 
@@ -27,7 +27,7 @@ class DoctorsTest extends ApiTestCase
 
     public function testAuthFailsWithInValidToken(): void
     {
-        static::createClientWithInvalidAuthHeaders()->request('GET', '/api/doctors');
+        static::createClientAndUserWithInvalidAuthHeaders()->request('GET', '/api/doctors');
         $this->assertResponseStatusCodeSame(401);
     }
 
@@ -36,7 +36,7 @@ class DoctorsTest extends ApiTestCase
         $count = 2;
         DoctorFactory::new()->many($count)->create();
 
-        static::createClientWithValidAuthHeaders()->request('GET', '/api/doctors');
+        static::createClientAndUserWithValidAuthHeaders()->request('GET', '/api/doctors');
 
         $this->assertResponseIsSuccessful();
         $this->assertJsonContains(['@id' => '/api/doctors']);

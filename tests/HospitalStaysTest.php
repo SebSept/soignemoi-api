@@ -12,7 +12,7 @@ class HospitalStaysTest extends ApiTestCase
 
     public function testIRIreachable(): void
     {
-        static::createClientWithValidAuthHeaders()
+        static::createClientAndUserWithValidAuthHeaders()
             ->request('GET', '/api/hospital_stays/today_entries');
 
         $this->assertResponseIsSuccessful();
@@ -28,7 +28,7 @@ class HospitalStaysTest extends ApiTestCase
         HospitalStayFactory::new()->entryAfterToday()->many(3)->create();
 
         // Act
-        static::createClientWithValidAuthHeaders()
+        static::createClientAndUserWithValidAuthHeaders()
             ->request('GET', '/api/hospital_stays/today_entries');
 
         // Assert
@@ -45,7 +45,7 @@ class HospitalStaysTest extends ApiTestCase
         HospitalStayFactory::new()->exitAfterToday()->many(3)->create();
 
         // Act
-        static::createClientWithValidAuthHeaders()->request('GET', '/api/hospital_stays/today_exits');
+        static::createClientAndUserWithValidAuthHeaders()->request('GET', '/api/hospital_stays/today_exits');
 
         // Assert
         $this->assertResponseIsSuccessful();
