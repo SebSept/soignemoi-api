@@ -51,7 +51,6 @@ class Doctor
     private ?string $password = null;
 
     #[ORM\OneToOne(targetEntity: User::class, inversedBy: 'doctor')]
-    #[ORM\JoinColumn(name: 'user_id', referencedColumnName: 'id')]
     private ?User $user = null;
 
     public function getId(): ?int
