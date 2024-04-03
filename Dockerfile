@@ -69,7 +69,7 @@ RUN chown climber /app && mkdir -p /app/vendor/bin/
 # Add psysh - https://github.com/bobthecow/psysh
 RUN wget https://github.com/bobthecow/psysh/releases/download/v0.12.0/psysh-v0.12.0.tar.gz --output-document  /tmp/psysh.tar.gz \
     && tar -xvf /tmp/psysh.tar.gz -C /usr/local/bin/ \
-    && chmod 100 /usr/local/bin/psysh \
+    && chmod 500 /usr/local/bin/psysh \
     && chown climber /usr/local/bin/psysh \
     && psysh --version
 
