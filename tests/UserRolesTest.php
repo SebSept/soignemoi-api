@@ -12,11 +12,7 @@ class UserRolesTest extends KernelTestCase
 {
     use Factories, ResetDatabase;
 
-    /**
-     * Un user associé à un docteur doit avoir le role ROLE_DOCTOR
-     * @return void
-     */
-    public function testDoctorTest(): void
+    public function testUserAssociatedWithADoctorHasROLE_DOCTOR(): void
     {
         $user = UserFactory::new()->create();
         DoctorFactory::new()->create(['user' => $user]);
