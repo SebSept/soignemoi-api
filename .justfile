@@ -79,6 +79,9 @@ quality:
 tests:
     {{docker_php_exec}} php bin/phpunit
 
+test filter:
+    {{docker_php_exec}} php bin/phpunit --filter {{filter}}
+
 # création d'un test
 # The test type must be one of "TestCase", "KernelTestCase", "WebTestCase", "ApiTestCase", "PantherTestCase"
 make-test name type='ApiTestCase':
