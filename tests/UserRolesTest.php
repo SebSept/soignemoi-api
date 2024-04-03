@@ -36,4 +36,26 @@ class UserRolesTest extends KernelTestCase
         $this->assertNotContains('ROLE_SECRETARY', $roles);
         $this->assertNotContains('ROLE_ADMIN', $roles);
     }
+
+    public function testUserNotAssociatedHasROLE_SECRETARY(): void
+    {
+        $user = UserFactory::new()->create();
+
+        $roles = $user->getRoles();
+        $this->assertContains('ROLE_SECRETARY', $roles);
+        $this->assertNotContains('ROLE_DOCTOR', $roles);
+        $this->assertNotContains('ROLE_PATIENT', $roles);
+        $this->assertNotContains('ROLE_ADMIN', $roles);
+    }
+
+    public function testUserWithSpecialMailHasROLE_SECRETARY(): void
+    {
+        $user = UserFactory::new()->create(['email' => $_ENV['admin_email']]);
+
+        $roles = $user->getRoles();
+        $this->assertContains('ROLE_ADMIN', $roles);
+        $this->assertNotContains('ROLE_DOCTOR', $roles);
+        $this->assertNotContains('ROLE_PATIENT', $roles);
+        $this->assertNotContains('ROLE_SECRETARY', $roles);
+    }
 }

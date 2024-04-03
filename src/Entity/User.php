@@ -42,6 +42,19 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToOne(targetEntity: Doctor::class, mappedBy: 'user')]
     private ?Doctor $doctor = null;
 
+    private readonly string $adminEmail;
+
+    public function __construct()
+    {
+        // @todo il faudrait utiliser les evenement doctrine pour faire cette affectation
+        // en utilisant une variable de configuration de services.yml
+        // https://symfony.com/doc/current/doctrine/events.html
+        if(!isset($_ENV['admin_email'])) {
+            throw new \RuntimeException('Définir la variable admin_email dans le fichier d\'environement');
+        }
+        $this->adminEmail = $_ENV['admin_email'];
+    }
+
     #[ORM\OneToOne(targetEntity: Patient::class, mappedBy: 'user')]
     private ?Patient $patient = null;
 
@@ -80,13 +93,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getRoles(): array
     {
         $roles = $this->roles;
-        $roles[] = 'ROLE_USER';
-        if($this->isDoctor()) {
-            $roles[] = 'ROLE_DOCTOR';
-        }
-        if($this->isPatient()) {
-            $roles[] = 'ROLE_PATIENT';
-        }
+        $roles[] = 'ROLE_USER'; // @todo doit être supprimable
+        $roles[] = match (true) {
+            $this->isDoctor() => 'ROLE_DOCTOR',
+            $this->isPatient() => 'ROLE_PATIENT',
+            $this->email === $this->adminEmail => 'ROLE_ADMIN',
+            default => 'ROLE_SECRETARY'
+        };
+
         if(count($roles) > 2) {
             throw new \LogicException('User lié à plusieurs roles ' . var_export($roles, true));
         }
