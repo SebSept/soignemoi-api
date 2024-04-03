@@ -52,6 +52,9 @@ class Patient
     #[ORM\OneToMany(targetEntity: Prescription::class, mappedBy: 'patient')]
     private Collection $prescriptions;
 
+    #[ORM\OneToOne(targetEntity: User::class, inversedBy: 'patient')]
+    private ?User $user = null;
+
     public function __construct()
     {
         $this->medicalOpinions = new ArrayCollection();
@@ -210,6 +213,18 @@ class Patient
                 $prescription->setPatient(null);
             }
         }
+
+        return $this;
+    }
+
+//    public function getUser(): ?User
+//    {
+//        return $this->user;
+//    }
+//
+    public function setUser(?User $user): static
+    {
+        $this->user = $user;
 
         return $this;
     }

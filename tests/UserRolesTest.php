@@ -3,6 +3,7 @@
 namespace App\Tests;
 
 use App\Factory\DoctorFactory;
+use App\Factory\PatientFactory;
 use App\Factory\UserFactory;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Zenstruck\Foundry\Test\Factories;
@@ -20,6 +21,18 @@ class UserRolesTest extends KernelTestCase
         $roles = $user->getRoles();
         $this->assertContains('ROLE_DOCTOR', $roles);
         $this->assertNotContains('ROLE_PATIENT', $roles);
+        $this->assertNotContains('ROLE_SECRETARY', $roles);
+        $this->assertNotContains('ROLE_ADMIN', $roles);
+    }
+
+    public function testUserAssociatedWithAPatientHasROLE_PATIENT(): void
+    {
+        $user = UserFactory::new()->create();
+        PatientFactory::new()->create(['user' => $user]);
+
+        $roles = $user->getRoles();
+        $this->assertContains('ROLE_PATIENT', $roles);
+        $this->assertNotContains('ROLE_DOCTOR', $roles);
         $this->assertNotContains('ROLE_SECRETARY', $roles);
         $this->assertNotContains('ROLE_ADMIN', $roles);
     }

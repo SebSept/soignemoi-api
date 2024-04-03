@@ -42,6 +42,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToOne(targetEntity: Doctor::class, mappedBy: 'user')]
     private ?Doctor $doctor = null;
 
+    #[ORM\OneToOne(targetEntity: Patient::class, mappedBy: 'user')]
+    private ?Patient $patient = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -80,6 +83,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $roles[] = 'ROLE_USER';
         if($this->isDoctor()) {
             $roles[] = 'ROLE_DOCTOR';
+        }
+        if($this->isPatient()) {
+            $roles[] = 'ROLE_PATIENT';
+        }
+        if(count($roles) > 2) {
+            throw new \LogicException('User lié à plusieurs roles ' . var_export($roles, true));
         }
 
         return array_unique($roles);
@@ -162,5 +171,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private function isDoctor(): bool
     {
         return $this->doctor !== null;
+    }
+
+    private function isPatient(): bool
+    {
+        return $this->patient !== null;
     }
 }
