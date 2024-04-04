@@ -71,7 +71,7 @@ final class UserFactory extends ModelFactory
             [
 //                'email' => 'test@test.com',
 //                'password' => 'hello',
-                'roles' => ['ROLE_ADMIN'],
+//                'roles' => ['ROLE_ADMIN'],
                 'access_token' => self::VALID_TOKEN,
                 'token_expiration' => new \DateTime('+30 day'),
             ]

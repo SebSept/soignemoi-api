@@ -50,7 +50,7 @@ class UserRolesTest extends KernelTestCase
 
     public function testUserWithSpecialMailHasROLE_SECRETARY(): void
     {
-        $user = UserFactory::new()->create(['email' => $_ENV['admin_email']]);
+        $user = UserFactory::new()->create(['email' => 'admin@admin.com']);
 
         $roles = $user->getRoles();
         $this->assertContains('ROLE_ADMIN', $roles);

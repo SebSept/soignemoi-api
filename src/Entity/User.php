@@ -42,18 +42,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToOne(targetEntity: Doctor::class, mappedBy: 'user')]
     private ?Doctor $doctor = null;
 
-    private readonly string $adminEmail;
-
-    public function __construct()
-    {
-        // @todo il faudrait utiliser les evenement doctrine pour faire cette affectation
-        // en utilisant une variable de configuration de services.yml
-        // https://symfony.com/doc/current/doctrine/events.html
-        if(!isset($_ENV['admin_email'])) {
-            throw new \RuntimeException('Définir la variable admin_email dans le fichier d\'environement');
-        }
-        $this->adminEmail = $_ENV['admin_email'];
-    }
+    /**
+     * @var string
+     * @todo pas de moyen de faire autrement pour le moment
+     * une variable d'environement n'est pas utilisable, le constructeur n'est pas appellé lors du mécanisme d'authentification interne
+     * il faudrait passer par un evenement de Doctrine (ou kernel.request pour injecter la variable d'environement, suggéré par copilot)
+     */
+    private const ADMIN_EMAIL = 'admin@admin.com';
 
     #[ORM\OneToOne(targetEntity: Patient::class, mappedBy: 'user')]
     private ?Patient $patient = null;
@@ -93,19 +88,21 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getRoles(): array
     {
         $roles = $this->roles;
-        $roles[] = 'ROLE_USER'; // @todo doit être supprimable
-        $roles[] = match (true) {
+        $roles[] = 'ROLE_USER'; // @todo doit être supprimable, pour le moment, on le garde -> security.yaml : access_control
+        $roles[]  = match (true) {
             $this->isDoctor() => 'ROLE_DOCTOR',
             $this->isPatient() => 'ROLE_PATIENT',
-            $this->email === $this->adminEmail => 'ROLE_ADMIN',
+            $this->email === self::ADMIN_EMAIL => 'ROLE_ADMIN',
             default => 'ROLE_SECRETARY'
         };
+
+        $roles = array_unique($roles);
 
         if(count($roles) > 2) {
             throw new \LogicException('User lié à plusieurs roles ' . var_export($roles, true));
         }
 
-        return array_unique($roles);
+        return $roles;
     }
 
     /**
