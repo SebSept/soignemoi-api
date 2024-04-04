@@ -77,7 +77,7 @@ quality:
     {{composer}} quality
 
 tests:
-    {{docker_php_exec}} php bin/phpunit
+    {{docker_php_exec}} php bin/phpunit --testdox
 
 test filter:
     {{docker_php_exec}} php bin/phpunit --filter {{filter}}
