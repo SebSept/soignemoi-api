@@ -55,4 +55,43 @@ class GetTokenTest extends ApiTestCase
         $this->assertJsonContains(['accessToken' => $token]);
         $this->assertGreaterThan(new \DateTime, $expiration);
     }
+
+    public function testIsValidTokenReturnsFalseIfExpired()
+    {
+        $user = UserFactory::new()->create([
+            'accessToken' => 'token',
+            'tokenExpiration' => new \DateTime('-1 day'),
+        ]);
+
+        $this->assertFalse($user->isTokenValid());
+    }
+    public function testIsValidTokenReturnsTrueIfNotExpired()
+    {
+        $user = UserFactory::new()->create([
+            'accessToken' => 'token',
+            'tokenExpiration' => new \DateTime('+1 day'),
+        ]);
+
+        $this->assertTrue($user->isTokenValid());
+    }
+
+    public function testIsValidTokenReturnsFalseIfNoExpirationSet()
+    {
+        $user = UserFactory::new()->create([
+            'accessToken' => 'token',
+            'tokenExpiration' => null,
+        ]);
+
+        $this->assertFalse($user->isTokenValid());
+    }
+
+    public function testIsValidTokenReturnsFalseIfNoTokenSet()
+    {
+        $user = UserFactory::new()->create([
+            'accessToken' => null,
+            'tokenExpiration' => new \DateTime('+1 day'),
+        ]);
+
+        $this->assertFalse($user->isTokenValid());
+    }
 }

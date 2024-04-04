@@ -139,9 +139,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         // $this->plainPassword = null;
     }
 
-    public function isTokenValid()
+    public function isTokenValid(): bool
     {
-        return true; // @todo implement me
+        return $this->accessToken && $this->tokenExpiration > new \DateTime();
     }
 
     #[Groups('user:token')]

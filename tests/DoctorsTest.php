@@ -23,8 +23,6 @@ class DoctorsTest extends ApiTestCase
         $this->assertResponseStatusCodeSame(200);
     }
 
-    // @todo faire des tests avec token existant mais expiré
-
     public function testAuthFailsWithInValidToken(): void
     {
         static::createClientAndUserWithInvalidAuthHeaders()->request('GET', '/api/doctors');
