@@ -45,12 +45,10 @@ class Prescription
     private ?\DateTimeInterface $date = null;
 
     #[ORM\ManyToOne(targetEntity: Patient::class, inversedBy: 'prescriptions')]
-    #[ORM\JoinColumn(nullable: false)]
     #[Groups(['prescription:read'])]
     private ?Patient $patient = null;
 
     #[ORM\ManyToOne(targetEntity: Doctor::class)]
-    #[ORM\JoinColumn(nullable: false)]
     #[Groups(['prescription:read'])]
     private ?Doctor $doctor = null;
 
