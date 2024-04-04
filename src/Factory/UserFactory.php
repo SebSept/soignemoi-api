@@ -69,6 +69,14 @@ final class UserFactory extends ModelFactory
         return $user;
     }
 
+    public function patient(): self
+    {
+        $user = self::new()->withValidToken();
+        PatientFactory::new(['user' => $user])->create();
+
+        return $user;
+    }
+
     /**
      * @see https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html#model-factories
      */
