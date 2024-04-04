@@ -13,9 +13,8 @@ class GetTokenTest extends ApiTestCase
 
     /**
      * Test la génération de token
-     * Devrait être scindé en deux tests, un unitaire et un fonctionnel
      */
-    public function testGetToken(): void
+    public function testSecretaryGetToken(): void
     {
         // Arrange
         $email = 'hello@api.com';
@@ -53,6 +52,46 @@ class GetTokenTest extends ApiTestCase
         $this->assertResponseIsSuccessful();
         $this->assertJsonContains(['accessToken' => $token]);
         $this->assertGreaterThan(new \DateTime, $expiration);
+    }
+
+    public function testAdminGetTokenAndRequetDoctors(): void
+    {
+        // Arrange
+        $email = 'admin@admin.com'; // email spécial pour les admins - src/Entity/User.php:ADMIN_EMAIL
+        $password = 'admin-password';
+        UserFactory::new()->create([
+            'email' => $email,
+            'password' => $password,
+            'accessToken' => null,
+            'tokenExpiration' => null,
+//            'roles' => ['ROLE_ADMIN'], // pour le moment on determine l'admin via un mail spécial
+        ]);
+
+        // Act 1 - request resource fails without valid token
+        $client = static::createClientWithInvalidBearer();
+        $client->request('GET', '/api/doctors');
+        $this->assertResponseStatusCodeSame(401);
+
+        // Act 2 - request resource succeeds with valid token
+
+        // Act 2.1 request a token
+        $client = static::createClient(); // important de refaire un client sans headers sinon echec de l'auth
+        $response = $client->request('POST', '/token',
+            ['json' => [
+                'email' => $email,
+                'password' => $password,
+            ],
+                'headers' => [
+                    'Content-Type' => 'application/json',
+                    'Accept' => 'application/json'
+                ]]
+        );
+        $content = json_decode($response->getContent());
+        $fetchedToken = $content->accessToken ?? null;
+
+        // Act 2.2 request resource with fetched token
+        static::createClientWithBearer($fetchedToken)->request('GET', '/api/doctors');
+        $this->assertResponseStatusCodeSame(200);
     }
 
 }

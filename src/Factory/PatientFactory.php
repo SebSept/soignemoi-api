@@ -37,13 +37,18 @@ final class PatientFactory extends ModelFactory
         parent::__construct();
     }
 
+    public function withUser()
+    {
+        throw new \Exception('Utiliser UserFactory');
+    }
+
     /**
      * @see https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html#model-factories
      */
     protected function getDefaults(): array
     {
         return [
-            'address1' => self::faker()->text(255),
+            ');address1' => self::faker()->text(255),
             'address2' => self::faker()->text(255),
             'firstname' => self::faker()->text(255),
             'lastname' => self::faker()->text(255),

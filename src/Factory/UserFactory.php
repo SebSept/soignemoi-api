@@ -41,6 +41,27 @@ final class UserFactory extends ModelFactory
         parent::__construct();
     }
 
+    public function withValidToken(): self
+    {
+        return $this->addState(
+            [
+                'access_token' => self::VALID_TOKEN,
+                'token_expiration' => new \DateTime('+30 day'),
+            ]
+        );
+    }
+
+    public function secretary(): self
+    {
+        return self::new()->withValidToken();
+    }
+
+    //    public function patient(): self
+    //    {
+    //        $patient = PatientFactory::new()->create();
+    //        return self::new()->withValidToken()->create(['patient' => $patient]);
+    //    }
+
     /**
      * @see https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html#model-factories
      */
@@ -63,19 +84,6 @@ final class UserFactory extends ModelFactory
         return $this->afterInstantiate(function (User $user): void {
             $user->setPassword($this->hasher->hashPassword($user, $user->getPassword()));
         });
-    }
-
-    public function withValidToken(): self
-    {
-        return $this->addState(
-            [
-//                'email' => 'test@test.com',
-//                'password' => 'hello',
-//                'roles' => ['ROLE_ADMIN'],
-                'access_token' => self::VALID_TOKEN,
-                'token_expiration' => new \DateTime('+30 day'),
-            ]
-        );
     }
 
     protected static function getClass(): string
