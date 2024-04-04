@@ -17,12 +17,21 @@ use Doctrine\ORM\Mapping as ORM;
 #[ApiResource(
     operations: [
         new GetCollection(),
-        new GetCollection(uriTemplate: 'hospital_stays/today_entries', controller: HospitalStayTodayEntries::class),
-        new GetCollection(uriTemplate: 'hospital_stays/today_exits', controller: HospitalStayTodayExits::class),
+        new GetCollection(
+            uriTemplate: 'hospital_stays/today_entries',
+            controller: HospitalStayTodayEntries::class,
+            security: "is_granted('ROLE_SECRETARY')",
+        ),
+        new GetCollection(
+            uriTemplate: 'hospital_stays/today_exits',
+            controller: HospitalStayTodayExits::class,
+            security: "is_granted('ROLE_SECRETARY')",
+        ),
         new Get(),
         new Post(),
         new Patch(),
     ],
+    security: "is_granted('')",
     //    paginationItemsPerPage: 5,
 )]
 //#[ApiFilter(DateFilter::class, properties: ['startDate'])]

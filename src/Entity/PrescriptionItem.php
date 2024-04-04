@@ -14,7 +14,8 @@ use Symfony\Component\Serializer\Attribute\Groups;
     operations: [
         new Get(),
         new Post(),
-    ]
+    ],
+    security: "is_granted('')",
 )]
 class PrescriptionItem
 {

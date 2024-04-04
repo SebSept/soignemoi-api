@@ -17,12 +17,17 @@ use Symfony\Component\Serializer\Attribute\Groups;
 #[ORM\Entity(repositoryClass: PrescriptionRepository::class)]
 #[ApiResource(
     operations: [
-        new GetCollection(),
-        new Get(),
+        new GetCollection(
+            security: "is_granted('ROLE_SECRETARY')",
+        ),
+        new Get(
+            security: "is_granted('ROLE_SECRETARY')",
+        ),
         new Post(),
         new Patch(),
     ],
-    normalizationContext: ['groups' => 'prescription:read']
+    normalizationContext: ['groups' => 'prescription:read'],
+    security: "is_granted('')",
 )]
 class Prescription
 {

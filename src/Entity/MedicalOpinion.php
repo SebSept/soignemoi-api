@@ -14,11 +14,16 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: MedicalOpinionRepository::class)]
 #[ApiResource(
     operations: [
-        new GetCollection(),
-        new Get(),
+        new GetCollection(
+            security: "is_granted('ROLE_SECRETARY')",
+        ),
+        new Get(
+            security: "is_granted('ROLE_SECRETARY')",
+        ),
         new Post(),
         new Patch(),
-    ]
+    ],
+    security: "is_granted('')",
 )
 ]
 class MedicalOpinion
