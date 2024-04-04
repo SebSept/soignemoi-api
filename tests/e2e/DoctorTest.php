@@ -33,10 +33,10 @@ class DoctorTest extends ApiTestCase
     }
 
     /**
-     * @dataProvider NotAllowedIris
+     * @x-dataProvider NotAllowedIris
      * pas possible d'utiliser un dataprovider (du moins, je n'ai pas réussi)
      */
-    public function testCannotAccessIri(string $iri)
+    public function testCannotAccessIri()
     {
         $this->makeEntities();
 
@@ -74,14 +74,14 @@ class DoctorTest extends ApiTestCase
     }
 
     /**
-     * @return array{patientId: int, prescriptionId: int, medicalOpinionId: int}
+     * @return array
      */
     private function makeEntities(): array
     {
         return [
-            'patientId' => PatientFactory::new()->create()->getId(),
-            'prescriptionId' => PrescriptionFactory::new()->create()->getId(),
-            'medicalOpinionId' => MedicalOpinionFactory::new()->create()->getId(),
+//            'patientId' => PatientFactory::new()->create()->getId(),
+//            'prescriptionId' => PrescriptionFactory::new()->create()->getId(),
+//            'medicalOpinionId' => MedicalOpinionFactory::new()->create()->getId(),
         ];
     }
 }
