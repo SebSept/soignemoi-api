@@ -9,9 +9,9 @@ up:
     docker-compose up -d
 #    docker exec -it -u climber {{container}} composer install
 
-[private]
 update:
     git pull
+    docker-compose down
     docker-compose up -d --build
     {{composer}} install
 
