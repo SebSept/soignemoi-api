@@ -23,8 +23,12 @@ use Symfony\Component\Serializer\Attribute\Groups;
         new Get(
             security: "is_granted('ROLE_SECRETARY')",
         ),
-        new Post(),
-        new Patch(),
+        new Post(
+            security: "is_granted('ROLE_DOCTOR')",
+        ),
+        new Patch(
+            security: "is_granted('ROLE_DOCTOR')",
+        ),
     ],
     normalizationContext: ['groups' => 'prescription:read'],
     security: "is_granted('')",

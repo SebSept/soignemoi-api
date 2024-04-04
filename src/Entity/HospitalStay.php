@@ -16,11 +16,13 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: HospitalStayRepository::class)]
 #[ApiResource(
     operations: [
-        new GetCollection(),
+        new GetCollection(
+            security: "is_granted('ROLE_DOCTOR')",
+        ),
         new GetCollection(
             uriTemplate: 'hospital_stays/today_entries',
             controller: HospitalStayTodayEntries::class,
-            security: "is_granted('ROLE_SECRETARY')",
+            security: "is_granted('ROLE_SECRETARY') or is_granted('ROLE_DOCTOR')",
         ),
         new GetCollection(
             uriTemplate: 'hospital_stays/today_exits',

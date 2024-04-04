@@ -20,8 +20,12 @@ use Doctrine\ORM\Mapping as ORM;
         new Get(
             security: "is_granted('ROLE_SECRETARY')",
         ),
-        new Post(),
-        new Patch(),
+        new Post(
+            security: "is_granted('ROLE_DOCTOR')",
+        ),
+        new Patch(
+            security: "is_granted('ROLE_DOCTOR')",
+        ),
     ],
     security: "is_granted('')",
 )

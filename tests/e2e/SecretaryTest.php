@@ -16,7 +16,6 @@ class SecretaryTest extends ApiTestCase
 {
     use Factories, ResetDatabase;
 
-    //
     public function testCanAccessIri(): void
     {
         $ids = $this->makeEntities();
@@ -25,7 +24,6 @@ class SecretaryTest extends ApiTestCase
             $this->testAccessOk($iri[0]);
         }
     }
-
 
     /**
      * @dataProvider NotAllowedIris
