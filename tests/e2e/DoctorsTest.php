@@ -1,8 +1,9 @@
 <?php
 
-namespace App\Tests;
+namespace App\Tests\e2e;
 
 use App\Factory\DoctorFactory;
+use App\Tests\ApiTestCase;
 use Zenstruck\Foundry\Test\Factories;
 use Zenstruck\Foundry\Test\ResetDatabase;
 

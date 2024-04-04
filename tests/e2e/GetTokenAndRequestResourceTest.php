@@ -1,8 +1,9 @@
 <?php
 
-namespace App\Tests;
+namespace App\Tests\e2e;
 
 use App\Factory\UserFactory;
+use App\Tests\ApiTestCase;
 use Zenstruck\Foundry\Test\Factories;
 use Zenstruck\Foundry\Test\ResetDatabase;
 
@@ -15,8 +16,7 @@ class GetTokenAndRequestResourceTest extends ApiTestCase
         // Arrange
         $email = 'admin@admin.com';
         $password = 'admin-password';
-        /** @var \App\Entity\User $admin */
-        $admin = UserFactory::new()->create([
+        UserFactory::new()->create([
             'email' => $email,
             'password' => $password,
             'accessToken' => null,

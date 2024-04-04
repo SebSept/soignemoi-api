@@ -4,6 +4,8 @@ namespace App\Controller;
 
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
+use Exception;
+use RuntimeException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -23,8 +25,8 @@ class GetTokenController extends AbstractController
             $user->generateToken();
             $entityManager->persist($user);
             $entityManager->flush();
-        } catch (\Exception $e) {
-            throw new \RuntimeException('Token generation failed : ' . $e->getMessage());
+        } catch (Exception $e) {
+            throw new RuntimeException('Token generation failed : ' . $e->getMessage());
         }
 
         return $this->json($user, context: ['groups' => ['user:token']]);

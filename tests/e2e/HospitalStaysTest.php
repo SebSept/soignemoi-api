@@ -1,14 +1,15 @@
 <?php
 
-namespace App\Tests;
+namespace App\Tests\e2e;
 
 use App\Factory\HospitalStayFactory;
+use App\Tests\ApiTestCase;
 use Zenstruck\Foundry\Test\Factories;
+use Zenstruck\Foundry\Test\ResetDatabase;
 
 class HospitalStaysTest extends ApiTestCase
 {
-    use Factories;
-//        , ResetDatabase;
+    use Factories, ResetDatabase;
 
     public function testIRIreachable(): void
     {

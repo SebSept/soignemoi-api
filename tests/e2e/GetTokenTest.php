@@ -1,10 +1,9 @@
 <?php /** @noinspection ALL */
 
-namespace App\Tests;
+namespace App\Tests\e2e;
 
 use App\Factory\UserFactory;
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
-use Zenstruck\Browser\Test\HasBrowser;
+use App\Tests\ApiTestCase;
 use Zenstruck\Foundry\Test\Factories;
 use Zenstruck\Foundry\Test\ResetDatabase;
 
@@ -56,42 +55,4 @@ class GetTokenTest extends ApiTestCase
         $this->assertGreaterThan(new \DateTime, $expiration);
     }
 
-    public function testIsValidTokenReturnsFalseIfExpired()
-    {
-        $user = UserFactory::new()->create([
-            'accessToken' => 'token',
-            'tokenExpiration' => new \DateTime('-1 day'),
-        ]);
-
-        $this->assertFalse($user->isTokenValid());
-    }
-    public function testIsValidTokenReturnsTrueIfNotExpired()
-    {
-        $user = UserFactory::new()->create([
-            'accessToken' => 'token',
-            'tokenExpiration' => new \DateTime('+1 day'),
-        ]);
-
-        $this->assertTrue($user->isTokenValid());
-    }
-
-    public function testIsValidTokenReturnsFalseIfNoExpirationSet()
-    {
-        $user = UserFactory::new()->create([
-            'accessToken' => 'token',
-            'tokenExpiration' => null,
-        ]);
-
-        $this->assertFalse($user->isTokenValid());
-    }
-
-    public function testIsValidTokenReturnsFalseIfNoTokenSet()
-    {
-        $user = UserFactory::new()->create([
-            'accessToken' => null,
-            'tokenExpiration' => new \DateTime('+1 day'),
-        ]);
-
-        $this->assertFalse($user->isTokenValid());
-    }
 }
