@@ -77,6 +77,11 @@ final class UserFactory extends ModelFactory
         return $user;
     }
 
+    public function admin(): self
+    {
+        return self::new(['email' => 'admin@admin.com'])->withValidToken();
+    }
+
     /**
      * @see https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html#model-factories
      */

@@ -9,6 +9,7 @@ use App\Factory\PatientFactory;
 use App\Factory\PrescriptionFactory;
 use App\Factory\UserFactory;
 use App\Tests\ApiTestCase;
+use Zenstruck\Foundry\Proxy;
 use Zenstruck\Foundry\Test\Factories;
 use Zenstruck\Foundry\Test\ResetDatabase;
 
@@ -19,9 +20,10 @@ class SecretaryTest extends ApiTestCase
     public function testCanAccessIri(): void
     {
         $ids = $this->makeEntities();
+        $user = $this->makeSecretary();
 
         foreach ($this->AllowedIris($ids) as $iri) {
-            $this->testAccessOk($iri[0]);
+            $this->testAccessOk($iri[0], $user);
         }
     }
 
@@ -32,9 +34,10 @@ class SecretaryTest extends ApiTestCase
     public function testCannotAccessIri()
     {
         $this->makeEntities();
+        $user = $this->makeSecretary();
 
         foreach ($this->NotAllowedIris() as $iri) {
-            $this->testAccessNotAllowedTo($iri[0]);
+            $this->testAccessNotAllowedTo($iri[0], $user);
         }
     }
 
@@ -95,22 +98,17 @@ class SecretaryTest extends ApiTestCase
         ];
     }
 
-    private function testAccessOk(string $iri): void
+    private function testAccessOk(string $iri, Proxy $user): void
     {
-        // création de l'utilisateur qui va demander l'accès.
-        $secretary = UserFactory::new()->secretary()->create();
-
-        static::createClientWithBearerFromUser($secretary->object())
+        static::createClientWithBearerFromUser($user->object())
             ->request('GET', $iri);
 
         $this->assertResponseIsSuccessful(' raté pour ' . $iri);
     }
 
-    private function testAccessNotAllowedTo(string $string): void
+    private function testAccessNotAllowedTo(string $string, Proxy $user): void
     {
-        $secretary = UserFactory::new()->secretary()->create();
-
-        static::createClientWithBearerFromUser($secretary->object())
+        static::createClientWithBearerFromUser($user->object())
             ->request('GET', $string);
 
         $this->assertResponseStatusCodeSame(403);
@@ -126,5 +124,10 @@ class SecretaryTest extends ApiTestCase
             'prescriptionId' => PrescriptionFactory::new()->create()->getId(),
             'medicalOpinionId' => MedicalOpinionFactory::new()->create()->getId(),
         ];
+    }
+
+    private function makeSecretary(): Proxy
+    {
+        return UserFactory::new()->secretary()->create();
     }
 }

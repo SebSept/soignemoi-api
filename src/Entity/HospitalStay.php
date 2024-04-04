@@ -17,7 +17,7 @@ use Doctrine\ORM\Mapping as ORM;
 #[ApiResource(
     operations: [
         new GetCollection(
-            security: "is_granted('ROLE_DOCTOR') or is_granted('ROLE_PATIENT')",
+            security: "is_granted('ROLE_DOCTOR') or is_granted('ROLE_PATIENT') or is_granted('ROLE_ADMIN')",
         ),
         new GetCollection(
             uriTemplate: 'hospital_stays/today_entries',

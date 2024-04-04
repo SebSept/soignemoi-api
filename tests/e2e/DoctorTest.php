@@ -9,6 +9,7 @@ use App\Factory\PatientFactory;
 use App\Factory\PrescriptionFactory;
 use App\Factory\UserFactory;
 use App\Tests\ApiTestCase;
+use Zenstruck\Foundry\Proxy;
 use Zenstruck\Foundry\Test\Factories;
 use Zenstruck\Foundry\Test\ResetDatabase;
 
@@ -19,9 +20,10 @@ class DoctorTest extends ApiTestCase
     public function testCanAccessIri(): void
     {
         $ids = $this->makeEntities();
+        $user = $this->makeDoctor();
 
         foreach ($this->AllowedIris($ids) as $iri) {
-            $this->testAccessOk($iri[0]);
+            $this->testAccessOk($iri[0], $user);
         }
     }
 
@@ -39,9 +41,10 @@ class DoctorTest extends ApiTestCase
     public function testCannotAccessIri()
     {
         $this->makeEntities();
+        $user = $this->makeDoctor();
 
         foreach ($this->NotAllowedIris() as $iri) {
-            $this->testAccessNotAllowedTo($iri[0]);
+            $this->testAccessNotAllowedTo($iri[0], $user);
         }
     }
 
@@ -52,22 +55,17 @@ class DoctorTest extends ApiTestCase
         ];
     }
 
-    private function testAccessOk(string $iri): void
+    private function testAccessOk(string $iri, Proxy $user): void
     {
-        // création de l'utilisateur qui va demander l'accès.
-        $doctor = UserFactory::new()->doctor()->create();
-
-        static::createClientWithBearerFromUser($doctor->object())
+        static::createClientWithBearerFromUser($user->object())
             ->request('GET', $iri);
 
         $this->assertResponseIsSuccessful(' raté pour ' . $iri);
     }
 
-    private function testAccessNotAllowedTo(string $string): void
+    private function testAccessNotAllowedTo(string $string, Proxy $user): void
     {
-        $doctor = UserFactory::new()->doctor()->create();
-
-        static::createClientWithBearerFromUser($doctor->object())
+        static::createClientWithBearerFromUser($user->object())
             ->request('GET', $string);
 
         $this->assertResponseStatusCodeSame(403);
@@ -83,5 +81,10 @@ class DoctorTest extends ApiTestCase
 //            'prescriptionId' => PrescriptionFactory::new()->create()->getId(),
 //            'medicalOpinionId' => MedicalOpinionFactory::new()->create()->getId(),
         ];
+    }
+
+    private function makeDoctor(): \Zenstruck\Foundry\Proxy|\App\Entity\User
+    {
+        return UserFactory::new()->doctor()->create();
     }
 }

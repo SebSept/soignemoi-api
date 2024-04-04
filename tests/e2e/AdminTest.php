@@ -3,6 +3,7 @@
 namespace App\Tests\e2e;
 
 use App\Entity\MedicalOpinion;
+use App\Entity\User;
 use App\Factory\HospitalStayFactory;
 use App\Factory\MedicalOpinionFactory;
 use App\Factory\PatientFactory;
@@ -13,14 +14,14 @@ use Zenstruck\Foundry\Proxy;
 use Zenstruck\Foundry\Test\Factories;
 use Zenstruck\Foundry\Test\ResetDatabase;
 
-class PatientTest extends ApiTestCase
+class AdminTest extends ApiTestCase
 {
     use Factories, ResetDatabase;
 
     public function testCanAccessIri(): void
     {
         $ids = $this->makeEntities();
-        $user = $this->makePatient();
+        $user = $this->makeAdmin();
 
         foreach ($this->AllowedIris($ids) as $iri) {
             $this->testAccessOk($iri[0], $user);
@@ -31,13 +32,15 @@ class PatientTest extends ApiTestCase
     {
         return [
             ['/api/hospital_stays'],
+            ['/api/doctors'],
         ];
     }
 
     public function testCannotAccessIri()
     {
         $this->makeEntities();
-        $user = $this->makePatient();
+        $user = $this->makeAdmin();
+
 
         foreach ($this->NotAllowedIris() as $iri) {
             $this->testAccessNotAllowedTo($iri[0], $user);
@@ -48,6 +51,7 @@ class PatientTest extends ApiTestCase
     {
         return [
             ['/api/medical_opinions'],
+            ['/api/patients'],
         ];
     }
 
@@ -79,8 +83,8 @@ class PatientTest extends ApiTestCase
         ];
     }
 
-    private function makePatient(): \Zenstruck\Foundry\Proxy|\App\Entity\User
+    private function makeAdmin(): \Zenstruck\Foundry\Proxy|\App\Entity\User
     {
-        return UserFactory::new()->patient()->create();
+        return UserFactory::new()->admin()->create();
     }
 }
