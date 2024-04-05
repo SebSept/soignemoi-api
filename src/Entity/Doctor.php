@@ -8,7 +8,9 @@ use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use App\Repository\DoctorRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Serializer\Attribute\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: DoctorRepository::class)]
 #[ApiResource(
@@ -25,6 +27,8 @@ use Symfony\Component\Serializer\Attribute\Groups;
     security: "is_granted('')",
 )
 ]
+#[UniqueEntity(['firstname', 'lastname'])]
+#[UniqueEntity(['email'])]
 class Doctor
 {
     #[ORM\Id]
@@ -34,6 +38,7 @@ class Doctor
 
     #[ORM\Column(length: 255)]
     #[Groups(['read', 'write'])]
+    #[Assert\NoSuspiciousCharacters] // https://symfony.com/doc/current/reference/constraints/NoSuspiciousCharacters.html
     private ?string $firstname = null;
 
     #[ORM\Column(length: 255)]
@@ -50,6 +55,7 @@ class Doctor
 
     #[ORM\Column(length: 255)]
     #[Groups(['write'])]
+    #[Assert\PasswordStrength(minScore: Assert\PasswordStrength::STRENGTH_MEDIUM, message: 'Mot de passe trop faible.')]
     private ?string $password = null;
 
     #[ORM\OneToOne(targetEntity: User::class, inversedBy: 'doctor')]
