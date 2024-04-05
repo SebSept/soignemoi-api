@@ -93,4 +93,4 @@ sql query env='dev':
 
 # interactive php shell
 psysh:
-    {{console}} psysh
+    {{docker_php_exec}} psysh
