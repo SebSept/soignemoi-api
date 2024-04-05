@@ -102,10 +102,12 @@
       "importmap:install": "symfony-cmd"
     },
     "cs-fixer": "php-cs-fixer fix ./src/",
+    "phpstan": "phpstan",
     "pre-commit": [
       "@cs-fixer",
       "symfony composer normalize",
-      "php bin/phpunit"
+      "php bin/phpunit",
+      "@phpstan"
     ],
     "tests": "php bin/phpunit --testdox"
   }
