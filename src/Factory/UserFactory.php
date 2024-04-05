@@ -31,7 +31,7 @@ use Zenstruck\Foundry\RepositoryProxy;
 final class UserFactory extends ModelFactory
 {
     public const VALID_TOKEN = 'this-is-a-valid-token-value';
-    public const INVALID_TOKEN = 'this-is-another-token';
+    public const VALID_DOCTOR_TOKEN = 'this-is-a-valid-token-value-doctor';
 
     /**
      * @see https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html#factories-as-services

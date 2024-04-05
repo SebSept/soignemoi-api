@@ -15,9 +15,7 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: PatientRepository::class)]
 #[ApiResource(
     operations: [
-        new GetCollection(
-            security: "is_granted('')"
-        ),
+        new GetCollection(),
         new Get(
             security: "is_granted('ROLE_SECRETARY')",
         ),

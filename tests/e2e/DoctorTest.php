@@ -2,9 +2,7 @@
 
 namespace App\Tests\e2e;
 
-use App\Entity\MedicalOpinion;
-use App\Factory\HospitalStayFactory;
-use App\Factory\MedicalOpinionFactory;
+use App\Factory\DoctorFactory;
 use App\Factory\PatientFactory;
 use App\Factory\PrescriptionFactory;
 use App\Factory\UserFactory;
@@ -20,7 +18,7 @@ class DoctorTest extends ApiTestCase
     public function testCanAccessIri(): void
     {
         $ids = $this->makeEntities();
-        $user = $this->makeDoctor();
+        $user = $this->makeDoctorUser();
 
         foreach ($this->AllowedIris($ids) as $iri) {
             $this->testAccessOk($iri[0], $user);
@@ -41,7 +39,7 @@ class DoctorTest extends ApiTestCase
     public function testCannotAccessIri()
     {
         $this->makeEntities();
-        $user = $this->makeDoctor();
+        $user = $this->makeDoctorUser();
 
         foreach ($this->NotAllowedIris() as $iri) {
             $this->testAccessNotAllowedTo($iri[0], $user);
@@ -71,6 +69,51 @@ class DoctorTest extends ApiTestCase
         $this->assertResponseStatusCodeSame(403);
     }
 
+    public function testCreatePrescription()
+    {
+        // Arrange
+        $patient = PatientFactory::new()->create();
+        $patientIri = '/api/patients/' . $patient->getId();
+        $doctorUser = $this->makeDoctorUser();
+        $doctor = DoctorFactory::repository()->first()->object(); // on devrait le retrouver avec le user->getDoctor() mais ça ne marche pas.
+        $doctorIri = '/api/doctors/' . $doctor->getId();
+        $nbPrescriptions = PrescriptionFactory::repository()->count();
+
+
+        $payload = [
+            'patient' => $patientIri,
+            'doctor' => $doctorIri,
+            'date' => '2021-09-01',
+            'items' => []
+        ];
+
+        // Act
+        // test accès aux uri des docteur et patient
+//        PatientFactory::repository()->assert()->exists($patient);
+//        DoctorFactory::repository()->assert()->exists($doctor);
+//
+//        static::createClientWithBearerFromUser($doctorUser->object())
+//            ->request('GET', $patientIri);
+//        $this->assertResponseIsSuccessful();
+//        static::createClientWithBearerFromUser($doctorUser->object())
+//            ->request('GET', $doctorIri);
+//        $this->assertResponseIsSuccessful();
+
+        $client = static::createClientWithBearerFromUser($doctorUser->object());
+        $client
+            ->request('POST', '/api/prescriptions', [
+                'headers' => [
+                    'Content-Type' => 'application/ld+json',
+                    'Accept' => 'application/ld+json',
+                ],
+                'json' => $payload
+            ]);
+
+        // Assert
+        $this->assertResponseIsSuccessful();
+        PrescriptionFactory::repository()->assert()->count($nbPrescriptions+1);
+    }
+
     /**
      * @return array
      */
@@ -83,7 +126,7 @@ class DoctorTest extends ApiTestCase
         ];
     }
 
-    private function makeDoctor(): \Zenstruck\Foundry\Proxy|\App\Entity\User
+    private function makeDoctorUser(): \Zenstruck\Foundry\Proxy|\App\Entity\User
     {
         return UserFactory::new()->doctor()->create();
     }
