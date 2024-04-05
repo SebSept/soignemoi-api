@@ -35,10 +35,9 @@ final class MedicalOpinionFactory extends ModelFactory
     protected function getDefaults(): array
     {
         return [
-            'date' => self::faker()->dateTime(),
             'description' => self::faker()->text(),
-            'doctor' => DoctorFactory::new(),
             'patient' => PatientFactory::new(),
+            'doctor' => DoctorFactory::new(),
             'title' => self::faker()->text(255),
         ];
     }

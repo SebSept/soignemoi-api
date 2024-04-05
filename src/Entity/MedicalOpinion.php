@@ -8,8 +8,11 @@ use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use App\Repository\MedicalOpinionRepository;
+use DateTime;
+use DateTimeInterface;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Entity(repositoryClass: MedicalOpinionRepository::class)]
 #[ApiResource(
@@ -27,6 +30,8 @@ use Doctrine\ORM\Mapping as ORM;
             security: "is_granted('ROLE_DOCTOR')",
         ),
     ],
+    normalizationContext: ['groups' => 'medicalOpinion:read'],
+    denormalizationContext: ['groups' => 'medicalOpinion:write'],
     security: "is_granted('')",
 )
 ]
@@ -38,37 +43,38 @@ class MedicalOpinion
     private ?int $id = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
-    private ?\DateTimeInterface $date = null;
+    #[Groups(['medicalOpinion:read'])]
+    private ?DateTimeInterface $date;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['medicalOpinion:read', 'medicalOpinion:write'])]
     private ?string $title = null;
 
     #[ORM\Column(type: Types::TEXT)]
+    #[Groups(['medicalOpinion:read', 'medicalOpinion:write'])]
     private ?string $description = null;
 
-    #[ORM\ManyToOne(targetEntity: 'doctor')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\ManyToOne(targetEntity: 'Doctor')]
+    #[Groups(['medicalOpinion:read', 'medicalOpinion:write'])]
     private ?Doctor $doctor = null;
 
     #[ORM\ManyToOne(targetEntity: 'Patient', inversedBy: 'medicalOpinions')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['medicalOpinion:read', 'medicalOpinion:write'])]
     private ?Patient $patient = null;
+
+    public function __construct()
+    {
+        $this->date = new DateTime();
+    }
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getDate(): ?\DateTimeInterface
+    public function getDate(): ?DateTimeInterface
     {
         return $this->date;
-    }
-
-    public function setDate(\DateTimeInterface $date): static
-    {
-        $this->date = $date;
-
-        return $this;
     }
 
     public function getTitle(): ?string
