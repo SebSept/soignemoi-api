@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\HospitalStay;
 use App\Repository\HospitalStayRepository;
 use Symfony\Component\HttpKernel\Attribute\AsController;
 
@@ -12,7 +13,10 @@ readonly class HospitalStayTodayEntries
     {
     }
 
-    public function __invoke()
+    /**
+     * @return HospitalStay[]
+     */
+    public function __invoke(): array
     {
         return $this->repository->findBy(['startDate' => new \DateTime()]);
     }

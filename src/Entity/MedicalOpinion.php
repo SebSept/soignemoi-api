@@ -54,11 +54,11 @@ class MedicalOpinion
     #[Groups(['medicalOpinion:read', 'medicalOpinion:write'])]
     private ?string $description = null;
 
-    #[ORM\ManyToOne(targetEntity: 'Doctor')]
+    #[ORM\ManyToOne(targetEntity: Doctor::class)]
     #[Groups(['medicalOpinion:read', 'medicalOpinion:write'])]
     private ?Doctor $doctor = null;
 
-    #[ORM\ManyToOne(targetEntity: 'Patient', inversedBy: 'medicalOpinions')]
+    #[ORM\ManyToOne(targetEntity: Patient::class, inversedBy: 'medicalOpinions')]
     #[Groups(['medicalOpinion:read', 'medicalOpinion:write'])]
     private ?Patient $patient = null;
 

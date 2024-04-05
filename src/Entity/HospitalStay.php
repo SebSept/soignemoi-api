@@ -66,7 +66,7 @@ class HospitalStay
     #[ORM\JoinColumn(nullable: false)]
     private ?Patient $patient = null;
 
-    #[ORM\ManyToOne(targetEntity: 'Doctor')]
+    #[ORM\ManyToOne(targetEntity: Doctor::class)]
     #[ORM\JoinColumn(nullable: false)]
     private ?Doctor $doctor = null;
 

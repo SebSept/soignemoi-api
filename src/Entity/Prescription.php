@@ -59,8 +59,8 @@ class Prescription
 
     #[ORM\OneToMany(targetEntity: PrescriptionItem::class, mappedBy: 'prescription')]
     #[Groups(['prescription:read','prescription:write'])]
-//    #[Assert\NotBlank] @todo activer plus tard
-//    #[Assert\Valid] @todo valide l'entité,  va fonctionner pour une collection ?
+    //    #[Assert\NotBlank] @todo activer plus tard
+    //    #[Assert\Valid] @todo valide l'entité,  va fonctionner pour une collection ?
     private Collection $items;
 
     public function __construct()

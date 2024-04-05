@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\Security;
 
+use App\Entity\User;
 use App\Repository\UserRepository;
+use SensitiveParameter;
 use Symfony\Component\Security\Core\Exception\BadCredentialsException;
 use Symfony\Component\Security\Http\AccessToken\AccessTokenHandlerInterface;
 use Symfony\Component\Security\Http\Authenticator\Passport\Badge\UserBadge;
@@ -18,13 +20,13 @@ readonly class AccessTokenHandler implements AccessTokenHandlerInterface
     /**
      * @inheritDoc
      */
-    public function getUserBadgeFrom(#[\SensitiveParameter] string $accessToken): UserBadge
+    public function getUserBadgeFrom(#[SensitiveParameter] string $accessToken): UserBadge
     {
         // "Bearer " est déjà retiré par Symfony
-        //        $accessToken = str_replace('Bearer ', '', $accessToken);
-        /** @var \App\Entity\User $user */
+        // $accessToken = str_replace('Bearer ', '', $accessToken);
+        /** @var User|null $user */
         $user = $this->userRepository->findOneBy(['accessToken' => $accessToken]);
-        if(empty($user)) {
+        if(is_null($user)) {
             throw new BadCredentialsException('Invalid credentials. token not found.');
         }
 
