@@ -76,8 +76,8 @@ req-dev package:
 quality:
     {{composer}} quality
 
-tests:
-    {{docker_php_exec}} php bin/phpunit --testdox
+tests format='--testdox':
+    {{docker_php_exec}} php bin/phpunit {{format}}
 
 test filter:
     {{docker_php_exec}} php bin/phpunit --filter {{filter}}
