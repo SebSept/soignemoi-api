@@ -47,6 +47,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @todo pas de moyen de faire autrement pour le moment
      * une variable d'environement n'est pas utilisable, le constructeur n'est pas appellé lors du mécanisme d'authentification interne
      * il faudrait passer par un evenement de Doctrine (ou kernel.request pour injecter la variable d'environement, suggéré par copilot)
+     *
+     * @todo En fait, il suffit de mettre le role dans la base de données.
      */
     private const ADMIN_EMAIL = 'admin@admin.com';
 
