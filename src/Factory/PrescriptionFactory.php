@@ -35,7 +35,6 @@ final class PrescriptionFactory extends ModelFactory
     protected function getDefaults(): array
     {
         return [
-            'date' => self::faker()->dateTime(),
             'doctor' => DoctorFactory::new(),
             'patient' => PatientFactory::new(),
         ];

@@ -8,6 +8,7 @@ use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use App\Repository\PrescriptionRepository;
+use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -31,6 +32,7 @@ use Symfony\Component\Serializer\Attribute\Groups;
         ),
     ],
     normalizationContext: ['groups' => 'prescription:read'],
+    denormalizationContext: ['groups' => 'prescription:write'],
     security: "is_granted('')",
 )]
 class Prescription
@@ -45,19 +47,20 @@ class Prescription
     private ?\DateTimeInterface $date = null;
 
     #[ORM\ManyToOne(targetEntity: Patient::class, inversedBy: 'prescriptions')]
-    #[Groups(['prescription:read'])]
+    #[Groups(['prescription:read','prescription:write'])]
     private ?Patient $patient = null;
 
     #[ORM\ManyToOne(targetEntity: Doctor::class)]
-    #[Groups(['prescription:read'])]
+    #[Groups(['prescription:read','prescription:write'])]
     private ?Doctor $doctor = null;
 
     #[ORM\OneToMany(targetEntity: PrescriptionItem::class, mappedBy: 'prescription')]
-    #[Groups(['prescription:read'])]
+    #[Groups(['prescription:read','prescription:write'])]
     private Collection $items;
 
     public function __construct()
     {
+        $this->date = new DateTime();
         $this->items = new ArrayCollection();
     }
 
@@ -71,12 +74,12 @@ class Prescription
         return $this->date;
     }
 
-    public function setDate(\DateTimeInterface $date): static
-    {
-        $this->date = $date;
-
-        return $this;
-    }
+    //    public function setDate(\DateTimeInterface $date): static
+    //    {
+    //        $this->date = $date;
+    //
+    //        return $this;
+    //    }
 
     public function getPatient(): ?Patient
     {
