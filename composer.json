@@ -100,9 +100,11 @@
       "importmap:install": "symfony-cmd"
     },
     "cs-fixer": "php-cs-fixer fix ./src/",
-    "quality": [
+    "tests": "php bin/phpunit --testdox",
+    "pre-commit": [
       "@cs-fixer",
-      "symfony composer normalize"
+      "symfony composer normalize",
+      "php bin/phpunit"
     ]
   }
 }
