@@ -14,6 +14,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Attribute\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: PrescriptionRepository::class)]
 #[ApiResource(
@@ -48,14 +49,18 @@ class Prescription
 
     #[ORM\ManyToOne(targetEntity: Patient::class, inversedBy: 'prescriptions')]
     #[Groups(['prescription:read','prescription:write'])]
+    #[Assert\NotBlank]
     private ?Patient $patient = null;
 
-    #[ORM\ManyToOne(targetEntity: Doctor::class)]
+    #[ORM\ManyToOne(targetEntity: Doctor::class) ]
     #[Groups(['prescription:read','prescription:write'])]
+    #[Assert\NotBlank]
     private ?Doctor $doctor = null;
 
     #[ORM\OneToMany(targetEntity: PrescriptionItem::class, mappedBy: 'prescription')]
     #[Groups(['prescription:read','prescription:write'])]
+//    #[Assert\NotBlank] @todo activer plus tard
+//    #[Assert\Valid] @todo valide l'entité,  va fonctionner pour une collection ?
     private Collection $items;
 
     public function __construct()
