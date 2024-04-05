@@ -41,7 +41,7 @@ class Patient
     private ?string $address1 = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $address2 = null;
+    private string $address2;
 
     #[ORM\Column(length: 255)]
     private ?string $password = null;
