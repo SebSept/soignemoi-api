@@ -78,6 +78,7 @@ quality:
 
 tests format='--testdox':
     {{docker_php_exec}} php bin/phpunit {{format}}
+#    vendor/bin/paratest --runner WrapperRunner
 
 test filter:
     {{docker_php_exec}} php bin/phpunit --filter {{filter}}
