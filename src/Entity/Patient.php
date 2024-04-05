@@ -46,12 +46,21 @@ class Patient
     #[ORM\Column(length: 255)]
     private ?string $password = null;
 
+    /**
+     * @var Collection<int, MedicalOpinion>
+     */
     #[ORM\OneToMany(targetEntity: MedicalOpinion::class, mappedBy: 'patient')]
     private Collection $medicalOpinions;
 
+    /**
+     * @var Collection<int, HospitalStay>
+     */
     #[ORM\OneToMany(targetEntity: HospitalStay::class, mappedBy: 'patient')]
     private Collection $hospitalStays;
 
+    /**
+     * @var Collection<int, Prescription>
+     */
     #[ORM\OneToMany(targetEntity: Prescription::class, mappedBy: 'patient')]
     private Collection $prescriptions;
 
