@@ -94,3 +94,8 @@ sql query env='dev':
 # interactive php shell
 psysh:
     {{docker_php_exec}} psysh
+
+[confirm("Écraser .git/hooks/pre-commit ?")]
+install-pre-commit-hook:
+    echo "docker compose exec php symfony composer run-script pre-commit" > .git/hooks/pre-commit
+    {{docker_php_exec}} chmod +x .git/hooks/pre-commit
