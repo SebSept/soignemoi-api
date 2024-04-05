@@ -2,3 +2,9 @@ parameters:
 	level: 8
 	paths:
 		- src
+	excludePaths:
+	    - src/Factory/*
+	    - src/DataFixtures/*
+includes:
+    - vendor/phpstan/phpstan-doctrine/extension.neon
+    - vendor/phpstan/phpstan-doctrine/rules.neon
