@@ -96,7 +96,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             default => 'ROLE_SECRETARY'
         };
 
-        $roles = array_unique($roles);
+        $roles = array_filter(array_unique($roles));
 
         if(count($roles) > 2) {
             throw new \LogicException('User lié à plusieurs roles ' . var_export($roles, true));
