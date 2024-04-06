@@ -22,7 +22,7 @@ class PrescriptionFixtures extends Fixture implements DependentFixtureInterface
         $doctorRepository = repository(Doctor::class);
         $patientRepository = repository(Patient::class);
 
-        $prescriptions = $factory->createMany(150, static fn(): array => [
+        $prescriptions = $factory->createMany(150, static fn (): array => [
             'date' => faker()->dateTimeBetween('-4 months'),
             'doctor' => $doctorRepository->random(),
             'patient' => $patientRepository->random(),
@@ -42,7 +42,7 @@ class PrescriptionFixtures extends Fixture implements DependentFixtureInterface
     private function generateItems(array $prescriptions): void
     {
         $factory = anonymous(PrescriptionItem::class);
-        $factory->createMany(count($prescriptions) * (random_int(1, 2)), static fn(): array => [
+        $factory->createMany(count($prescriptions) * (random_int(1, 2)), static fn (): array => [
             'drug' => faker()->word(),
             'dosage' => faker()->words(3, true),
             'prescription' => faker()->randomElement($prescriptions),

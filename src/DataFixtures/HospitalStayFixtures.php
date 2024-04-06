@@ -20,14 +20,14 @@ class HospitalStayFixtures extends Fixture implements DependentFixtureInterface
     {
 
         $factory = anonymous(HospitalStay::class);
-        $randomDateGenerator = static fn() => faker()->dateTimeBetween('-4 months', '4 months');
+        $randomDateGenerator = static fn () => faker()->dateTimeBetween('-4 months', '4 months');
 
         $doctorRepository = repository(Doctor::class);
         $patientRepository = repository(Patient::class);
 
         $factory->createMany(
             60,
-            static function () use ($randomDateGenerator, $doctorRepository, $patientRepository) : array {
+            static function () use ($randomDateGenerator, $doctorRepository, $patientRepository): array {
                 $startDate = $randomDateGenerator();
                 $endDate = (clone $startDate)->modify('+' . faker()->numberBetween(0, 5) . ' days');
                 $checkIn = null;
@@ -35,11 +35,11 @@ class HospitalStayFixtures extends Fixture implements DependentFixtureInterface
                 if($startDate <= new DateTime()) {
                     $checkIn = (clone $startDate)->modify('+' . faker()->numberBetween(6, 12) . ' hours');
                 }
-                
+
                 if($endDate <= (new DateTime())->modify('+1 day')) {
                     $checkOut = (clone $endDate)->modify('+' . faker()->numberBetween(13, 23) . ' hours');
                 }
-                
+
                 return [
                     'startDate' => $startDate,
                     'endDate' => $endDate,

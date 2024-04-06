@@ -18,7 +18,7 @@ class PatientFixtures extends Fixture
 
         $factory->createMany(
             40,
-            static fn(): array => [
+            static fn (): array => [
                 'firstname' =>  $faker->firstName(),
                 'lastname' =>  $faker->lastName(),
                 'address1' =>  $faker->streetAddress(),

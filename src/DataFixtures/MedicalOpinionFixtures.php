@@ -21,7 +21,7 @@ class MedicalOpinionFixtures extends Fixture implements DependentFixtureInterfac
         $doctorRepository = repository(Doctor::class);
         $patientRepository = repository(Patient::class);
         $factory = anonymous(MedicalOpinion::class);
-        $factory->createMany(100, static fn(): array => [
+        $factory->createMany(100, static fn (): array => [
             'title' => faker()->sentence(random_int(1, 4)),
             'description' => faker()->sentence(random_int(1, 30)),
             'date' => faker()->dateTimeBetween('-4 months'),

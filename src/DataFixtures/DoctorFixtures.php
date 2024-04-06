@@ -14,7 +14,7 @@ class DoctorFixtures extends Fixture
     public function load(ObjectManager $manager): void
     {
         $factory = anonymous(Doctor::class);
-        $factory->createMany(12, static fn(): array => [
+        $factory->createMany(12, static fn (): array => [
             'firstname' => faker()->firstName,
             'lastname' => faker()->lastName,
             'medicalSpeciality' => faker()
