@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use DateTimeInterface;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
@@ -45,16 +46,16 @@ class HospitalStay
     private ?int $id = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
-    private ?\DateTimeInterface $startDate = null;
+    private ?DateTimeInterface $startDate = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
-    private ?\DateTimeInterface $endDate = null;
+    private ?DateTimeInterface $endDate = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
-    private ?\DateTimeInterface $checkin = null;
+    private ?DateTimeInterface $checkin = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
-    private ?\DateTimeInterface $checkout = null;
+    private ?DateTimeInterface $checkout = null;
 
     #[ORM\Column(length: 255)]
     private ?string $reason = null;
@@ -75,48 +76,48 @@ class HospitalStay
         return $this->id;
     }
 
-    public function getStartDate(): ?\DateTimeInterface
+    public function getStartDate(): ?DateTimeInterface
     {
         return $this->startDate;
     }
 
-    public function setStartDate(\DateTimeInterface $startDate): static
+    public function setStartDate(DateTimeInterface $startDate): static
     {
         $this->startDate = $startDate;
 
         return $this;
     }
 
-    public function getEndDate(): ?\DateTimeInterface
+    public function getEndDate(): ?DateTimeInterface
     {
         return $this->endDate;
     }
 
-    public function setEndDate(\DateTimeInterface $endDate): static
+    public function setEndDate(DateTimeInterface $endDate): static
     {
         $this->endDate = $endDate;
 
         return $this;
     }
 
-    public function getCheckin(): ?\DateTimeInterface
+    public function getCheckin(): ?DateTimeInterface
     {
         return $this->checkin;
     }
 
-    public function setCheckin(?\DateTimeInterface $checkin): static
+    public function setCheckin(?DateTimeInterface $checkin): static
     {
         $this->checkin = $checkin;
 
         return $this;
     }
 
-    public function getCheckout(): ?\DateTimeInterface
+    public function getCheckout(): ?DateTimeInterface
     {
         return $this->checkout;
     }
 
-    public function setCheckout(?\DateTimeInterface $checkout): static
+    public function setCheckout(?DateTimeInterface $checkout): static
     {
         $this->checkout = $checkout;
 

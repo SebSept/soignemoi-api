@@ -2,6 +2,11 @@
 
 namespace App\Entity;
 
+use DateTimeInterface;
+use LogicException;
+use DateTime;
+use Exception;
+use RuntimeException;
 use App\Repository\UserRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
@@ -15,6 +20,7 @@ use Symfony\Component\Serializer\Attribute\Groups;
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     public const EXPIRATION_DELAY_DAYS = '30';
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -37,7 +43,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $accessToken = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
-    private ?\DateTimeInterface $tokenExpiration = null;
+    private ?DateTimeInterface $tokenExpiration = null;
 
     #[ORM\OneToOne(targetEntity: Doctor::class, mappedBy: 'user')]
     private ?Doctor $doctor = null;
@@ -101,7 +107,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $roles = array_filter(array_unique($roles));
 
         if(count($roles) > 2) {
-            throw new \LogicException('User lié à plusieurs roles ' . var_export($roles, true));
+            throw new LogicException('User lié à plusieurs roles ' . var_export($roles, true));
         }
 
         return $roles;
@@ -143,7 +149,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function isTokenValid(): bool
     {
-        return $this->accessToken && $this->tokenExpiration > new \DateTime();
+        return $this->accessToken && $this->tokenExpiration > new DateTime();
     }
 
     #[Groups('user:token')]
@@ -159,12 +165,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getTokenExpiration(): ?\DateTimeInterface
+    public function getTokenExpiration(): ?DateTimeInterface
     {
         return $this->tokenExpiration;
     }
 
-    public function setTokenExpiration(?\DateTimeInterface $tokenExpiration): static
+    public function setTokenExpiration(?DateTimeInterface $tokenExpiration): static
     {
         $this->tokenExpiration = $tokenExpiration;
 
@@ -175,19 +181,19 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         try {
             $this->accessToken = bin2hex(random_bytes(32));
-            $this->tokenExpiration = new \DateTime('+' . self::EXPIRATION_DELAY_DAYS . ' day');
-        } catch (\Exception $e) {
-            throw new \RuntimeException('Could not generate random token : '. $e->getMessage());
+            $this->tokenExpiration = new DateTime('+' . self::EXPIRATION_DELAY_DAYS . ' day');
+        } catch (Exception $exception) {
+            throw new RuntimeException('Could not generate random token : '. $exception->getMessage(), $exception->getCode(), $exception);
         }
     }
 
     private function isDoctor(): bool
     {
-        return $this->doctor !== null;
+        return $this->doctor instanceof Doctor;
     }
 
     private function isPatient(): bool
     {
-        return $this->patient !== null;
+        return $this->patient instanceof Patient;
     }
 }

@@ -17,12 +17,13 @@ class MedicalOpinionFixtures extends Fixture implements DependentFixtureInterfac
 {
     public function load(ObjectManager $manager): void
     {
+        // @todo utiliser la factory
         $doctorRepository = repository(Doctor::class);
         $patientRepository = repository(Patient::class);
         $factory = anonymous(MedicalOpinion::class);
-        $factory->createMany(100, fn () => [
-            'title' => faker()->sentence(rand(1, 4)),
-            'description' => faker()->sentence(rand(1, 30)),
+        $factory->createMany(100, static fn(): array => [
+            'title' => faker()->sentence(random_int(1, 4)),
+            'description' => faker()->sentence(random_int(1, 30)),
             'date' => faker()->dateTimeBetween('-4 months'),
             'doctor' => $doctorRepository->random(),
             'patient' => $patientRepository->random(),

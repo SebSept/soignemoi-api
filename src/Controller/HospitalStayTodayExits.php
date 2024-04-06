@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use DateTime;
 use App\Entity\HospitalStay;
 use App\Repository\HospitalStayRepository;
 use phpDocumentor\Reflection\Types\Collection;
@@ -19,7 +20,7 @@ readonly class HospitalStayTodayExits
      */
     public function __invoke(): array
     {
-        return $this->repository->findBy(['endDate' => new \DateTime()]);
+        return $this->repository->findBy(['endDate' => new DateTime()]);
     }
 
 

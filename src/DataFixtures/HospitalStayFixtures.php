@@ -2,6 +2,7 @@
 
 namespace App\DataFixtures;
 
+use DateTime;
 use App\Entity\Doctor;
 use App\Entity\HospitalStay;
 use App\Entity\Patient;
@@ -19,25 +20,26 @@ class HospitalStayFixtures extends Fixture implements DependentFixtureInterface
     {
 
         $factory = anonymous(HospitalStay::class);
-        $randomDateGenerator = function () {
-            return faker()->dateTimeBetween('-4 months', '4 months');
-        };
+        $randomDateGenerator = static fn() => faker()->dateTimeBetween('-4 months', '4 months');
 
         $doctorRepository = repository(Doctor::class);
         $patientRepository = repository(Patient::class);
 
         $factory->createMany(
             60,
-            function () use ($randomDateGenerator, $doctorRepository, $patientRepository) {
+            static function () use ($randomDateGenerator, $doctorRepository, $patientRepository) : array {
                 $startDate = $randomDateGenerator();
                 $endDate = (clone $startDate)->modify('+' . faker()->numberBetween(0, 5) . ' days');
-                $checkIn = $checkOut = null;
-                if($startDate <= new \DateTime()) {
+                $checkIn = null;
+                $checkOut = null;
+                if($startDate <= new DateTime()) {
                     $checkIn = (clone $startDate)->modify('+' . faker()->numberBetween(6, 12) . ' hours');
                 }
-                if($endDate <= (new \DateTime())->modify('+1 day')) {
+                
+                if($endDate <= (new DateTime())->modify('+1 day')) {
                     $checkOut = (clone $endDate)->modify('+' . faker()->numberBetween(13, 23) . ' hours');
                 }
+                
                 return [
                     'startDate' => $startDate,
                     'endDate' => $endDate,

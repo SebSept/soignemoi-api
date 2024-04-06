@@ -18,14 +18,13 @@ class PatientFixtures extends Fixture
 
         $factory->createMany(
             40,
-            fn () =>
-               [
-                   'firstname' =>  $faker->firstName(),
-                   'lastname' =>  $faker->lastName(),
-                   'address1' =>  $faker->streetAddress(),
-                   'address2' =>  $faker->postcode.' '.$faker->city(),
-                   'password' =>  password_hash($faker->password(), null, ['cost' => 4]), // 4 est la plus petite valeur possible.
-               ]
+            static fn(): array => [
+                'firstname' =>  $faker->firstName(),
+                'lastname' =>  $faker->lastName(),
+                'address1' =>  $faker->streetAddress(),
+                'address2' =>  $faker->postcode.' '.$faker->city(),
+                'password' =>  password_hash($faker->password(), null, ['cost' => 4]), // 4 est la plus petite valeur possible.
+            ]
         );
     }
 }

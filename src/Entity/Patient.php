@@ -159,11 +159,9 @@ class Patient
 
     public function removeMedicalOpinion(MedicalOpinion $medicalOpinion): static
     {
-        if ($this->medicalOpinions->removeElement($medicalOpinion)) {
-            // set the owning side to null (unless already changed)
-            if ($medicalOpinion->getPatient() === $this) {
-                $medicalOpinion->setPatient(null);
-            }
+        // set the owning side to null (unless already changed)
+        if ($this->medicalOpinions->removeElement($medicalOpinion) && $medicalOpinion->getPatient() === $this) {
+            $medicalOpinion->setPatient(null);
         }
 
         return $this;
@@ -189,11 +187,9 @@ class Patient
 
     public function removeHospitalStay(HospitalStay $hospitalStay): static
     {
-        if ($this->hospitalStays->removeElement($hospitalStay)) {
-            // set the owning side to null (unless already changed)
-            if ($hospitalStay->getPatient() === $this) {
-                $hospitalStay->setPatient(null);
-            }
+        // set the owning side to null (unless already changed)
+        if ($this->hospitalStays->removeElement($hospitalStay) && $hospitalStay->getPatient() === $this) {
+            $hospitalStay->setPatient(null);
         }
 
         return $this;
@@ -219,11 +215,9 @@ class Patient
 
     public function removePrescription(Prescription $prescription): static
     {
-        if ($this->prescriptions->removeElement($prescription)) {
-            // set the owning side to null (unless already changed)
-            if ($prescription->getPatient() === $this) {
-                $prescription->setPatient(null);
-            }
+        // set the owning side to null (unless already changed)
+        if ($this->prescriptions->removeElement($prescription) && $prescription->getPatient() === $this) {
+            $prescription->setPatient(null);
         }
 
         return $this;

@@ -2,6 +2,7 @@
 
 namespace App\Factory;
 
+use DateTime;
 use App\Entity\User;
 use App\Repository\UserRepository;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -31,6 +32,7 @@ use Zenstruck\Foundry\RepositoryProxy;
 final class UserFactory extends ModelFactory
 {
     public const VALID_TOKEN = 'this-is-a-valid-token-value';
+
     public const VALID_DOCTOR_TOKEN = 'this-is-a-valid-token-value-doctor';
 
     /**
@@ -46,7 +48,7 @@ final class UserFactory extends ModelFactory
         return $this->addState(
             [
                 'access_token' => self::VALID_TOKEN,
-                'token_expiration' => new \DateTime('+30 day'),
+                'token_expiration' => new DateTime('+30 day'),
             ]
         );
     }

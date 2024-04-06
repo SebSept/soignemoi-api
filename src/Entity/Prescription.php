@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use DateTimeInterface;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
@@ -48,7 +49,7 @@ class Prescription
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     #[Groups(['prescription:read'])]
-    private ?\DateTimeInterface $date = null;
+    private ?DateTimeInterface $date = null; // @todo supprimer les nullables
 
     #[ORM\ManyToOne(targetEntity: Patient::class, inversedBy: 'prescriptions')]
     #[Groups(['prescription:read', 'prescription:write'])]
@@ -82,7 +83,7 @@ class Prescription
         return $this->id;
     }
 
-    public function getDate(): ?\DateTimeInterface
+    public function getDate(): ?DateTimeInterface
     {
         return $this->date;
     }
@@ -138,11 +139,9 @@ class Prescription
 
     public function removeItem(PrescriptionItem $item): static
     {
-        if ($this->items->removeElement($item)) {
-            // set the owning side to null (unless already changed)
-            if ($item->getPrescription() === $this) {
-                $item->setPrescription(null);
-            }
+        // set the owning side to null (unless already changed)
+        if ($this->items->removeElement($item) && $item->getPrescription() === $this) {
+            $item->setPrescription(null);
         }
 
         return $this;
