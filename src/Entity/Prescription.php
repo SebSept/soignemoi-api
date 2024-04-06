@@ -36,6 +36,9 @@ use Symfony\Component\Validator\Constraints as Assert;
     denormalizationContext: ['groups' => 'prescription:write'],
     security: "is_granted('')",
 )]
+// @todo créer une contrainte de validation pour
+// qu'une seule prescription par jour pour un patient est disponible à la modification
+// et aucune à la création
 class Prescription
 {
     #[ORM\Id]
@@ -63,7 +66,9 @@ class Prescription
      * @var Collection<int, PrescriptionItem>
      */
     #[ORM\OneToMany(targetEntity: PrescriptionItem::class, mappedBy: 'prescription')]
-    #[Groups(['prescription:read', 'prescription:write'])]
+    #[Groups(['prescription:read','prescription:write'])]
+    //    #[Assert\NotBlank] @todo activer plus tard
+    //    #[Assert\Valid] @todo valide l'entité,  va fonctionner pour une collection ?
     private Collection $items;
 
     public function __construct()
