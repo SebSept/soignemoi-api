@@ -14,6 +14,20 @@ return RectorConfig::configure()
     ])
     // uncomment to reach your current PHP version
      ->withPhpSets(php83: true)
+//    ->withSkip()
     ->withRules([
-        AddVoidReturnTypeWhereNoReturnRector::class,
-    ]);
+//        AddVoidReturnTypeWhereNoReturnRector::class,
+    ])
+    ->withPreparedSets(
+        deadCode: true,
+//        codeQuality: true,
+//        codingStyle: true,
+//        typeDeclarations: true,
+//        privatization: true,
+//        naming: true,
+//        instanceOf: true,
+//        earlyReturn: true,
+//        strictBooleans: true
+    )
+//    ->withTypeCoverageLevel(37)
+    ;

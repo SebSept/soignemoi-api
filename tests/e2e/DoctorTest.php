@@ -18,10 +18,10 @@ class DoctorTest extends ApiTestCase
 
     public function testCanAccessIri(): void
     {
-        $ids = $this->makeEntities();
+        $this->makeEntities();
         $user = $this->makeDoctorUser();
 
-        foreach ($this->AllowedIris($ids) as $iri) {
+        foreach ($this->AllowedIris() as $iri) {
             static::createClientWithBearerFromUser($user->object())
                 ->request('GET', $iri[0]);
 
@@ -29,7 +29,7 @@ class DoctorTest extends ApiTestCase
         }
     }
 
-    private function AllowedIris(array $ids): array
+    private function AllowedIris(): array
     {
         return [
             ['/api/hospital_stays'],
@@ -135,9 +135,6 @@ class DoctorTest extends ApiTestCase
         MedicalOpinionFactory::repository()->assert()->count($nbMedicalOpinions + 1);
     }
 
-    /**
-     * @return array
-     */
     private function makeEntities(): array
     {
         return [

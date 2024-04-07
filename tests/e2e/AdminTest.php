@@ -21,15 +21,15 @@ class AdminTest extends ApiTestCase
 
     public function testCanAccessIri(): void
     {
-        $ids = $this->makeEntities();
+        $this->makeEntities();
         $user = $this->makeAdmin();
 
-        foreach ($this->AllowedIris($ids) as $iri) {
+        foreach ($this->AllowedIris() as $iri) {
             $this->testAccessOk($iri[0], $user);
         }
     }
 
-    private function AllowedIris(array $ids): array
+    private function AllowedIris(): array
     {
         return [
             ['/api/hospital_stays'],
@@ -72,9 +72,6 @@ class AdminTest extends ApiTestCase
         $this->assertResponseStatusCodeSame(403);
     }
 
-    /**
-     * @return array
-     */
     private function makeEntities(): array
     {
         return [
