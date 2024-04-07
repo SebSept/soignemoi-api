@@ -21,6 +21,7 @@ class UserTest extends KernelTestCase
 
         $this->assertFalse($user->isTokenValid());
     }
+
     public function testIsValidTokenReturnsTrueIfNotExpired(): void
     {
         $user = UserFactory::new()->create([

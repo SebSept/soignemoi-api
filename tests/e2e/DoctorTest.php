@@ -91,6 +91,7 @@ class DoctorTest extends ApiTestCase
         $this->assertResponseIsSuccessful();
         PrescriptionFactory::repository()->assert()->count($nbPrescriptions + 1);
     }
+
     public function testCreateMedicalOpinion(): void
     {
         // Arrange

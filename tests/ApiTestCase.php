@@ -26,6 +26,7 @@ class ApiTestCase extends \ApiPlatform\Symfony\Bundle\Test\ApiTestCase
         if ($enableProfiler) {
             $client->enableProfiler();
         }
+
         return $client;
     }
 }
