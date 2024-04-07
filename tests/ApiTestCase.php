@@ -23,7 +23,9 @@ class ApiTestCase extends \ApiPlatform\Symfony\Bundle\Test\ApiTestCase
     {
         $defaultOptions = ['headers' => ['Authorization' => 'Bearer '.$user->getAccessToken()]];
         $client = parent::createClient([], $defaultOptions);
-        $enableProfiler && $client->enableProfiler();
+        if ($enableProfiler) {
+            $client->enableProfiler();
+        }
         return $client;
     }
 }
