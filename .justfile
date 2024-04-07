@@ -73,12 +73,15 @@ req-dev package:
     {{composer}} req {{package}} --dev
 
 # Lancement scripts d'outil de qualité via composer
-quality:
-    {{composer}} quality
+composer script:
+    {{composer}} {{script}}
+
+rector:
+    {{docker_php_exec}} vendor/bin/rector
 
 tests format='--testdox':
-    {{docker_php_exec}} php bin/phpunit {{format}}
-#    vendor/bin/paratest --runner WrapperRunner
+    # {{docker_php_exec}} php vendor/bin/phpunit {{format}}
+    {{docker_php_exec}} php vendor/bin/paratest --runner WrapperRunner {{format}}
 
 test filter:
     {{docker_php_exec}} php bin/phpunit --filter {{filter}}
