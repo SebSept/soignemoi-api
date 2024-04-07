@@ -106,11 +106,13 @@
     "cs-fixer": "php-cs-fixer fix ./src/",
     "phpstan": "phpstan",
     "pre-commit": [
+      "@rector --dry-run",
       "@cs-fixer",
       "symfony composer normalize",
-      "php bin/phpunit",
+      "@tests",
       "@phpstan"
     ],
-    "tests": "php bin/phpunit --testdox"
+    "rector": "php vendor/bin/rector",
+    "tests": "php vendor/bin/paratest --runner WrapperRunner"
   }
 }
