@@ -24,10 +24,10 @@ return RectorConfig::configure()
         codingStyle: true,
         typeDeclarations: true,
         privatization: true,
-//        naming: true,
-//        instanceOf: true,
-//        earlyReturn: true,
-//        strictBooleans: true
+//        naming: true, // veux renomer des champs des entités doctrine.
+        instanceOf: true,
+        earlyReturn: true,
+        strictBooleans: true
     )
 //    ->withTypeCoverageLevel(37)
     ;
