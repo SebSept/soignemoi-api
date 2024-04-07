@@ -9,9 +9,10 @@ use Zenstruck\Foundry\Test\ResetDatabase;
 
 class UserTest extends KernelTestCase
 {
-    use Factories, ResetDatabase;
+    use Factories;
+    use ResetDatabase;
 
-    public function testIsValidTokenReturnsFalseIfExpired()
+    public function testIsValidTokenReturnsFalseIfExpired(): void
     {
         $user = UserFactory::new()->create([
             'accessToken' => 'token',
@@ -20,7 +21,7 @@ class UserTest extends KernelTestCase
 
         $this->assertFalse($user->isTokenValid());
     }
-    public function testIsValidTokenReturnsTrueIfNotExpired()
+    public function testIsValidTokenReturnsTrueIfNotExpired(): void
     {
         $user = UserFactory::new()->create([
             'accessToken' => 'token',
@@ -30,7 +31,7 @@ class UserTest extends KernelTestCase
         $this->assertTrue($user->isTokenValid());
     }
 
-    public function testIsValidTokenReturnsFalseIfNoExpirationSet()
+    public function testIsValidTokenReturnsFalseIfNoExpirationSet(): void
     {
         $user = UserFactory::new()->create([
             'accessToken' => 'token',
@@ -40,7 +41,7 @@ class UserTest extends KernelTestCase
         $this->assertFalse($user->isTokenValid());
     }
 
-    public function testIsValidTokenReturnsFalseIfNoTokenSet()
+    public function testIsValidTokenReturnsFalseIfNoTokenSet(): void
     {
         $user = UserFactory::new()->create([
             'accessToken' => null,

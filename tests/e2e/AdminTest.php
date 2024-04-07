@@ -16,7 +16,8 @@ use Zenstruck\Foundry\Test\ResetDatabase;
 
 class AdminTest extends ApiTestCase
 {
-    use Factories, ResetDatabase;
+    use Factories;
+    use ResetDatabase;
 
     public function testCanAccessIri(): void
     {
@@ -36,7 +37,7 @@ class AdminTest extends ApiTestCase
         ];
     }
 
-    public function testCannotAccessIri()
+    public function testCannotAccessIri(): void
     {
         $this->makeEntities();
         $user = $this->makeAdmin();

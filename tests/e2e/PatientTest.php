@@ -15,7 +15,8 @@ use Zenstruck\Foundry\Test\ResetDatabase;
 
 class PatientTest extends ApiTestCase
 {
-    use Factories, ResetDatabase;
+    use Factories;
+    use ResetDatabase;
 
     public function testCanAccessIri(): void
     {
@@ -34,7 +35,7 @@ class PatientTest extends ApiTestCase
         ];
     }
 
-    public function testCannotAccessIri()
+    public function testCannotAccessIri(): void
     {
         $this->makeEntities();
         $user = $this->makePatient();

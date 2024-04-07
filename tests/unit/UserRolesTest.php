@@ -11,7 +11,8 @@ use Zenstruck\Foundry\Test\ResetDatabase;
 
 class UserRolesTest extends KernelTestCase
 {
-    use Factories, ResetDatabase;
+    use Factories;
+    use ResetDatabase;
 
     public function testUserAssociatedWithADoctorHasROLE_DOCTOR(): void
     {

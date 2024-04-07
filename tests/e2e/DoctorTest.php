@@ -13,7 +13,8 @@ use Zenstruck\Foundry\Test\ResetDatabase;
 
 class DoctorTest extends ApiTestCase
 {
-    use Factories, ResetDatabase;
+    use Factories;
+    use ResetDatabase;
 
     public function testCanAccessIri(): void
     {
@@ -39,13 +40,12 @@ class DoctorTest extends ApiTestCase
      * @x-dataProvider NotAllowedIris
      * pas possible d'utiliser un dataprovider (du moins, je n'ai pas réussi)
      */
-    public function testCannotAccessIri()
+    public function testCannotAccessIri(): void
     {
         $this->makeEntities();
         $user = $this->makeDoctorUser();
 
-        foreach ($this->NotAllowedIris() as $iri)
-        {
+        foreach ($this->NotAllowedIris() as $iri) {
             static::createClientWithBearerFromUser($user->object())
                 ->request('GET', $iri[0]);
 
@@ -60,7 +60,7 @@ class DoctorTest extends ApiTestCase
         ];
     }
 
-    public function testCreatePrescription()
+    public function testCreatePrescription(): void
     {
         // Arrange
         $patient = PatientFactory::new()->create();
@@ -89,9 +89,9 @@ class DoctorTest extends ApiTestCase
 
         // Assert
         $this->assertResponseIsSuccessful();
-        PrescriptionFactory::repository()->assert()->count($nbPrescriptions+1);
+        PrescriptionFactory::repository()->assert()->count($nbPrescriptions + 1);
     }
-    public function testCreateMedicalOpinion()
+    public function testCreateMedicalOpinion(): void
     {
         // Arrange
         $patient = PatientFactory::new()->create();
@@ -110,15 +110,15 @@ class DoctorTest extends ApiTestCase
 
         // Act
         // test accès aux uri des docteur et patient
-//        PatientFactory::repository()->assert()->exists($patient);
-//        DoctorFactory::repository()->assert()->exists($doctor);
-//
-//        static::createClientWithBearerFromUser($doctorUser->object())
-//            ->request('GET', $patientIri);
-//        $this->assertResponseIsSuccessful();
-//        static::createClientWithBearerFromUser($doctorUser->object())
-//            ->request('GET', $doctorIri);
-//        $this->assertResponseIsSuccessful();
+        //        PatientFactory::repository()->assert()->exists($patient);
+        //        DoctorFactory::repository()->assert()->exists($doctor);
+        //
+        //        static::createClientWithBearerFromUser($doctorUser->object())
+        //            ->request('GET', $patientIri);
+        //        $this->assertResponseIsSuccessful();
+        //        static::createClientWithBearerFromUser($doctorUser->object())
+        //            ->request('GET', $doctorIri);
+        //        $this->assertResponseIsSuccessful();
 
         $client = static::createClientWithBearerFromUser($doctorUser->object());
         $client
@@ -132,7 +132,7 @@ class DoctorTest extends ApiTestCase
 
         // Assert
         $this->assertResponseIsSuccessful();
-        MedicalOpinionFactory::repository()->assert()->count($nbMedicalOpinions+1);
+        MedicalOpinionFactory::repository()->assert()->count($nbMedicalOpinions + 1);
     }
 
     /**

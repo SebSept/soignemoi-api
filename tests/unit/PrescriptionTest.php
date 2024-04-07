@@ -12,7 +12,8 @@ use Zenstruck\Foundry\Test\ResetDatabase;
 
 class PrescriptionTest extends KernelTestCase
 {
-    use Factories, ResetDatabase;
+    use Factories;
+    use ResetDatabase;
 
     public function testTheDateIsCreatedWithTheCurrentDate(): void
     {

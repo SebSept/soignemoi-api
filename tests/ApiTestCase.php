@@ -7,8 +7,7 @@ use App\Entity\User;
 
 class ApiTestCase extends \ApiPlatform\Symfony\Bundle\Test\ApiTestCase
 {
-
-    protected  static function createClientWithBearer(string $token): Client
+    protected static function createClientWithBearer(string $token): Client
     {
         $defaultOptions = ['headers' => ['Authorization' => 'Bearer '.$token]];
         return parent::createClient(defaultOptions: $defaultOptions);

@@ -15,7 +15,8 @@ use Zenstruck\Foundry\Test\ResetDatabase;
 
 class SecretaryTest extends ApiTestCase
 {
-    use Factories, ResetDatabase;
+    use Factories;
+    use ResetDatabase;
 
     public function testCanAccessIri(): void
     {
@@ -31,7 +32,7 @@ class SecretaryTest extends ApiTestCase
      * @x-dataProvider NotAllowedIris
      * pas possible d'utiliser un dataprovider (du moins, je n'ai pas réussi)
      */
-    public function testCannotAccessIri()
+    public function testCannotAccessIri(): void
     {
         $this->makeEntities();
         $user = $this->makeSecretary();
@@ -41,7 +42,7 @@ class SecretaryTest extends ApiTestCase
         }
     }
 
-    public function testCountTodayEntries()
+    public function testCountTodayEntries(): void
     {
         // Arrange
         HospitalStayFactory::new()->entryBeforeToday()->many(3)->create();
@@ -59,7 +60,7 @@ class SecretaryTest extends ApiTestCase
         $this->assertJsonContains(['hydra:totalItems' => 5]);
     }
 
-    public function testCountTodayExits()
+    public function testCountTodayExits(): void
     {
         // Arrange
         HospitalStayFactory::new()->exitBeforeToday()->many(3)->create();

@@ -1,4 +1,6 @@
-<?php /** @noinspection ALL */
+<?php
+
+/** @noinspection ALL */
 
 namespace App\Tests\e2e;
 
@@ -9,7 +11,8 @@ use Zenstruck\Foundry\Test\ResetDatabase;
 
 class GetTokenTest extends ApiTestCase
 {
-    use Factories, ResetDatabase;
+    use Factories;
+    use ResetDatabase;
 
     /**
      * Test la génération de token
@@ -29,7 +32,9 @@ class GetTokenTest extends ApiTestCase
         ]);
 
         // Act
-        $response = $client->request('POST', '/token',
+        $response = $client->request(
+            'POST',
+            '/token',
             ['json' => [
                 'email' => $email,
                 'password' => $password,
@@ -51,7 +56,7 @@ class GetTokenTest extends ApiTestCase
 
         $this->assertResponseIsSuccessful();
         $this->assertJsonContains(['accessToken' => $token]);
-        $this->assertGreaterThan(new \DateTime, $expiration);
+        $this->assertGreaterThan(new \DateTime(), $expiration);
     }
 
     public function testAdminGetTokenAndRequetDoctors(): void
@@ -76,7 +81,9 @@ class GetTokenTest extends ApiTestCase
 
         // Act 2.1 request a token
         $client = static::createClient(); // important de refaire un client sans headers sinon echec de l'auth
-        $response = $client->request('POST', '/token',
+        $response = $client->request(
+            'POST',
+            '/token',
             ['json' => [
                 'email' => $email,
                 'password' => $password,
