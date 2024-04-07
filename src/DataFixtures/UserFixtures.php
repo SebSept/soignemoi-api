@@ -10,7 +10,7 @@ use Doctrine\Persistence\ObjectManager;
 
 class UserFixtures extends Fixture
 {
-    public function load(ObjectManager $manager): void
+    public function load(ObjectManager $objectManager): void
     {
         // secrétaire - pas de docteur ou patient associé
         UserFactory::new()->create(

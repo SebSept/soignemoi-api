@@ -38,7 +38,7 @@ final class UserFactory extends ModelFactory
     /**
      * @see https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html#factories-as-services
      */
-    public function __construct(private readonly UserPasswordHasherInterface $hasher)
+    public function __construct(private readonly UserPasswordHasherInterface $userPasswordHasher)
     {
         parent::__construct();
     }
@@ -65,18 +65,18 @@ final class UserFactory extends ModelFactory
     //    }
     public function doctor(): self
     {
-        $user = self::new()->withValidToken();
-        DoctorFactory::new(['user' => $user])->create();
+        $userFactory = self::new()->withValidToken();
+        DoctorFactory::new(['user' => $userFactory])->create();
 
-        return $user;
+        return $userFactory;
     }
 
     public function patient(): self
     {
-        $user = self::new()->withValidToken();
-        PatientFactory::new(['user' => $user])->create();
+        $userFactory = self::new()->withValidToken();
+        PatientFactory::new(['user' => $userFactory])->create();
 
-        return $user;
+        return $userFactory;
     }
 
     public function admin(): self
@@ -104,7 +104,7 @@ final class UserFactory extends ModelFactory
     protected function initialize(): self
     {
         return $this->afterInstantiate(function (User $user): void {
-            $user->setPassword($this->hasher->hashPassword($user, $user->getPassword()));
+            $user->setPassword($this->userPasswordHasher->hashPassword($user, $user->getPassword()));
         });
     }
 

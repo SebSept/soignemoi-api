@@ -21,10 +21,10 @@ class SecretaryTest extends ApiTestCase
     public function testCanAccessIri(): void
     {
         $ids = $this->makeEntities();
-        $user = $this->makeSecretary();
+        $proxy = $this->makeSecretary();
 
         foreach ($this->AllowedIris($ids) as $iri) {
-            $this->testAccessOk($iri[0], $user);
+            $this->testAccessOk($iri[0], $proxy);
         }
     }
 
@@ -35,10 +35,10 @@ class SecretaryTest extends ApiTestCase
     public function testCannotAccessIri(): void
     {
         $this->makeEntities();
-        $user = $this->makeSecretary();
+        $proxy = $this->makeSecretary();
 
         foreach ($this->NotAllowedIris() as $iri) {
-            $this->testAccessNotAllowedTo($iri[0], $user);
+            $this->testAccessNotAllowedTo($iri[0], $proxy);
         }
     }
 
@@ -99,17 +99,17 @@ class SecretaryTest extends ApiTestCase
         ];
     }
 
-    private function testAccessOk(string $iri, Proxy $user): void
+    private function testAccessOk(string $iri, Proxy $proxy): void
     {
-        static::createClientWithBearerFromUser($user->object())
+        static::createClientWithBearerFromUser($proxy->object())
             ->request('GET', $iri);
 
         $this->assertResponseIsSuccessful(' raté pour ' . $iri);
     }
 
-    private function testAccessNotAllowedTo(string $string, Proxy $user): void
+    private function testAccessNotAllowedTo(string $string, Proxy $proxy): void
     {
-        static::createClientWithBearerFromUser($user->object())
+        static::createClientWithBearerFromUser($proxy->object())
             ->request('GET', $string);
 
         $this->assertResponseStatusCodeSame(403);

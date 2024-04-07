@@ -16,7 +16,7 @@ use function Zenstruck\Foundry\repository;
 
 class PrescriptionFixtures extends Fixture implements DependentFixtureInterface
 {
-    public function load(ObjectManager $manager): void
+    public function load(ObjectManager $objectManager): void
     {
         $factory = anonymous(Prescription::class);
         $doctorRepository = repository(Doctor::class);

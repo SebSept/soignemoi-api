@@ -52,17 +52,17 @@ class PatientTest extends ApiTestCase
         ];
     }
 
-    private function testAccessOk(string $iri, Proxy $user): void
+    private function testAccessOk(string $iri, Proxy $proxy): void
     {
-        static::createClientWithBearerFromUser($user->object())
+        static::createClientWithBearerFromUser($proxy->object())
             ->request('GET', $iri);
 
         $this->assertResponseIsSuccessful(' raté pour ' . $iri);
     }
 
-    private function testAccessNotAllowedTo(string $string, Proxy $user): void
+    private function testAccessNotAllowedTo(string $string, Proxy $proxy): void
     {
-        static::createClientWithBearerFromUser($user->object())
+        static::createClientWithBearerFromUser($proxy->object())
             ->request('GET', $string);
 
         $this->assertResponseStatusCodeSame(403);

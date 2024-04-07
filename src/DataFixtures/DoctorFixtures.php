@@ -11,7 +11,7 @@ use function Zenstruck\Foundry\faker;
 
 class DoctorFixtures extends Fixture
 {
-    public function load(ObjectManager $manager): void
+    public function load(ObjectManager $objectManager): void
     {
         $factory = anonymous(Doctor::class);
         $factory->createMany(12, static fn (): array => [

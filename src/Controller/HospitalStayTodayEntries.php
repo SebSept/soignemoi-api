@@ -10,7 +10,7 @@ use Symfony\Component\HttpKernel\Attribute\AsController;
 #[AsController]
 readonly class HospitalStayTodayEntries
 {
-    public function __construct(private HospitalStayRepository $repository)
+    public function __construct(private HospitalStayRepository $hospitalStayRepository)
     {
     }
 
@@ -19,7 +19,7 @@ readonly class HospitalStayTodayEntries
      */
     public function __invoke(): array
     {
-        return $this->repository->findBy(['startDate' => new DateTime()]);
+        return $this->hospitalStayRepository->findBy(['startDate' => new DateTime()]);
     }
 
 

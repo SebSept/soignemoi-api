@@ -16,9 +16,9 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class PrescriptionItemRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    public function __construct(ManagerRegistry $managerRegistry)
     {
-        parent::__construct($registry, PrescriptionItem::class);
+        parent::__construct($managerRegistry, PrescriptionItem::class);
     }
 
     //    /**

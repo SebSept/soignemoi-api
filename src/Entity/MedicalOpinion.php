@@ -44,7 +44,7 @@ class MedicalOpinion
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     #[Groups(['medicalOpinion:read'])]
-    private ?DateTimeInterface $date;
+    private ?DateTimeInterface $dateTime;
 
     #[ORM\Column(length: 255)]
     #[Groups(['medicalOpinion:read', 'medicalOpinion:write'])]
@@ -64,7 +64,7 @@ class MedicalOpinion
 
     public function __construct()
     {
-        $this->date = new DateTime();
+        $this->dateTime = new DateTime();
     }
 
     public function getId(): ?int
@@ -74,7 +74,7 @@ class MedicalOpinion
 
     public function getDate(): ?DateTimeInterface
     {
-        return $this->date;
+        return $this->dateTime;
     }
 
     public function getTitle(): ?string

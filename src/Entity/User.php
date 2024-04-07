@@ -43,7 +43,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $accessToken = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
-    private ?DateTimeInterface $tokenExpiration = null;
+    private ?DateTimeInterface $dateTime = null;
 
     #[ORM\OneToOne(targetEntity: Doctor::class, mappedBy: 'user')]
     private ?Doctor $doctor = null;
@@ -149,7 +149,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function isTokenValid(): bool
     {
-        return $this->accessToken && $this->tokenExpiration > new DateTime();
+        return $this->accessToken && $this->dateTime > new DateTime();
     }
 
     #[Groups('user:token')]
@@ -167,12 +167,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function getTokenExpiration(): ?DateTimeInterface
     {
-        return $this->tokenExpiration;
+        return $this->dateTime;
     }
 
     public function setTokenExpiration(?DateTimeInterface $tokenExpiration): static
     {
-        $this->tokenExpiration = $tokenExpiration;
+        $this->dateTime = $tokenExpiration;
 
         return $this;
     }
@@ -181,7 +181,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         try {
             $this->accessToken = bin2hex(random_bytes(32));
-            $this->tokenExpiration = new DateTime('+' . self::EXPIRATION_DELAY_DAYS . ' day');
+            $this->dateTime = new DateTime('+' . self::EXPIRATION_DELAY_DAYS . ' day');
         } catch (Exception $exception) {
             throw new RuntimeException('Could not generate random token : '. $exception->getMessage(), $exception->getCode(), $exception);
         }
