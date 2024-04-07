@@ -2,11 +2,7 @@
 
 namespace App\Tests\e2e;
 
-use App\Entity\MedicalOpinion;
-use App\Factory\HospitalStayFactory;
-use App\Factory\MedicalOpinionFactory;
-use App\Factory\PatientFactory;
-use App\Factory\PrescriptionFactory;
+use App\Entity\User;
 use App\Factory\UserFactory;
 use App\Tests\ApiTestCase;
 use Zenstruck\Foundry\Proxy;
@@ -77,7 +73,7 @@ class PatientTest extends ApiTestCase
         ];
     }
 
-    private function makePatient(): \Zenstruck\Foundry\Proxy|\App\Entity\User
+    private function makePatient(): Proxy|User
     {
         return UserFactory::new()->patient()->create();
     }

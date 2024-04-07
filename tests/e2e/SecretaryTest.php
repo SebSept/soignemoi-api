@@ -2,7 +2,6 @@
 
 namespace App\Tests\e2e;
 
-use App\Entity\MedicalOpinion;
 use App\Factory\HospitalStayFactory;
 use App\Factory\MedicalOpinionFactory;
 use App\Factory\PatientFactory;

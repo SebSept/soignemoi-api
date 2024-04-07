@@ -4,6 +4,7 @@
 
 namespace App\Tests\e2e;
 
+use DateTime;
 use App\Factory\UserFactory;
 use App\Tests\ApiTestCase;
 use Zenstruck\Foundry\Test\Factories;
@@ -56,7 +57,7 @@ class GetTokenTest extends ApiTestCase
 
         $this->assertResponseIsSuccessful();
         $this->assertJsonContains(['accessToken' => $token]);
-        $this->assertGreaterThan(new \DateTime(), $expiration);
+        $this->assertGreaterThan(new DateTime(), $expiration);
     }
 
     public function testAdminGetTokenAndRequetDoctors(): void

@@ -2,12 +2,7 @@
 
 namespace App\Tests\e2e;
 
-use App\Entity\MedicalOpinion;
 use App\Entity\User;
-use App\Factory\HospitalStayFactory;
-use App\Factory\MedicalOpinionFactory;
-use App\Factory\PatientFactory;
-use App\Factory\PrescriptionFactory;
 use App\Factory\UserFactory;
 use App\Tests\ApiTestCase;
 use Zenstruck\Foundry\Proxy;
@@ -81,7 +76,7 @@ class AdminTest extends ApiTestCase
         ];
     }
 
-    private function makeAdmin(): \Zenstruck\Foundry\Proxy|\App\Entity\User
+    private function makeAdmin(): Proxy|User
     {
         return UserFactory::new()->admin()->create();
     }

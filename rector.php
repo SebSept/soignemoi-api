@@ -12,8 +12,11 @@ return RectorConfig::configure()
         __DIR__ . '/src',
         __DIR__ . '/tests',
     ])
+    ->withSkipPath('config/bundles.php')
+    ->withImportNames(removeUnusedImports: true)
     // uncomment to reach your current PHP version
      ->withPhpSets(php83: true)
+    ->withSets([\Rector\Doctrine\Set\DoctrineSetList::DOCTRINE_CODE_QUALITY])
 //    ->withSkip()
     ->withRules([
 //        AddVoidReturnTypeWhereNoReturnRector::class,
@@ -29,5 +32,4 @@ return RectorConfig::configure()
         earlyReturn: true,
         strictBooleans: true
     )
-//    ->withTypeCoverageLevel(37)
     ;

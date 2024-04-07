@@ -5,7 +5,6 @@ namespace App\Controller;
 use DateTime;
 use App\Entity\HospitalStay;
 use App\Repository\HospitalStayRepository;
-use phpDocumentor\Reflection\Types\Collection;
 use Symfony\Component\HttpKernel\Attribute\AsController;
 
 #[AsController]

@@ -2,6 +2,7 @@
 
 namespace App\Tests\unit;
 
+use DateTime;
 use App\Factory\UserFactory;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Zenstruck\Foundry\Test\Factories;
@@ -16,7 +17,7 @@ class UserTest extends KernelTestCase
     {
         $user = UserFactory::new()->create([
             'accessToken' => 'token',
-            'tokenExpiration' => new \DateTime('-1 day'),
+            'tokenExpiration' => new DateTime('-1 day'),
         ]);
 
         $this->assertFalse($user->isTokenValid());
@@ -26,7 +27,7 @@ class UserTest extends KernelTestCase
     {
         $user = UserFactory::new()->create([
             'accessToken' => 'token',
-            'tokenExpiration' => new \DateTime('+1 day'),
+            'tokenExpiration' => new DateTime('+1 day'),
         ]);
 
         $this->assertTrue($user->isTokenValid());
@@ -46,7 +47,7 @@ class UserTest extends KernelTestCase
     {
         $user = UserFactory::new()->create([
             'accessToken' => null,
-            'tokenExpiration' => new \DateTime('+1 day'),
+            'tokenExpiration' => new DateTime('+1 day'),
         ]);
 
         $this->assertFalse($user->isTokenValid());
