@@ -18,6 +18,8 @@ class DoctorTest extends ApiTestCase
     use Factories;
     use ResetDatabase;
 
+    use prescriptions;
+
     public function testCanAccessIri(): void
     {
         $this->makeEntities();
@@ -61,6 +63,69 @@ class DoctorTest extends ApiTestCase
             ['/api/prescriptions'],
         ];
     }
+
+
+
+    public function testCreateMedicalOpinion(): void
+    {
+        // Arrange
+        $patient = PatientFactory::new()->create();
+        $patientIri = '/api/patients/' . $patient->getId();
+        $doctorUser = $this->makeDoctorUser();
+        $doctor = DoctorFactory::repository()->first()->object();
+        $doctorIri = '/api/doctors/' . $doctor->getId();
+        $nbMedicalOpinions = MedicalOpinionFactory::repository()->count();
+
+        $payload = [
+            'patient' => $patientIri,
+            'doctor' => $doctorIri,
+            'title' => 'une prescription',
+            'description' => 'une description bla bla',
+        ];
+
+        // Act
+        // test accès aux uri des docteur et patient
+        //        PatientFactory::repository()->assert()->exists($patient);
+        //        DoctorFactory::repository()->assert()->exists($doctor);
+        //
+        //        static::createClientWithBearerFromUser($doctorUser->object())
+        //            ->request('GET', $patientIri);
+        //        $this->assertResponseIsSuccessful();
+        //        static::createClientWithBearerFromUser($doctorUser->object())
+        //            ->request('GET', $doctorIri);
+        //        $this->assertResponseIsSuccessful();
+
+        $client = static::createClientWithBearerFromUser($doctorUser->object());
+        $client
+            ->request('POST', '/api/medical_opinions', [
+                'headers' => [
+                    'Content-Type' => 'application/ld+json',
+                    'Accept' => 'application/ld+json',
+                ],
+                'json' => $payload
+            ]);
+
+        // Assert
+        $this->assertResponseIsSuccessful();
+        MedicalOpinionFactory::repository()->assert()->count($nbMedicalOpinions + 1);
+    }
+
+    private function makeEntities(): array
+    {
+        return [
+//            'patientId' => PatientFactory::new()->create()->getId(),
+//            'prescriptionId' => PrescriptionFactory::new()->create()->getId(),
+//            'medicalOpinionId' => MedicalOpinionFactory::new()->create()->getId(),
+        ];
+    }
+
+    private function makeDoctorUser(): Proxy|User
+    {
+        return UserFactory::new()->doctor()->create();
+    }
+}
+
+trait prescriptions {
 
     public function testCreatePrescription(): void
     {
@@ -204,64 +269,5 @@ class DoctorTest extends ApiTestCase
         $this->assertJsonContains([
             'doctor' => '/api/doctors/'.$doctor->getId()
         ]);
-    }
-
-
-    public function testCreateMedicalOpinion(): void
-    {
-        // Arrange
-        $patient = PatientFactory::new()->create();
-        $patientIri = '/api/patients/' . $patient->getId();
-        $doctorUser = $this->makeDoctorUser();
-        $doctor = DoctorFactory::repository()->first()->object();
-        $doctorIri = '/api/doctors/' . $doctor->getId();
-        $nbMedicalOpinions = MedicalOpinionFactory::repository()->count();
-
-        $payload = [
-            'patient' => $patientIri,
-            'doctor' => $doctorIri,
-            'title' => 'une prescription',
-            'description' => 'une description bla bla',
-        ];
-
-        // Act
-        // test accès aux uri des docteur et patient
-        //        PatientFactory::repository()->assert()->exists($patient);
-        //        DoctorFactory::repository()->assert()->exists($doctor);
-        //
-        //        static::createClientWithBearerFromUser($doctorUser->object())
-        //            ->request('GET', $patientIri);
-        //        $this->assertResponseIsSuccessful();
-        //        static::createClientWithBearerFromUser($doctorUser->object())
-        //            ->request('GET', $doctorIri);
-        //        $this->assertResponseIsSuccessful();
-
-        $client = static::createClientWithBearerFromUser($doctorUser->object());
-        $client
-            ->request('POST', '/api/medical_opinions', [
-                'headers' => [
-                    'Content-Type' => 'application/ld+json',
-                    'Accept' => 'application/ld+json',
-                ],
-                'json' => $payload
-            ]);
-
-        // Assert
-        $this->assertResponseIsSuccessful();
-        MedicalOpinionFactory::repository()->assert()->count($nbMedicalOpinions + 1);
-    }
-
-    private function makeEntities(): array
-    {
-        return [
-//            'patientId' => PatientFactory::new()->create()->getId(),
-//            'prescriptionId' => PrescriptionFactory::new()->create()->getId(),
-//            'medicalOpinionId' => MedicalOpinionFactory::new()->create()->getId(),
-        ];
-    }
-
-    private function makeDoctorUser(): Proxy|User
-    {
-        return UserFactory::new()->doctor()->create();
     }
 }
