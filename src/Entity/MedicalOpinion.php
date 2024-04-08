@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Validator as AssertCustom;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
@@ -27,6 +28,7 @@ use Symfony\Component\Serializer\Attribute\Groups;
             security: "is_granted('ROLE_DOCTOR')",
         ),
         new Patch(
+            denormalizationContext: ['groups' => 'medicalOpinion:update'],
             security: "is_granted('ROLE_DOCTOR')",
         ),
     ],
@@ -35,6 +37,7 @@ use Symfony\Component\Serializer\Attribute\Groups;
     security: "is_granted('')",
 )
 ]
+#[AssertCustom\MedicalOpinionDateUnchanged]
 class MedicalOpinion
 {
     #[ORM\Id]
@@ -47,11 +50,11 @@ class MedicalOpinion
     private ?DateTimeInterface $dateTime;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['medicalOpinion:read', 'medicalOpinion:write'])]
+    #[Groups(['medicalOpinion:read', 'medicalOpinion:write', 'medicalOpinion:update'])]
     private ?string $title = null;
 
     #[ORM\Column(type: Types::TEXT)]
-    #[Groups(['medicalOpinion:read', 'medicalOpinion:write'])]
+    #[Groups(['medicalOpinion:read', 'medicalOpinion:write', 'medicalOpinion:update'])]
     private ?string $description = null;
 
     #[ORM\ManyToOne(targetEntity: Doctor::class)]

@@ -19,6 +19,7 @@ class DoctorTest extends ApiTestCase
     use ResetDatabase;
 
     use prescriptions;
+    use medicalOpinions;
 
     public function testCanAccessIri(): void
     {
@@ -66,49 +67,6 @@ class DoctorTest extends ApiTestCase
 
 
 
-    public function testCreateMedicalOpinion(): void
-    {
-        // Arrange
-        $patient = PatientFactory::new()->create();
-        $patientIri = '/api/patients/' . $patient->getId();
-        $doctorUser = $this->makeDoctorUser();
-        $doctor = DoctorFactory::repository()->first()->object();
-        $doctorIri = '/api/doctors/' . $doctor->getId();
-        $nbMedicalOpinions = MedicalOpinionFactory::repository()->count();
-
-        $payload = [
-            'patient' => $patientIri,
-            'doctor' => $doctorIri,
-            'title' => 'une prescription',
-            'description' => 'une description bla bla',
-        ];
-
-        // Act
-        // test accès aux uri des docteur et patient
-        //        PatientFactory::repository()->assert()->exists($patient);
-        //        DoctorFactory::repository()->assert()->exists($doctor);
-        //
-        //        static::createClientWithBearerFromUser($doctorUser->object())
-        //            ->request('GET', $patientIri);
-        //        $this->assertResponseIsSuccessful();
-        //        static::createClientWithBearerFromUser($doctorUser->object())
-        //            ->request('GET', $doctorIri);
-        //        $this->assertResponseIsSuccessful();
-
-        $client = static::createClientWithBearerFromUser($doctorUser->object());
-        $client
-            ->request('POST', '/api/medical_opinions', [
-                'headers' => [
-                    'Content-Type' => 'application/ld+json',
-                    'Accept' => 'application/ld+json',
-                ],
-                'json' => $payload
-            ]);
-
-        // Assert
-        $this->assertResponseIsSuccessful();
-        MedicalOpinionFactory::repository()->assert()->count($nbMedicalOpinions + 1);
-    }
 
     private function makeEntities(): array
     {
@@ -268,6 +226,156 @@ trait prescriptions {
         $this->assertResponseStatusCodeSame(200);
         $this->assertJsonContains([
             'doctor' => '/api/doctors/'.$doctor->getId()
+        ]);
+    }
+}
+
+trait medicalOpinions {
+
+    public function testCreateMedicalOpinion(): void
+    {
+        // Arrange
+        $patient = PatientFactory::new()->create();
+        $patientIri = '/api/patients/' . $patient->getId();
+        $doctorUser = $this->makeDoctorUser();
+        $doctor = DoctorFactory::repository()->first()->object();
+        $doctorIri = '/api/doctors/' . $doctor->getId();
+        $nbMedicalOpinions = MedicalOpinionFactory::repository()->count();
+
+        $payload = [
+            'patient' => $patientIri,
+            'doctor' => $doctorIri,
+            'title' => 'une prescription',
+            'description' => 'une description bla bla',
+        ];
+
+        // Act
+
+        $client = static::createClientWithBearerFromUser($doctorUser->object());
+        $client
+            ->request('POST', '/api/medical_opinions', [
+                'headers' => [
+                    'Content-Type' => 'application/ld+json',
+                    'Accept' => 'application/ld+json',
+                ],
+                'json' => $payload
+            ]);
+
+        // Assert
+        $this->assertResponseIsSuccessful();
+        MedicalOpinionFactory::repository()->assert()->count($nbMedicalOpinions + 1);
+    }
+
+    public function testCreateMedicalOpinionLimitedToOnePerPayPerPatient(): void
+    {
+        // Arrange
+        $patient = PatientFactory::new()->create();
+        $doctorUser = $this->makeDoctorUser();
+        $doctor = DoctorFactory::repository()->first()->object();
+        MedicalOpinionFactory::new()->create([
+            'patient' => $patient,
+            'doctor' => $doctor,
+        ]);
+
+        // Act
+        $patientIri = '/api/patients/' . $patient->getId();
+        $doctorIri = '/api/doctors/' . $doctor->getId();
+
+        $payload = [
+            'patient' => $patientIri,
+            'doctor' => $doctorIri,
+            'title' => 'un avis médical',
+            'description' => 'une description bla bla',
+        ];
+        $client = static::createClientWithBearerFromUser($doctorUser->object());
+        $client
+            ->request('POST', '/api/medical_opinions', [
+                'headers' => [
+                    'Content-Type' => 'application/ld+json',
+                    'Accept' => 'application/ld+json',
+                ],
+                'json' => $payload
+            ]);
+
+        $this->assertResponseStatusCodeSame(422);
+        $this->assertJsonContains([
+            'hydra:description' => 'La création de cet objet est limitée à 1 par jour par patient et par docteur'
+        ]);
+    }
+
+    public function testPatchExistingMedicalOpinion(): void
+    {
+        // Arrange
+        $patient = PatientFactory::new()->create();
+        $doctorUser = $this->makeDoctorUser();
+        $doctor = DoctorFactory::repository()->first()->object();
+        $medicalOpinion = MedicalOpinionFactory::new()->create([
+            'patient' => $patient,
+            'doctor' => $doctor,
+        ]);
+        $medicalOpinionId = $medicalOpinion->getId();
+
+        // Act
+        $payload = [
+            'title' => 'un avis médical modifié',
+            'description' => 'description modifiée',
+        ];
+
+        $client = static::createClientWithBearerFromUser($doctorUser->object());
+        $client
+            ->request('PATCH', '/api/medical_opinions/' . $medicalOpinionId, [
+                'headers' => [
+                    'Content-Type' => 'application/merge-patch+json',
+                    'Accept' => 'application/ld+json',
+                ],
+                'json' => $payload
+            ]);
+
+        // Assert
+        $this->assertResponseIsSuccessful();
+        $this->assertJsonContains([
+            'title' => 'un avis médical modifié',
+            'description' => 'description modifiée',
+        ]);
+        MedicalOpinionFactory::repository()->assert()->count(1);
+    }
+
+    public function testPatchExistingMedicalOpinionWithAnotherDoctor(): void
+    {
+        // Arrange
+        $patient = PatientFactory::new()->create();
+        $doctorUser = $this->makeDoctorUser();
+        $doctor = DoctorFactory::repository()->first()->object();
+        $otherDoctor = DoctorFactory::new()->create();
+        $medicalOpinion = MedicalOpinionFactory::new()->create([
+            'patient' => $patient,
+            'doctor' => $doctor, // docteur authentifié
+        ]);
+        $medicalOpinionId = $medicalOpinion->getId();
+
+        // Act
+        $payload = [
+            'patient' => '/api/patients/' . $patient->getId(),
+            'doctor' => '/api/doctors/' . $otherDoctor->getId(),
+        ];
+
+        $client = static::createClientWithBearerFromUser($doctorUser->object());
+        $client
+            ->request('PATCH', '/api/medical_opinions/' . $medicalOpinionId, [
+                'headers' => [
+                    'Content-Type' => 'application/merge-patch+json',
+                    'Accept' => 'application/ld+json',
+                ],
+                'json' => $payload
+            ]);
+
+        // Assert
+        // on a une réponse en 200, mais le docteur ne doit pas avoir changé
+        // on le vérifie dans le contenu de la réponse
+        $this->assertResponseStatusCodeSame(200);
+        $this->assertJsonContains([
+            'doctor' => '/api/doctors/'.$doctor->getId(),
+            'patient' => '/api/patients/'.$patient->getId(),
         ]);
     }
 }
