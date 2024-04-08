@@ -38,7 +38,7 @@ use Symfony\Component\Validator\Constraints as Assert;
     denormalizationContext: ['groups' => 'prescription:write'],
     security: "is_granted('')",
 )]
-#[AssertCustom\PrescriptionsLimiter]
+#[AssertCustom\PrescriptionDateUnchanged]
 class Prescription
 {
     #[ORM\Id]

@@ -10,7 +10,10 @@ use App\Repository\PrescriptionRepository;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 
-class PrescriptionsLimiterValidator extends ConstraintValidator
+/**
+ * @see \App\Tests\Validator\PrescriptionDateUnchangedValidatorTest
+ */
+class PrescriptionDateUnchangedValidator extends ConstraintValidator
 {
     public function __construct(private readonly PrescriptionRepository $prescriptionRepository)
     {
@@ -18,7 +21,7 @@ class PrescriptionsLimiterValidator extends ConstraintValidator
 
     /**
      * @param Prescription $value
-     * @param PrescriptionsLimiter $constraint
+     * @param PrescriptionDateUnchanged $constraint
      */
     public function validate($value, Constraint $constraint): void
     {

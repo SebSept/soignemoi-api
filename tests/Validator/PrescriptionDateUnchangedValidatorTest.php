@@ -7,31 +7,29 @@ use App\Entity\Doctor;
 use App\Entity\Patient;
 use App\Entity\Prescription;
 use App\Repository\PrescriptionRepository;
-use App\Validator\PrescriptionsLimiter;
-use App\Validator\PrescriptionsLimiterValidator;
+use App\Validator\PrescriptionDateUnchanged;
+use App\Validator\PrescriptionDateUnchangedValidator;
 use Symfony\Component\Validator\ConstraintValidatorInterface;
 use Symfony\Component\Validator\Test\ConstraintValidatorTestCase;
 
-class PrescriptionLimiterValidator2Test extends ConstraintValidatorTestCase
+class PrescriptionDateUnchangedValidatorTest extends ConstraintValidatorTestCase
 {
     protected function createValidator(): ConstraintValidatorInterface
     {
-        $existingPrescription = new Prescription();
         $mockRepository = $this->createMock(PrescriptionRepository::class);
-        $mockRepository->method('findOneBy')->willReturn($existingPrescription);
+        $mockRepository->method('findOneBy')->willReturn(null);
 
-        return new PrescriptionsLimiterValidator($mockRepository);
+        return new PrescriptionDateUnchangedValidator($mockRepository);
     }
 
-    public function testPrescriptionExists(): void
+    public function testNoPrescriptionExists(): void
     {
         $testedPrescription = new Prescription();
         $testedPrescription->setPatient(new Patient());
         $testedPrescription->setDoctor(new Doctor());
 
-        $this->validator->validate($testedPrescription, new PrescriptionsLimiter());
-        $this->buildViolation('La création de cet objet est limitée à 1 par jour par patient et par docteur')
-            ->assertRaised();
+        $this->validator->validate($testedPrescription, new PrescriptionDateUnchanged());
+        $this->assertNoViolation();
     }
 
 }

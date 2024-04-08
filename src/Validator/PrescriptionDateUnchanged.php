@@ -10,7 +10,7 @@ use Symfony\Component\Validator\Constraint;
  * @Target({"PROPERTY", "METHOD", "ANNOTATION"})
  */
 #[Attribute(Attribute::TARGET_CLASS)]
-class PrescriptionsLimiter extends Constraint
+class PrescriptionDateUnchanged extends Constraint
 {
     /*
      * Any public properties become valid options for the annotation.
