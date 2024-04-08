@@ -15,7 +15,7 @@ $header = <<<'EOF'
 $finder = (new Finder())
     ->ignoreDotFiles(true)
     ->ignoreVCSIgnored(true)
-    ->exclude(['public', 'assets','tests', 'config', 'src/Factory', 'src/DataFixtures', ])
+    ->exclude(['public', 'assets','tests', 'config', 'src/Factory/', 'src/DataFixtures/', ])
     ->in(__DIR__)
 ;
 
@@ -26,6 +26,12 @@ return (new Config())
 'global_namespace_import' => ['import_classes' => true, 'import_constants' => true, 'import_functions' => true],
         'declare_strict_types' => true,
         'header_comment' => ['header' => $header],
+        'no_alias_functions' => true,
+        'no_unneeded_final_method' => true,
+        'non_printable_character' => ['use_escape_sequences_in_strings' => false],
+        'no_break_comment' => true,
+
+
     ])
     ->setFinder($finder)
 ;
