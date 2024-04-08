@@ -6,13 +6,13 @@ console := symfony + "console "
 docker_exec_nginx := "docker compose exec -it -u root nginx"
 
 up:
-    docker-compose up -d
+    docker compose up -d
 #    docker exec -it -u climber {{container}} composer install
 
 update: && tests
     git pull
-    docker-compose down
-    docker-compose up -d --build
+    docker compose down
+    docker compose up -d --build
     {{composer}} install
 
 
