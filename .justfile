@@ -79,6 +79,9 @@ composer script:
 rector:
     {{docker_php_exec}} vendor/bin/rector
 
+phpstan:
+    {{docker_php_exec}} vendor/bin/phpstan
+
 tests format='--testdox':
     # {{docker_php_exec}} php vendor/bin/phpunit {{format}}
     {{docker_php_exec}} php vendor/bin/paratest --runner WrapperRunner {{format}}
