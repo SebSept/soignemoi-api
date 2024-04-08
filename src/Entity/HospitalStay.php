@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\Link;
+use App\Controller\HospitalStayDoctorToday;
 use DateTimeInterface;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
@@ -21,14 +23,22 @@ use Doctrine\ORM\Mapping as ORM;
             security: "is_granted('ROLE_DOCTOR') or is_granted('ROLE_PATIENT') or is_granted('ROLE_ADMIN')",
         ),
         new GetCollection(
-            uriTemplate: 'hospital_stays/today_entries',
+            uriTemplate: '/hospital_stays/today_entries',
             controller: HospitalStayTodayEntries::class,
             security: "is_granted('ROLE_SECRETARY') or is_granted('ROLE_DOCTOR')",
         ),
         new GetCollection(
-            uriTemplate: 'hospital_stays/today_exits',
+            uriTemplate: '/hospital_stays/today_exits',
             controller: HospitalStayTodayExits::class,
             security: "is_granted('ROLE_SECRETARY')",
+        ),
+        new GetCollection(
+            uriTemplate: '/doctors/{doctor_id}/hospital_stays/today',
+            uriVariables: ['doctor_id' => new Link(
+                fromClass: Doctor::class,
+            )],
+            controller: HospitalStayDoctorToday::class,
+            security: "is_granted('ROLE_DOCTOR')",
         ),
         new Get(),
         new Post(),

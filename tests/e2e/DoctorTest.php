@@ -65,9 +65,6 @@ class DoctorTest extends ApiTestCase
         ];
     }
 
-
-
-
     private function makeEntities(): array
     {
         return [
@@ -75,6 +72,35 @@ class DoctorTest extends ApiTestCase
 //            'prescriptionId' => PrescriptionFactory::new()->create()->getId(),
 //            'medicalOpinionId' => MedicalOpinionFactory::new()->create()->getId(),
         ];
+    }
+
+    public function testCanViewTodayHospitalDays(): void
+    {
+//        // Arrange
+//        $patient = PatientFactory::new()->create();
+//        $patientIri = '/api/patients/' . $patient->getId();
+        $doctorUser = $this->makeDoctorUser();
+        $doctor = DoctorFactory::repository()->first()->object(); // on devrait le retrouver avec le user->getDoctor() mais ça ne marche pas.
+//        $doctorIri = '/api/doctors/' . $doctor->getId();
+//        $nbPrescriptions = PrescriptionFactory::repository()->count();
+//
+//        $payload = [
+//            'patient' => $patientIri,
+//            'doctor' => $doctorIri,
+//            'items' => []
+//        ];
+
+        $client = static::createClientWithBearerFromUser($doctorUser->object());
+        $client
+            ->request('GET', '/api/doctors/'.$doctor->getId().'/hospital_stays/today', [
+                'headers' => [
+//                    'Content-Type' => 'application/ld+json',
+                    'Accept' => 'application/ld+json',
+                ],
+            ]);
+
+        // Assert
+        $this->assertResponseIsSuccessful();
     }
 
     private function makeDoctorUser(): Proxy|User
