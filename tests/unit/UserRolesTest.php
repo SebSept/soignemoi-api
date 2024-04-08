@@ -14,7 +14,7 @@ class UserRolesTest extends KernelTestCase
     use Factories;
     use ResetDatabase;
 
-    public function testUserAssociatedWithADoctorHasROLE_DOCTOR(): void
+    public function testUserAssociatedWithADoctorHasROLEDOCTOR(): void
     {
         $user = UserFactory::new()->create();
         DoctorFactory::new()->create(['user' => $user]);
@@ -26,7 +26,7 @@ class UserRolesTest extends KernelTestCase
         $this->assertNotContains('ROLE_ADMIN', $roles);
     }
 
-    public function testUserAssociatedWithAPatientHasROLE_PATIENT(): void
+    public function testUserAssociatedWithAPatientHasROLEPATIENT(): void
     {
         $user = UserFactory::new()->create();
         PatientFactory::new()->create(['user' => $user]);
@@ -38,7 +38,7 @@ class UserRolesTest extends KernelTestCase
         $this->assertNotContains('ROLE_ADMIN', $roles);
     }
 
-    public function testUserNotAssociatedHasROLE_SECRETARY(): void
+    public function testUserNotAssociatedHasROLESECRETARY(): void
     {
         $user = UserFactory::new()->create();
 
@@ -49,7 +49,7 @@ class UserRolesTest extends KernelTestCase
         $this->assertNotContains('ROLE_ADMIN', $roles);
     }
 
-    public function testUserWithSpecialMailHasROLE_ADMIN(): void
+    public function testUserWithSpecialMailHasROLEADMIN(): void
     {
         $user = UserFactory::new()->create(['email' => 'admin@admin.com']);
 

@@ -2,8 +2,8 @@
 
 namespace App\Tests\unit;
 
-use DateTime;
 use App\Factory\UserFactory;
+use DateTime;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Zenstruck\Foundry\Test\Factories;
 use Zenstruck\Foundry\Test\ResetDatabase;

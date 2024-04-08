@@ -1,6 +1,7 @@
 <?php
 
 // tests/Validator/ContainsAlphanumericValidatorTest.php
+
 namespace App\Tests\Validator;
 
 use App\Entity\Doctor;
@@ -31,5 +32,4 @@ class PrescriptionDateUnchangedValidatorTest extends ConstraintValidatorTestCase
         $this->validator->validate($testedPrescription, new PrescriptionDateUnchanged());
         $this->assertNoViolation();
     }
-
 }

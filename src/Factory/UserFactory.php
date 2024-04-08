@@ -2,9 +2,9 @@
 
 namespace App\Factory;
 
-use DateTime;
 use App\Entity\User;
 use App\Repository\UserRepository;
+use DateTime;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Zenstruck\Foundry\ModelFactory;
 use Zenstruck\Foundry\Proxy;
@@ -12,6 +12,7 @@ use Zenstruck\Foundry\RepositoryProxy;
 
 /**
  * @extends ModelFactory<User>
+ *
  * @method        User|Proxy                     create(array|callable $attributes = [])
  * @method static User|Proxy                     createOne(array $attributes = [])
  * @method static User|Proxy                     find(object|array|mixed $criteria)

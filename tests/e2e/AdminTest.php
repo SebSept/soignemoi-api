@@ -37,7 +37,6 @@ class AdminTest extends ApiTestCase
         $this->makeEntities();
         $user = $this->makeAdmin();
 
-
         foreach ($this->NotAllowedIris() as $iri) {
             $this->testAccessNotAllowedTo($iri[0], $user);
         }
@@ -56,7 +55,7 @@ class AdminTest extends ApiTestCase
         static::createClientWithBearerFromUser($proxy->object())
             ->request('GET', $iri);
 
-        $this->assertResponseIsSuccessful(' raté pour ' . $iri);
+        $this->assertResponseIsSuccessful(' raté pour '.$iri);
     }
 
     private function testAccessNotAllowedTo(string $string, Proxy $proxy): void
@@ -70,9 +69,9 @@ class AdminTest extends ApiTestCase
     private function makeEntities(): array
     {
         return [
-//            'patientId' => PatientFactory::new()->create()->getId(),
-//            'prescriptionId' => PrescriptionFactory::new()->create()->getId(),
-//            'medicalOpinionId' => MedicalOpinionFactory::new()->create()->getId(),
+            //            'patientId' => PatientFactory::new()->create()->getId(),
+            //            'prescriptionId' => PrescriptionFactory::new()->create()->getId(),
+            //            'medicalOpinionId' => MedicalOpinionFactory::new()->create()->getId(),
         ];
     }
 

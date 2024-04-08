@@ -1,11 +1,12 @@
 <?php
 
 // tests/Validator/ContainsAlphanumericValidatorTest.php
+
 namespace App\Tests\Validator;
 
 use App\Entity\Doctor;
-use App\Entity\Patient;
 use App\Entity\MedicalOpinion;
+use App\Entity\Patient;
 use App\Repository\MedicalOpinionRepository;
 use App\Validator\MedicalOpinionDateUnchanged;
 use App\Validator\MedicalOpinionDateUnchangedValidator;
@@ -31,5 +32,4 @@ class MedicalOpinionDateUnchangedValidatorTest extends ConstraintValidatorTestCa
         $this->validator->validate($testedMedicalOpinion, new MedicalOpinionDateUnchanged());
         $this->assertNoViolation();
     }
-
 }

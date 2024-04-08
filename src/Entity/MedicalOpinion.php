@@ -2,13 +2,13 @@
 
 namespace App\Entity;
 
-use App\Validator as AssertCustom;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use App\Repository\MedicalOpinionRepository;
+use App\Validator as AssertCustom;
 use DateTime;
 use DateTimeInterface;
 use Doctrine\DBAL\Types\Types;

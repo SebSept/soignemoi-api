@@ -26,7 +26,7 @@ class GetTokenController extends AbstractController
             $entityManager->persist($user);
             $entityManager->flush();
         } catch (Exception $exception) {
-            throw new RuntimeException('Token generation failed : ' . $exception->getMessage(), $exception->getCode(), $exception);
+            throw new RuntimeException('Token generation failed : '.$exception->getMessage(), $exception->getCode(), $exception);
         }
 
         return $this->json($user, context: ['groups' => ['user:token']]);

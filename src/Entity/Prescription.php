@@ -2,15 +2,15 @@
 
 namespace App\Entity;
 
-use App\Validator as AssertCustom;
-use DateTimeInterface;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use App\Repository\PrescriptionRepository;
+use App\Validator as AssertCustom;
 use DateTime;
+use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -65,7 +65,7 @@ class Prescription
      * @var Collection<int, PrescriptionItem>
      */
     #[ORM\OneToMany(targetEntity: PrescriptionItem::class, mappedBy: 'prescription', cascade: ['persist', 'remove'], orphanRemoval: true)]
-    #[Groups(['prescription:read','prescription:write', 'prescription:update'])]
+    #[Groups(['prescription:read', 'prescription:write', 'prescription:update'])]
     #[Assert\NotBlank]
     #[Assert\Valid]
     private Collection $items;

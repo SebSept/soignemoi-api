@@ -86,7 +86,7 @@ class SecretaryTest extends ApiTestCase
             ['/api/prescriptions'],
             ['/api/prescriptions/'.$ids['prescriptionId']],
             ['/api/medical_opinions'],
-            ['/api/medical_opinions/'.$ids['medicalOpinionId' ]],
+            ['/api/medical_opinions/'.$ids['medicalOpinionId']],
         ];
     }
 
@@ -103,7 +103,7 @@ class SecretaryTest extends ApiTestCase
         static::createClientWithBearerFromUser($proxy->object())
             ->request('GET', $iri);
 
-        $this->assertResponseIsSuccessful(' raté pour ' . $iri);
+        $this->assertResponseIsSuccessful(' raté pour '.$iri);
     }
 
     private function testAccessNotAllowedTo(string $string, Proxy $proxy): void

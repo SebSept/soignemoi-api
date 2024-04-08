@@ -2,9 +2,9 @@
 
 namespace App\DataFixtures;
 
-use DateTime;
 use App\Factory\DoctorFactory;
 use App\Factory\UserFactory;
+use DateTime;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 

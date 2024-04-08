@@ -3,8 +3,8 @@
 namespace App\Tests\Validator;
 
 use App\Entity\Doctor;
-use App\Entity\Patient;
 use App\Entity\MedicalOpinion;
+use App\Entity\Patient;
 use App\Repository\MedicalOpinionRepository;
 use App\Validator\MedicalOpinionDateUnchanged;
 use App\Validator\MedicalOpinionDateUnchangedValidator;
@@ -32,5 +32,4 @@ class MedicalOpinionDateUnchangedValidator2Test extends ConstraintValidatorTestC
         $this->buildViolation('La création de cet objet est limitée à 1 par jour par patient et par docteur')
             ->assertRaised();
     }
-
 }

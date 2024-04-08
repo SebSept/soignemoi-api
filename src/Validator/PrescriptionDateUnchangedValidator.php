@@ -2,11 +2,11 @@
 
 namespace App\Validator;
 
-use DateTime;
 use App\Entity\Doctor;
 use App\Entity\Patient;
 use App\Entity\Prescription;
 use App\Repository\PrescriptionRepository;
+use DateTime;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 
@@ -20,21 +20,22 @@ class PrescriptionDateUnchangedValidator extends ConstraintValidator
     }
 
     /**
-     * @param Prescription $value
+     * @param Prescription              $value
      * @param PrescriptionDateUnchanged $constraint
      */
     public function validate($value, Constraint $constraint): void
     {
         assert($value instanceof Prescription);
         // modification : pas de contrainte
-        if($value->getId() !== null) {
+        if (null !== $value->getId()) {
             return;
         }
 
         // si on a pas de patient et de docteur défini, on ne peut pas valider
-        if(!($value->getPatient() instanceof Patient) || !($value->getDoctor() instanceof Doctor)) {
+        if (!($value->getPatient() instanceof Patient) || !($value->getDoctor() instanceof Doctor)) {
             $this->context->buildViolation('Le patient et le docteur doivent être définis pour valider la prescription')
                 ->addViolation();
+
             return;
         }
 
@@ -42,17 +43,14 @@ class PrescriptionDateUnchangedValidator extends ConstraintValidator
         $existingPrescription = $this->prescriptionRepository->findOneBy([
             'patient' => $value->getPatient(),
             'doctor' => $value->getDoctor(),
-            'dateTime' => new DateTime('now')
+            'dateTime' => new DateTime('now'),
         ]);
 
-        if(!($existingPrescription instanceof Prescription)) {
+        if (!($existingPrescription instanceof Prescription)) {
             return;
         }
-
 
         $this->context->buildViolation($constraint->message)
             ->addViolation();
     }
-
-
 }

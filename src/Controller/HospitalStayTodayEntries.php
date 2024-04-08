@@ -2,9 +2,9 @@
 
 namespace App\Controller;
 
-use DateTime;
 use App\Entity\HospitalStay;
 use App\Repository\HospitalStayRepository;
+use DateTime;
 use Symfony\Component\HttpKernel\Attribute\AsController;
 
 #[AsController]
@@ -21,6 +21,4 @@ readonly class HospitalStayTodayEntries
     {
         return $this->hospitalStayRepository->findBy(['startDate' => new DateTime()]);
     }
-
-
 }

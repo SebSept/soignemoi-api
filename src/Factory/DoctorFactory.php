@@ -31,7 +31,6 @@ final class DoctorFactory extends ModelFactory
 {
     /**
      * @see https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html#factories-as-services
-     *
      */
     public function __construct()
     {
@@ -53,8 +52,6 @@ final class DoctorFactory extends ModelFactory
             'password' => password_hash(self::faker()->unique()->password(), null, ['cost' => 4]),
             'user' => null,
         ];
-
-
     }
 
     /**

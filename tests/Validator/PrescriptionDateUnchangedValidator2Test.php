@@ -1,6 +1,7 @@
 <?php
 
 // tests/Validator/ContainsAlphanumericValidatorTest.php
+
 namespace App\Tests\Validator;
 
 use App\Entity\Doctor;
@@ -33,5 +34,4 @@ class PrescriptionDateUnchangedValidator2Test extends ConstraintValidatorTestCas
         $this->buildViolation('La création de cet objet est limitée à 1 par jour par patient et par docteur')
             ->assertRaised();
     }
-
 }

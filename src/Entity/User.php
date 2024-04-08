@@ -2,14 +2,14 @@
 
 namespace App\Entity;
 
-use DateTimeInterface;
-use LogicException;
-use DateTime;
-use Exception;
-use RuntimeException;
 use App\Repository\UserRepository;
+use DateTime;
+use DateTimeInterface;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Exception;
+use LogicException;
+use RuntimeException;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Attribute\Groups;
@@ -50,10 +50,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     /**
      * @var string
+     *
      * @todo pas de moyen de faire autrement pour le moment
      * une variable d'environement n'est pas utilisable, le constructeur n'est pas appellé lors du mécanisme d'authentification interne
      * il faudrait passer par un evenement de Doctrine (ou kernel.request pour injecter la variable d'environement, suggéré par copilot)
-     *
      * @todo En fait, il suffit de mettre le role dans la base de données.
      */
     private const ADMIN_EMAIL = 'admin@admin.com';
@@ -97,17 +97,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         $roles = $this->roles;
         $roles[] = 'ROLE_USER'; // @todo doit être supprimable, pour le moment, on le garde -> security.yaml : access_control
-        $roles[]  = match (true) {
+        $roles[] = match (true) {
             $this->isDoctor() => 'ROLE_DOCTOR',
             $this->isPatient() => 'ROLE_PATIENT',
-            $this->email === self::ADMIN_EMAIL => 'ROLE_ADMIN',
+            self::ADMIN_EMAIL === $this->email => 'ROLE_ADMIN',
             default => 'ROLE_SECRETARY'
         };
 
         $roles = array_filter(array_unique($roles));
 
-        if(count($roles) > 2) {
-            throw new LogicException('User lié à plusieurs roles ' . var_export($roles, true));
+        if (count($roles) > 2) {
+            throw new LogicException('User lié à plusieurs roles '.var_export($roles, true));
         }
 
         return $roles;
@@ -181,9 +181,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         try {
             $this->accessToken = bin2hex(random_bytes(32));
-            $this->dateTime = new DateTime('+' . self::EXPIRATION_DELAY_DAYS . ' day');
+            $this->dateTime = new DateTime('+'.self::EXPIRATION_DELAY_DAYS.' day');
         } catch (Exception $exception) {
-            throw new RuntimeException('Could not generate random token : '. $exception->getMessage(), $exception->getCode(), $exception);
+            throw new RuntimeException('Could not generate random token : '.$exception->getMessage(), $exception->getCode(), $exception);
         }
     }
 

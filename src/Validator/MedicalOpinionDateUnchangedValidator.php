@@ -2,11 +2,11 @@
 
 namespace App\Validator;
 
-use DateTime;
 use App\Entity\Doctor;
-use App\Entity\Patient;
 use App\Entity\MedicalOpinion;
+use App\Entity\Patient;
 use App\Repository\MedicalOpinionRepository;
+use DateTime;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 
@@ -20,21 +20,22 @@ class MedicalOpinionDateUnchangedValidator extends ConstraintValidator
     }
 
     /**
-     * @param MedicalOpinion $value
+     * @param MedicalOpinion              $value
      * @param MedicalOpinionDateUnchanged $constraint
      */
     public function validate($value, Constraint $constraint): void
     {
         assert($value instanceof MedicalOpinion);
         // modification : pas de contrainte
-        if($value->getId() !== null) {
+        if (null !== $value->getId()) {
             return;
         }
 
         // si on a pas de patient et de docteur défini, on ne peut pas valider
-        if(!($value->getPatient() instanceof Patient) || !($value->getDoctor() instanceof Doctor)) {
+        if (!($value->getPatient() instanceof Patient) || !($value->getDoctor() instanceof Doctor)) {
             $this->context->buildViolation('Le patient et le docteur doivent être définis pour valider la medicalOpinion')
                 ->addViolation();
+
             return;
         }
 
@@ -42,17 +43,14 @@ class MedicalOpinionDateUnchangedValidator extends ConstraintValidator
         $existingMedicalOpinion = $this->medicalOpinionRepository->findOneBy([
             'patient' => $value->getPatient(),
             'doctor' => $value->getDoctor(),
-            'dateTime' => new DateTime('now')
+            'dateTime' => new DateTime('now'),
         ]);
 
-        if(!($existingMedicalOpinion instanceof MedicalOpinion)) {
+        if (!($existingMedicalOpinion instanceof MedicalOpinion)) {
             return;
         }
-
 
         $this->context->buildViolation($constraint->message)
             ->addViolation();
     }
-
-
 }

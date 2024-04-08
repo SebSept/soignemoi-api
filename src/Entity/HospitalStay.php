@@ -2,17 +2,17 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Metadata\Link;
-use App\Controller\HospitalStayDoctorToday;
-use DateTimeInterface;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Link;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
+use App\Controller\HospitalStayDoctorToday;
 use App\Controller\HospitalStayTodayEntries;
 use App\Controller\HospitalStayTodayExits;
 use App\Repository\HospitalStayRepository;
+use DateTimeInterface;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -47,7 +47,7 @@ use Doctrine\ORM\Mapping as ORM;
     security: "is_granted('')",
     //    paginationItemsPerPage: 5,
 )]
-//#[ApiFilter(DateFilter::class, properties: ['startDate'])]
+// #[ApiFilter(DateFilter::class, properties: ['startDate'])]
 class HospitalStay
 {
     #[ORM\Id]

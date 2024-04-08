@@ -2,7 +2,6 @@
 
 namespace App\Tests\e2e;
 
-use Zenstruck\Foundry\Proxy;
 use App\Entity\User;
 use App\Factory\DoctorFactory;
 use App\Factory\MedicalOpinionFactory;
@@ -10,6 +9,7 @@ use App\Factory\PatientFactory;
 use App\Factory\PrescriptionFactory;
 use App\Factory\UserFactory;
 use App\Tests\ApiTestCase;
+use Zenstruck\Foundry\Proxy;
 use Zenstruck\Foundry\Test\Factories;
 use Zenstruck\Foundry\Test\ResetDatabase;
 
@@ -30,7 +30,7 @@ class DoctorTest extends ApiTestCase
             static::createClientWithBearerFromUser($user->object())
                 ->request('GET', $iri[0]);
 
-            $this->assertResponseIsSuccessful(' raté pour ' . $iri[0]);
+            $this->assertResponseIsSuccessful(' raté pour '.$iri[0]);
         }
     }
 
@@ -68,33 +68,33 @@ class DoctorTest extends ApiTestCase
     private function makeEntities(): array
     {
         return [
-//            'patientId' => PatientFactory::new()->create()->getId(),
-//            'prescriptionId' => PrescriptionFactory::new()->create()->getId(),
-//            'medicalOpinionId' => MedicalOpinionFactory::new()->create()->getId(),
+            //            'patientId' => PatientFactory::new()->create()->getId(),
+            //            'prescriptionId' => PrescriptionFactory::new()->create()->getId(),
+            //            'medicalOpinionId' => MedicalOpinionFactory::new()->create()->getId(),
         ];
     }
 
     public function testCanViewTodayHospitalDays(): void
     {
-//        // Arrange
-//        $patient = PatientFactory::new()->create();
-//        $patientIri = '/api/patients/' . $patient->getId();
+        //        // Arrange
+        //        $patient = PatientFactory::new()->create();
+        //        $patientIri = '/api/patients/' . $patient->getId();
         $doctorUser = $this->makeDoctorUser();
         $doctor = DoctorFactory::repository()->first()->object(); // on devrait le retrouver avec le user->getDoctor() mais ça ne marche pas.
-//        $doctorIri = '/api/doctors/' . $doctor->getId();
-//        $nbPrescriptions = PrescriptionFactory::repository()->count();
-//
-//        $payload = [
-//            'patient' => $patientIri,
-//            'doctor' => $doctorIri,
-//            'items' => []
-//        ];
+        //        $doctorIri = '/api/doctors/' . $doctor->getId();
+        //        $nbPrescriptions = PrescriptionFactory::repository()->count();
+        //
+        //        $payload = [
+        //            'patient' => $patientIri,
+        //            'doctor' => $doctorIri,
+        //            'items' => []
+        //        ];
 
         $client = static::createClientWithBearerFromUser($doctorUser->object());
         $client
             ->request('GET', '/api/doctors/'.$doctor->getId().'/hospital_stays/today', [
                 'headers' => [
-//                    'Content-Type' => 'application/ld+json',
+                    //                    'Content-Type' => 'application/ld+json',
                     'Accept' => 'application/ld+json',
                 ],
             ]);
@@ -109,22 +109,22 @@ class DoctorTest extends ApiTestCase
     }
 }
 
-trait prescriptions {
-
+trait prescriptions
+{
     public function testCreatePrescription(): void
     {
         // Arrange
         $patient = PatientFactory::new()->create();
-        $patientIri = '/api/patients/' . $patient->getId();
+        $patientIri = '/api/patients/'.$patient->getId();
         $doctorUser = $this->makeDoctorUser();
         $doctor = DoctorFactory::repository()->first()->object(); // on devrait le retrouver avec le user->getDoctor() mais ça ne marche pas.
-        $doctorIri = '/api/doctors/' . $doctor->getId();
+        $doctorIri = '/api/doctors/'.$doctor->getId();
         $nbPrescriptions = PrescriptionFactory::repository()->count();
 
         $payload = [
             'patient' => $patientIri,
             'doctor' => $doctorIri,
-            'items' => []
+            'items' => [],
         ];
 
         // Act
@@ -135,7 +135,7 @@ trait prescriptions {
                     'Content-Type' => 'application/ld+json',
                     'Accept' => 'application/ld+json',
                 ],
-                'json' => $payload
+                'json' => $payload,
             ]);
 
         // Assert
@@ -155,13 +155,13 @@ trait prescriptions {
         ]);
 
         // Act
-        $patientIri = '/api/patients/' . $patient->getId();
-        $doctorIri = '/api/doctors/' . $doctor->getId();
+        $patientIri = '/api/patients/'.$patient->getId();
+        $doctorIri = '/api/doctors/'.$doctor->getId();
 
         $payload = [
             'patient' => $patientIri,
             'doctor' => $doctorIri,
-            'items' => []
+            'items' => [],
         ];
         $client = static::createClientWithBearerFromUser($doctorUser->object());
         $client
@@ -170,12 +170,12 @@ trait prescriptions {
                     'Content-Type' => 'application/ld+json',
                     'Accept' => 'application/ld+json',
                 ],
-                'json' => $payload
+                'json' => $payload,
             ]);
 
         $this->assertResponseStatusCodeSame(422);
         $this->assertJsonContains([
-            'hydra:description' => 'La création de cet objet est limitée à 1 par jour par patient et par docteur'
+            'hydra:description' => 'La création de cet objet est limitée à 1 par jour par patient et par docteur',
         ]);
     }
 
@@ -197,18 +197,18 @@ trait prescriptions {
                 [
                     'drug' => 'medicament',
                     'dosage' => '1g',
-                ]
-            ]
+                ],
+            ],
         ];
 
         $client = static::createClientWithBearerFromUser($doctorUser->object());
         $client
-            ->request('PATCH', '/api/prescriptions/' . $prescriptionId, [
+            ->request('PATCH', '/api/prescriptions/'.$prescriptionId, [
                 'headers' => [
                     'Content-Type' => 'application/merge-patch+json',
                     'Accept' => 'application/ld+json',
                 ],
-                'json' => $payload
+                'json' => $payload,
             ]);
 
         // Assert
@@ -231,19 +231,19 @@ trait prescriptions {
 
         // Act
         $payload = [
-            'patient' => '/api/patients/' . $patient->getId(),
-            'doctor' => '/api/doctors/' . $otherDoctor->getId(),
+            'patient' => '/api/patients/'.$patient->getId(),
+            'doctor' => '/api/doctors/'.$otherDoctor->getId(),
             // passer le champs 'items' vide cause une erreur
         ];
 
         $client = static::createClientWithBearerFromUser($doctorUser->object());
         $client
-            ->request('PATCH', '/api/prescriptions/' . $prescriptionId, [
+            ->request('PATCH', '/api/prescriptions/'.$prescriptionId, [
                 'headers' => [
                     'Content-Type' => 'application/merge-patch+json',
                     'Accept' => 'application/ld+json',
                 ],
-                'json' => $payload
+                'json' => $payload,
             ]);
 
         // Assert
@@ -251,21 +251,21 @@ trait prescriptions {
         // on le vérifie dans le contenu de la réponse
         $this->assertResponseStatusCodeSame(200);
         $this->assertJsonContains([
-            'doctor' => '/api/doctors/'.$doctor->getId()
+            'doctor' => '/api/doctors/'.$doctor->getId(),
         ]);
     }
 }
 
-trait medicalOpinions {
-
+trait medicalOpinions
+{
     public function testCreateMedicalOpinion(): void
     {
         // Arrange
         $patient = PatientFactory::new()->create();
-        $patientIri = '/api/patients/' . $patient->getId();
+        $patientIri = '/api/patients/'.$patient->getId();
         $doctorUser = $this->makeDoctorUser();
         $doctor = DoctorFactory::repository()->first()->object();
-        $doctorIri = '/api/doctors/' . $doctor->getId();
+        $doctorIri = '/api/doctors/'.$doctor->getId();
         $nbMedicalOpinions = MedicalOpinionFactory::repository()->count();
 
         $payload = [
@@ -284,7 +284,7 @@ trait medicalOpinions {
                     'Content-Type' => 'application/ld+json',
                     'Accept' => 'application/ld+json',
                 ],
-                'json' => $payload
+                'json' => $payload,
             ]);
 
         // Assert
@@ -304,8 +304,8 @@ trait medicalOpinions {
         ]);
 
         // Act
-        $patientIri = '/api/patients/' . $patient->getId();
-        $doctorIri = '/api/doctors/' . $doctor->getId();
+        $patientIri = '/api/patients/'.$patient->getId();
+        $doctorIri = '/api/doctors/'.$doctor->getId();
 
         $payload = [
             'patient' => $patientIri,
@@ -320,12 +320,12 @@ trait medicalOpinions {
                     'Content-Type' => 'application/ld+json',
                     'Accept' => 'application/ld+json',
                 ],
-                'json' => $payload
+                'json' => $payload,
             ]);
 
         $this->assertResponseStatusCodeSame(422);
         $this->assertJsonContains([
-            'hydra:description' => 'La création de cet objet est limitée à 1 par jour par patient et par docteur'
+            'hydra:description' => 'La création de cet objet est limitée à 1 par jour par patient et par docteur',
         ]);
     }
 
@@ -349,12 +349,12 @@ trait medicalOpinions {
 
         $client = static::createClientWithBearerFromUser($doctorUser->object());
         $client
-            ->request('PATCH', '/api/medical_opinions/' . $medicalOpinionId, [
+            ->request('PATCH', '/api/medical_opinions/'.$medicalOpinionId, [
                 'headers' => [
                     'Content-Type' => 'application/merge-patch+json',
                     'Accept' => 'application/ld+json',
                 ],
-                'json' => $payload
+                'json' => $payload,
             ]);
 
         // Assert
@@ -381,18 +381,18 @@ trait medicalOpinions {
 
         // Act
         $payload = [
-            'patient' => '/api/patients/' . $patient->getId(),
-            'doctor' => '/api/doctors/' . $otherDoctor->getId(),
+            'patient' => '/api/patients/'.$patient->getId(),
+            'doctor' => '/api/doctors/'.$otherDoctor->getId(),
         ];
 
         $client = static::createClientWithBearerFromUser($doctorUser->object());
         $client
-            ->request('PATCH', '/api/medical_opinions/' . $medicalOpinionId, [
+            ->request('PATCH', '/api/medical_opinions/'.$medicalOpinionId, [
                 'headers' => [
                     'Content-Type' => 'application/merge-patch+json',
                     'Accept' => 'application/ld+json',
                 ],
-                'json' => $payload
+                'json' => $payload,
             ]);
 
         // Assert

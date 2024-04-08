@@ -4,9 +4,9 @@
 
 namespace App\Tests\e2e;
 
-use DateTime;
 use App\Factory\UserFactory;
 use App\Tests\ApiTestCase;
+use DateTime;
 use Zenstruck\Foundry\Test\Factories;
 use Zenstruck\Foundry\Test\ResetDatabase;
 
@@ -16,7 +16,7 @@ class GetTokenTest extends ApiTestCase
     use ResetDatabase;
 
     /**
-     * Test la génération de token
+     * Test la génération de token.
      */
     public function testSecretaryGetToken(): void
     {
@@ -42,7 +42,7 @@ class GetTokenTest extends ApiTestCase
             ],
                 'headers' => [
                     'Content-Type' => 'application/json',
-                    'Accept' => 'application/json'
+                    'Accept' => 'application/json',
                 ]]
         );
         $user = UserFactory::repository()->first();
@@ -70,7 +70,7 @@ class GetTokenTest extends ApiTestCase
             'password' => $password,
             'accessToken' => null,
             'tokenExpiration' => null,
-//            'roles' => ['ROLE_ADMIN'], // pour le moment on determine l'admin via un mail spécial
+            //            'roles' => ['ROLE_ADMIN'], // pour le moment on determine l'admin via un mail spécial
         ]);
 
         // Act 1 - request resource fails without valid token
@@ -91,7 +91,7 @@ class GetTokenTest extends ApiTestCase
             ],
                 'headers' => [
                     'Content-Type' => 'application/json',
-                    'Accept' => 'application/json'
+                    'Accept' => 'application/json',
                 ]]
         );
         $content = json_decode($response->getContent());
@@ -101,5 +101,4 @@ class GetTokenTest extends ApiTestCase
         static::createClientWithBearer($fetchedToken)->request('GET', '/api/doctors');
         $this->assertResponseStatusCodeSame(200);
     }
-
 }

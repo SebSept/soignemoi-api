@@ -55,12 +55,12 @@ final class HospitalStayFactory extends ModelFactory
 
     public function entryBeforeToday(): self
     {
-        return $this->addState(['startDate' => new DateTime('-' . random_int(1, 25) . ' days')]);
+        return $this->addState(['startDate' => new DateTime('-'.random_int(1, 25).' days')]);
     }
 
     public function entryAfterToday(): self
     {
-        return $this->addState(['startDate' => new DateTime('+' . random_int(1, 25) . ' days')]);
+        return $this->addState(['startDate' => new DateTime('+'.random_int(1, 25).' days')]);
     }
 
     public function entryToday(): self
@@ -70,12 +70,12 @@ final class HospitalStayFactory extends ModelFactory
 
     public function exitBeforeToday(): self
     {
-        return $this->addState(['endDate' => new DateTime('-' . random_int(1, 25) . ' days')]);
+        return $this->addState(['endDate' => new DateTime('-'.random_int(1, 25).' days')]);
     }
 
     public function exitAfterToday(): self
     {
-        return $this->addState(['endDate' => new DateTime('+' . random_int(1, 25) . ' days')]);
+        return $this->addState(['endDate' => new DateTime('+'.random_int(1, 25).' days')]);
     }
 
     public function exitToday(): self

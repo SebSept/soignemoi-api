@@ -45,7 +45,7 @@ final class PrescriptionItemFactory extends ModelFactory
         return [
             'dosage' => self::faker()->text(255),
             'drug' => self::faker()->text(255),
-//            'prescription' => PrescriptionFactory::new(), // récurssion via la cascade doctrine
+            //            'prescription' => PrescriptionFactory::new(), // récurssion via la cascade doctrine
         ];
     }
 

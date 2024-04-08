@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<phive xmlns="https://phar.io/phive">
-  <phar name="phpunit" version="^9.5.10" installed="9.6.15" location="./tools/phpunit" copy="false"/>
-  <phar name="phpstan" version="^1.10.47" installed="1.10.47" location="./tools/phpstan" copy="false"/>
-  <phar name="captainhook" version="^5.19.0" installed="5.19.0" location="./tools/captainhook" copy="false"/>
-</phive>

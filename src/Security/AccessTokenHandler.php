@@ -17,16 +17,13 @@ readonly class AccessTokenHandler implements AccessTokenHandlerInterface
     {
     }
 
-    /**
-     * @inheritDoc
-     */
     public function getUserBadgeFrom(#[SensitiveParameter] string $accessToken): UserBadge
     {
         // "Bearer " est déjà retiré par Symfony
         // $accessToken = str_replace('Bearer ', '', $accessToken);
         /** @var User|null $user */
         $user = $this->userRepository->findOneBy(['accessToken' => $accessToken]);
-        if(is_null($user)) {
+        if (is_null($user)) {
             throw new BadCredentialsException('Invalid credentials. token not found.');
         }
 
