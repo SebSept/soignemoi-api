@@ -25,12 +25,13 @@ use Symfony\Component\Validator\Constraints as Assert;
             security: "is_granted('ROLE_SECRETARY')",
         ),
         new Get(
-            security: "is_granted('ROLE_SECRETARY')",
+            security: "is_granted('ROLE_SECRETARY') ",
         ),
         new Post(
             security: "is_granted('ROLE_DOCTOR')",
         ),
         new Patch(
+            denormalizationContext: ['groups' => 'prescription:update'],
             security: "is_granted('ROLE_DOCTOR')",
         ),
     ],
@@ -63,8 +64,8 @@ class Prescription
     /**
      * @var Collection<int, PrescriptionItem>
      */
-    #[ORM\OneToMany(targetEntity: PrescriptionItem::class, mappedBy: 'prescription')]
-    #[Groups(['prescription:read','prescription:write'])]
+    #[ORM\OneToMany(targetEntity: PrescriptionItem::class, mappedBy: 'prescription', cascade: ['persist', 'remove'], orphanRemoval: true)]
+    #[Groups(['prescription:read','prescription:write', 'prescription:update'])]
     //    #[Assert\NotBlank] @todo activer plus tard
     //    #[Assert\Valid] @todo valide l'entité,  va fonctionner pour une collection ?
     private Collection $items;

@@ -25,15 +25,16 @@ class PrescriptionItem
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['prescription:read'])]
+    #[Groups(['prescription:read', 'prescription:write', 'prescription:update'])]
     private ?string $drug = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['prescription:read'])]
+    #[Groups(['prescription:read', 'prescription:write', 'prescription:update'])]
     private ?string $dosage = null;
 
     #[ORM\ManyToOne(targetEntity: Prescription::class, inversedBy: 'items')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['prescription:write', 'prescription:update'])]
     private ?Prescription $prescription = null;
 
     public function getId(): ?int

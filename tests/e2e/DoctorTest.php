@@ -144,14 +144,17 @@ class DoctorTest extends ApiTestCase
 
         // Act
         $payload = [
-            'patient' => '/api/patients/' . $patient->getId(),
-            'doctor' => '/api/doctors/' . $doctor->getId(),
-            // passer le champs 'items' vide cause une erreur
+            'items' => [
+                [
+                    'drug' => 'medicament',
+                    'dosage' => '1g',
+                ]
+            ]
         ];
 
         $client = static::createClientWithBearerFromUser($doctorUser->object());
         $client
-            ->request('PATCH', '/api/prescriptions/'.$prescriptionId, [
+            ->request('PATCH', '/api/prescriptions/' . $prescriptionId, [
                 'headers' => [
                     'Content-Type' => 'application/merge-patch+json',
                     'Accept' => 'application/ld+json',
@@ -161,7 +164,46 @@ class DoctorTest extends ApiTestCase
 
         // Assert
         $this->assertResponseIsSuccessful();
-        PrescriptionFactory::repository()->assert()->count( 1);
+        PrescriptionFactory::repository()->assert()->count(1);
+    }
+
+    public function testPatchExistingPrescriptionWithAnotherDoctor(): void
+    {
+        // Arrange
+        $patient = PatientFactory::new()->create();
+        $doctorUser = $this->makeDoctorUser();
+        $doctor = DoctorFactory::repository()->first()->object();
+        $otherDoctor = DoctorFactory::new()->create();
+        $prescription = PrescriptionFactory::new()->create([
+            'patient' => $patient,
+            'doctor' => $doctor, // docteur authentifié
+        ]);
+        $prescriptionId = $prescription->getId();
+
+        // Act
+        $payload = [
+            'patient' => '/api/patients/' . $patient->getId(),
+            'doctor' => '/api/doctors/' . $otherDoctor->getId(),
+            // passer le champs 'items' vide cause une erreur
+        ];
+
+        $client = static::createClientWithBearerFromUser($doctorUser->object());
+        $client
+            ->request('PATCH', '/api/prescriptions/' . $prescriptionId, [
+                'headers' => [
+                    'Content-Type' => 'application/merge-patch+json',
+                    'Accept' => 'application/ld+json',
+                ],
+                'json' => $payload
+            ]);
+
+        // Assert
+        // on a une réponse en 200, mais le docteur ne doit pas avoir changé
+        // on le vérifie dans le contenu de la réponse
+        $this->assertResponseStatusCodeSame(200);
+        $this->assertJsonContains([
+            'doctor' => '/api/doctors/'.$doctor->getId()
+        ]);
     }
 
 
