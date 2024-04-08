@@ -82,6 +82,9 @@ rector:
 phpstan:
     {{docker_php_exec}} vendor/bin/phpstan
 
+cs-fix:
+    {{docker_php_exec}} php-cs-fixer fix
+
 tests format='--testdox':
     # {{docker_php_exec}} php vendor/bin/phpunit {{format}}
     {{docker_php_exec}} php vendor/bin/paratest --runner WrapperRunner {{format}}

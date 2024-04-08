@@ -2,6 +2,13 @@
 
 declare(strict_types=1);
 
+/*
+ * SoigneMoi API - Projet ECF
+ *
+ * @author Sébastien Monterisi <sebastienmonterisi@gmail.com>
+ * 2024
+ */
+
 use Rector\Config\RectorConfig;
 use Rector\Doctrine\Set\DoctrineSetList;
 use Rector\PHPUnit\Set\PHPUnitSetList;
