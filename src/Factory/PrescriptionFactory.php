@@ -37,6 +37,7 @@ final class PrescriptionFactory extends ModelFactory
         return [
             'doctor' => DoctorFactory::new(),
             'patient' => PatientFactory::new(),
+            'items' => PrescriptionItemFactory::new()->many(random_int(1, 5)),
         ];
     }
 

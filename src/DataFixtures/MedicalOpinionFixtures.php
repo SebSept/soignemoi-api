@@ -5,6 +5,7 @@ namespace App\DataFixtures;
 use App\Entity\Doctor;
 use App\Entity\MedicalOpinion;
 use App\Entity\Patient;
+use App\Factory\MedicalOpinionFactory;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
@@ -15,19 +16,9 @@ use function Zenstruck\Foundry\repository;
 
 class MedicalOpinionFixtures extends Fixture implements DependentFixtureInterface
 {
-    public function load(ObjectManager $objectManager): void
+    public function load(ObjectManager $manager): void
     {
-        // @todo utiliser la factory
-        $doctorRepository = repository(Doctor::class);
-        $patientRepository = repository(Patient::class);
-        $factory = anonymous(MedicalOpinion::class);
-        $factory->createMany(100, static fn (): array => [
-            'title' => faker()->sentence(random_int(1, 4)),
-            'description' => faker()->sentence(random_int(1, 30)),
-            'date' => faker()->dateTimeBetween('-4 months'),
-            'doctor' => $doctorRepository->random(),
-            'patient' => $patientRepository->random(),
-        ]);
+        MedicalOpinionFactory::new()->createMany(20);
     }
 
     public function getDependencies(): array
