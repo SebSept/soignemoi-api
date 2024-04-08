@@ -60,8 +60,6 @@ class Prescription
     #[Assert\NotBlank]
     private ?Doctor $doctor = null;
 
-    //    #[Assert\NotBlank] @todo activer plus tard
-    //    #[Assert\Valid] @todo valide l'entité,  va fonctionner pour une collection ?
     /**
      * @var Collection<int, PrescriptionItem>
      */

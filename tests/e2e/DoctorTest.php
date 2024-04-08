@@ -130,40 +130,39 @@ class DoctorTest extends ApiTestCase
         ]);
     }
 
-//    public function testPatchExistingPrescription()
-//    {
-//        //1 create prescription
-//        // Arrange
-//        $patient = PatientFactory::new()->create();
-//        $patientIri = '/api/patients/' . $patient->getId();
-//        $doctorUser = $this->makeDoctorUser();
-//        $doctor = DoctorFactory::repository()->first()->object(); // on devrait le retrouver avec le user->getDoctor() mais ça ne marche pas.
-//        $doctorIri = '/api/doctors/' . $doctor->getId();
-//        $nbPrescriptions = PrescriptionFactory::repository()->count();
-//
-//        $payload = [
-//            'patient' => $patientIri,
-//            'doctor' => $doctorIri,
-//            'items' => []
-//        ];
-//
-//        // Act
-//        $client = static::createClientWithBearerFromUser($doctorUser->object());
-//        $client
-//            ->request('POST', '/api/prescriptions', [
-//                'headers' => [
-//                    'Content-Type' => 'application/ld+json',
-//                    'Accept' => 'application/ld+json',
-//                ],
-//                'json' => $payload
-//            ]);
-//
-//        // Assert
-//        $this->assertResponseIsSuccessful();
-//        throw new \Exception('récupérer l\'id de la prescription / db ou response');
-//        PrescriptionFactory::repository()->assert()->count($nbPrescriptions + 1);
-//
-//    }
+    public function testPatchExistingPrescription(): void
+    {
+        // Arrange
+        $patient = PatientFactory::new()->create();
+        $doctorUser = $this->makeDoctorUser();
+        $doctor = DoctorFactory::repository()->first()->object();
+        $prescription = PrescriptionFactory::new()->create([
+            'patient' => $patient,
+            'doctor' => $doctor,
+        ]);
+        $prescriptionId = $prescription->getId();
+
+        // Act
+        $payload = [
+            'patient' => '/api/patients/' . $patient->getId(),
+            'doctor' => '/api/doctors/' . $doctor->getId(),
+            // passer le champs 'items' vide cause une erreur
+        ];
+
+        $client = static::createClientWithBearerFromUser($doctorUser->object());
+        $client
+            ->request('PATCH', '/api/prescriptions/'.$prescriptionId, [
+                'headers' => [
+                    'Content-Type' => 'application/merge-patch+json',
+                    'Accept' => 'application/ld+json',
+                ],
+                'json' => $payload
+            ]);
+
+        // Assert
+        $this->assertResponseIsSuccessful();
+        PrescriptionFactory::repository()->assert()->count( 1);
+    }
 
 
     public function testCreateMedicalOpinion(): void

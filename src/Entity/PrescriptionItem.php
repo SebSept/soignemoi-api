@@ -32,7 +32,7 @@ class PrescriptionItem
     #[Groups(['prescription:read'])]
     private ?string $dosage = null;
 
-    #[ORM\ManyToOne(inversedBy: 'items')]
+    #[ORM\ManyToOne(targetEntity: Prescription::class, inversedBy: 'items')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Prescription $prescription = null;
 
