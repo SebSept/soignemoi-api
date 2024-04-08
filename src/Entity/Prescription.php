@@ -66,8 +66,8 @@ class Prescription
      */
     #[ORM\OneToMany(targetEntity: PrescriptionItem::class, mappedBy: 'prescription', cascade: ['persist', 'remove'], orphanRemoval: true)]
     #[Groups(['prescription:read','prescription:write', 'prescription:update'])]
-    //    #[Assert\NotBlank] @todo activer plus tard
-    //    #[Assert\Valid] @todo valide l'entité,  va fonctionner pour une collection ?
+    #[Assert\NotBlank]
+    #[Assert\Valid]
     private Collection $items;
 
     public function __construct()
