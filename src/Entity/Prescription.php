@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Validator as AssertCustom;
 use DateTimeInterface;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
@@ -37,9 +38,7 @@ use Symfony\Component\Validator\Constraints as Assert;
     denormalizationContext: ['groups' => 'prescription:write'],
     security: "is_granted('')",
 )]
-// @todo créer une contrainte de validation pour
-// qu'une seule prescription par jour pour un patient est disponible à la modification
-// et aucune à la création
+#[AssertCustom\PrescriptionsLimiter]
 class Prescription
 {
     #[ORM\Id]

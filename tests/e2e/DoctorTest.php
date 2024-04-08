@@ -94,6 +94,78 @@ class DoctorTest extends ApiTestCase
         PrescriptionFactory::repository()->assert()->count($nbPrescriptions + 1);
     }
 
+    public function testCreatePrescriptionLimitedToOnePerPayPerPatient(): void
+    {
+        // Arrange
+        $patient = PatientFactory::new()->create();
+        $doctorUser = $this->makeDoctorUser();
+        $doctor = DoctorFactory::repository()->first()->object();
+        PrescriptionFactory::new()->create([
+            'patient' => $patient,
+            'doctor' => $doctor,
+        ]);
+
+        // Act
+        $patientIri = '/api/patients/' . $patient->getId();
+        $doctorIri = '/api/doctors/' . $doctor->getId();
+
+        $payload = [
+            'patient' => $patientIri,
+            'doctor' => $doctorIri,
+            'items' => []
+        ];
+        $client = static::createClientWithBearerFromUser($doctorUser->object());
+        $client
+            ->request('POST', '/api/prescriptions', [
+                'headers' => [
+                    'Content-Type' => 'application/ld+json',
+                    'Accept' => 'application/ld+json',
+                ],
+                'json' => $payload
+            ]);
+
+        $this->assertResponseStatusCodeSame(422);
+        $this->assertJsonContains([
+            'hydra:description' => 'La création de cet objet est limitée à 1 par jour par patient et par docteur'
+        ]);
+    }
+
+//    public function testPatchExistingPrescription()
+//    {
+//        //1 create prescription
+//        // Arrange
+//        $patient = PatientFactory::new()->create();
+//        $patientIri = '/api/patients/' . $patient->getId();
+//        $doctorUser = $this->makeDoctorUser();
+//        $doctor = DoctorFactory::repository()->first()->object(); // on devrait le retrouver avec le user->getDoctor() mais ça ne marche pas.
+//        $doctorIri = '/api/doctors/' . $doctor->getId();
+//        $nbPrescriptions = PrescriptionFactory::repository()->count();
+//
+//        $payload = [
+//            'patient' => $patientIri,
+//            'doctor' => $doctorIri,
+//            'items' => []
+//        ];
+//
+//        // Act
+//        $client = static::createClientWithBearerFromUser($doctorUser->object());
+//        $client
+//            ->request('POST', '/api/prescriptions', [
+//                'headers' => [
+//                    'Content-Type' => 'application/ld+json',
+//                    'Accept' => 'application/ld+json',
+//                ],
+//                'json' => $payload
+//            ]);
+//
+//        // Assert
+//        $this->assertResponseIsSuccessful();
+//        throw new \Exception('récupérer l\'id de la prescription / db ou response');
+//        PrescriptionFactory::repository()->assert()->count($nbPrescriptions + 1);
+//
+//    }
+
+
     public function testCreateMedicalOpinion(): void
     {
         // Arrange
