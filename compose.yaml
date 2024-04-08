@@ -30,6 +30,8 @@ services:
       - type: bind
         source: ./
         target: /app
+      - type: tmpfs
+        target: /app/var
     user: "0:1000"
     restart: unless-stopped
     depends_on:

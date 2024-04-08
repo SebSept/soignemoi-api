@@ -1,5 +1,6 @@
 {
   "name": "sebsept/soignemoi-api",
+  "description": "API de Soigne Moi",
   "license": "MIT",
   "type": "project",
   "require": {
@@ -106,6 +107,7 @@
     "cs-fixer": "php-cs-fixer fix ./src/",
     "phpstan": "phpstan",
     "pre-commit": [
+      "symfony composer validate",
       "@rector --dry-run",
       "@cs-fixer",
       "symfony composer normalize",
