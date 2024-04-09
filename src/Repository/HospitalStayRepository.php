@@ -30,28 +30,17 @@ class HospitalStayRepository extends ServiceEntityRepository
         parent::__construct($managerRegistry, HospitalStay::class);
     }
 
-    //    /**
-    //     * @return HospitalStay[] Returns an array of HospitalStay objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('h')
-    //            ->andWhere('h.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('h.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
-
-    //    public function findOneBySomeField($value): ?HospitalStay
-    //    {
-    //        return $this->createQueryBuilder('h')
-    //            ->andWhere('h.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+    /**
+     * @return array<HospitalStay>
+     */
+    public function findByDoctorForToday(int $doctor_id): array
+    {
+        return $this->createQueryBuilder('h')
+            ->where('h.doctor = :doctor_id')
+            ->andWhere('h.checkin IS NOT NULL')
+            ->andWhere('h.checkout IS NULL')
+            ->setParameter('doctor_id', $doctor_id)
+            ->getQuery()
+            ->getResult();
+    }
 }
