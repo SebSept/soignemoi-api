@@ -111,8 +111,8 @@
       "@rector --dry-run",
       "@cs-fixer",
       "symfony composer normalize",
-      "@tests",
-      "@phpstan"
+      "@phpstan",
+      "@tests"
     ],
     "rector": "php vendor/bin/rector",
     "tests": "php vendor/bin/paratest --runner WrapperRunner"
