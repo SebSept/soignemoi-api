@@ -108,7 +108,7 @@
     "phpstan": "phpstan",
     "pre-commit": [
       "symfony composer validate",
-      "@rector --dry-run",
+      "@rector",
       "@cs-fixer",
       "symfony composer normalize",
       "@phpstan",
