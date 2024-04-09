@@ -15,7 +15,7 @@ class AdminTest extends ApiTestCase
     use Factories;
     use ResetDatabase;
 
-    public function testUpdateADoctor(): void
+    public function testUpdateDoctor(): void
     {
         $admin = $this->makeAdmin();
         $doctor = DoctorFactory::new()->create();
@@ -34,6 +34,33 @@ class AdminTest extends ApiTestCase
         $this->assertResponseIsSuccessful();
         $this->assertJsonContains([
             'firstname' => 'mALLICK',
+        ]);
+    }
+
+    public function testCreateDoctor()
+    {
+        $admin = $this->makeAdmin();
+        $doctor = DoctorFactory::new()->create();
+
+        $client = static::createClientWithBearerFromUser($admin->object());
+        $client->request('POST', '/api/doctors' , [
+            'headers' => [
+                'Content-Type' => 'application/ld+json',
+                'Accept' => 'application/ld+json',
+            ],
+            'json' => [
+                'firstname' => 'mALLICK',
+                'lastname' => 'Doe',
+                'medicalSpeciality' => 'Généraliste',
+                'employeeId' => '123',
+                'password' => 'password-verx-y7-strang',
+            ]
+        ]);
+
+        $this->assertResponseIsSuccessful();
+        $this->assertJsonContains([
+            'firstname' => 'mALLICK',
+            'employeeId' => '123',
         ]);
     }
 

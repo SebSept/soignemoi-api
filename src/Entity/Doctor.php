@@ -27,8 +27,9 @@ use Symfony\Component\Validator\Constraints as Assert;
         new GetCollection(
             security: "is_granted('ROLE_ADMIN')",
         ),
-        //        new Get(),
-        new Post(),
+        new Post(
+            security: "is_granted('ROLE_ADMIN')",
+        ),
         new Patch(
             security: "is_granted('ROLE_ADMIN')",
         ),
