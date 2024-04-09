@@ -104,7 +104,7 @@
       "assets:install %PUBLIC_DIR%": "symfony-cmd",
       "importmap:install": "symfony-cmd"
     },
-    "cs-fixer": "php-cs-fixer fix ./src/",
+    "cs-fixer": "php-cs-fixer fix",
     "phpstan": "phpstan",
     "pre-commit": [
       "symfony composer validate",
