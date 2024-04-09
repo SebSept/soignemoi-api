@@ -62,9 +62,10 @@ class Doctor
     #[Groups(['read', 'write'])]
     private ?string $employeeId = null;
 
+    // @todo ce champs est supprimable, il n'est pas utilisé.
     #[ORM\Column(length: 255)]
     #[Groups(['write'])]
-    #[Assert\PasswordStrength(minScore: Assert\PasswordStrength::STRENGTH_MEDIUM, message: 'Mot de passe trop faible.')]
+    #[Assert\PasswordStrength(message: 'Mot de passe trop faible.')]
     private ?string $password = null;
 
     #[ORM\OneToOne(targetEntity: User::class, inversedBy: 'doctor')]

@@ -17,6 +17,36 @@ class PatientTest extends ApiTestCase
     use Factories;
     use ResetDatabase;
 
+    public function testCreatePatient(): void
+    {
+        static::createClient()->request('POST', '/api/patients', [
+            'headers' => [
+                'Content-Type' => 'application/ld+json',
+                'Accept' => 'application/ld+json',
+            ],
+            'json' => [
+                'firstname' => 'newuser',
+                'lastname' => 'Doe',
+                'address1' => '1 rue de la paix',
+                'address2' => '75000 Paris',
+                // champs pour la création du user
+                'userCreationEmail' => 'pass@email.com',
+                'userCreationPassword' => 'password-verx-y7-strang'
+            ]
+            ]
+        );
+
+        $this->assertResponseIsSuccessful();
+        // 2 entités créés
+        UserFactory::assert()->count(1);
+        PatientFactory::assert()->count(1);
+
+        $user = UserFactory::repository()->first();
+        $this->assertTrue($user->object()->isPatient());
+//        $this->assertSame($patient->object(), $user->object()->getPatient());
+//        $this->assertInstanceOf(User::class, $patient->object()->getUser());
+    }
+    
     public function testPatientViewItsHospitalStays(): void
     {
         // Arrange - 2 patients avec des hospital_stays chacun
@@ -69,8 +99,11 @@ class PatientTest extends ApiTestCase
         $this->assertResponseIsSuccessful();
     }
 
+    
+    
     private function makePatient(): Proxy|User
     {
         return UserFactory::new()->patient()->create();
     }
 }
+

@@ -51,6 +51,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $accessToken = null;
 
+    /**
+     * @var DateTimeInterface|null Date d'expiration du token // @todo à renommer
+     */
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?DateTimeInterface $dateTime = null;
 
@@ -67,7 +70,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     private const ADMIN_EMAIL = 'admin@admin.com';
 
-    #[ORM\OneToOne(targetEntity: Patient::class, mappedBy: 'user')]
+    #[ORM\OneToOne(targetEntity: Patient::class, mappedBy: 'user', cascade: ['persist'])]
     private ?Patient $patient = null;
 
     public function getId(): ?int
@@ -201,7 +204,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->doctor instanceof Doctor;
     }
 
-    private function isPatient(): bool
+    public function isPatient(): bool
     {
         return $this->patient instanceof Patient;
     }
@@ -209,5 +212,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getDoctor(): ?Doctor
     {
         return $this->doctor;
+    }
+
+    public function setPatient(Patient $patient): void
+    {
+        $this->patient = $patient;
     }
 }

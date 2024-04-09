@@ -16,10 +16,13 @@ use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
+use App\Controller\CreatePatientController;
 use App\Repository\PatientRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Attribute\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: PatientRepository::class)]
 #[ApiResource(
@@ -28,7 +31,13 @@ use Doctrine\ORM\Mapping as ORM;
         new Get(
             security: "is_granted('ROLE_SECRETARY')",
         ),
-        new Post(),
+        // access pour tous
+        new Post(
+            security: "is_granted('PUBLIC_ACCESS')",
+            controller: CreatePatientController::class,
+            read: false,
+            normalizationContext: ['groups' => 'patient:create'],
+        ),
         new Patch(),
     ],
     security: "is_granted('')",
@@ -52,8 +61,18 @@ class Patient
     #[ORM\Column(length: 255)]
     private string $address2;
 
-    #[ORM\Column(length: 255)]
+    // @todo ce champs est supprimable, il n'est pas utilisé.
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $password = null;
+
+    // champs lors de la création pour la création de l'utilisateur système
+    #[Assert\Email]
+    #[Groups(['patient:create'])]
+    public string $userCreationEmail;
+
+    #[Assert\PasswordStrength(message: 'Mot de passe trop faible.')]
+    #[Groups(['patient:create'])]
+    public string $userCreationPassword;
 
     /**
      * @var Collection<int, MedicalOpinion>
