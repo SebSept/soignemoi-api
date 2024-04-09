@@ -65,7 +65,7 @@ use Doctrine\ORM\Mapping as ORM;
             security: "is_granted('ROLE_PATIENT')",
         ),
         new Patch(
-            security: "is_granted('ROLE_SECRETARY')",
+            security: "is_granted('ROLE_SECRETARY') or is_granted('ROLE_ADMIN')",
         ),
     ],
     security: "is_granted('')",

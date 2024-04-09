@@ -15,6 +15,13 @@ class AdminTest extends ApiTestCase
     use Factories;
     use ResetDatabase;
 
+    use HospitalStays;
+
+    public function testModifyAnHospitalStay(): void
+    {
+        $this->modifyAnHospitalStay($this->makeAdmin()->object());
+    }
+
     public function testUpdateDoctor(): void
     {
         $admin = $this->makeAdmin();
@@ -37,10 +44,10 @@ class AdminTest extends ApiTestCase
         ]);
     }
 
-    public function testCreateDoctor()
+    public function testCreateDoctor(): void
     {
         $admin = $this->makeAdmin();
-        $doctor = DoctorFactory::new()->create();
+        DoctorFactory::new()->create();
 
         $client = static::createClientWithBearerFromUser($admin->object());
         $client->request('POST', '/api/doctors' , [
