@@ -43,9 +43,9 @@ use Doctrine\ORM\Mapping as ORM;
         ),
         new GetCollection(
             uriTemplate: '/doctors/{doctor_id}/hospital_stays/today',
-            uriVariables: ['doctor_id' => new Link(
-                fromClass: Doctor::class,
-            )],
+            uriVariables: [
+                'doctor_id' => new Link(fromClass: Doctor::class),
+            ],
             controller: HospitalStayDoctorToday::class,
             security: "is_granted('ROLE_DOCTOR')",
         ),

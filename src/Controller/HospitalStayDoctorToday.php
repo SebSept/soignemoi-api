@@ -25,11 +25,8 @@ readonly class HospitalStayDoctorToday
     /**
      * @return HospitalStay[]
      */
-    public function __invoke(?int $doctor_id = null): array
+    public function __invoke(int $doctor_id): array
     {
-        return $this->hospitalStayRepository->findBy(
-            [
-                'doctor' => $doctor_id,
-            ]);
+        return $this->hospitalStayRepository->findByDoctorForToday($doctor_id);
     }
 }
