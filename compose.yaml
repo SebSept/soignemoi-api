@@ -18,10 +18,10 @@ services:
     expose:
       # php-fpm
       - 9000
-    ports:
+#    ports:
       # symfony dev server
-      - target: 8000
-        published: 32771
+#      - target: 8000
+#        published: 32771
 #    configs:
 #      - source: maconfig
 #        target: /dockerconfig
@@ -33,6 +33,9 @@ services:
       - type: tmpfs
         target: /app/var
     user: "0:1000"
+    networks:
+      - nginx
+      - postgres
     restart: unless-stopped
     depends_on:
       - postgres
@@ -58,6 +61,8 @@ services:
     #        source: postgres_data
     #        target: /var/lib/postgresql/data
     restart: unless-stopped
+    networks:
+      - postgres
 
   nginx:
     image: nginx:1.21.3
@@ -76,6 +81,9 @@ services:
     depends_on:
       - php
     restart: unless-stopped
+    networks:
+      - nginx
+
 
 # https://docs.docker.com/compose/compose-file/08-configs/
 
@@ -87,3 +95,8 @@ services:
 
 #volumes:
 #  postgres_data:
+
+networks:
+  nginx:
+  postgres:
+  php:

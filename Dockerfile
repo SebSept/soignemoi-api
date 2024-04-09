@@ -92,8 +92,6 @@ ADD --chown=climber:climber \
 
 # Add composer binaries to path
 RUN ["fish", "-c fish_add_path /app/vendor/bin"]
-# Add abbreviation for symfony console, 'c' expand to 'symfony console'
-RUN ["fish", "abbr c 'symfony console'"]
 
 # switch back to www-data user ?
 
