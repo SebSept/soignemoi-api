@@ -29,6 +29,7 @@ use Doctrine\ORM\Mapping as ORM;
 #[ApiResource(
     operations: [
         new GetCollection(
+            // @todo trop de droits ?
             security: "is_granted('ROLE_DOCTOR') or is_granted('ROLE_PATIENT') or is_granted('ROLE_ADMIN')",
         ),
         new GetCollection(
@@ -63,7 +64,9 @@ use Doctrine\ORM\Mapping as ORM;
         new Post(
             security: "is_granted('ROLE_PATIENT')",
         ),
-        new Patch(),
+        new Patch(
+            security: "is_granted('ROLE_SECRETARY')",
+        ),
     ],
     security: "is_granted('')",
     //    paginationItemsPerPage: 5,

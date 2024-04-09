@@ -2,6 +2,8 @@
 
 namespace App\Tests\e2e;
 
+use DateTime;
+use App\Factory\DoctorFactory;
 use App\Factory\HospitalStayFactory;
 use App\Factory\MedicalOpinionFactory;
 use App\Factory\PatientFactory;
@@ -75,6 +77,44 @@ class SecretaryTest extends ApiTestCase
         // Assert
         $this->assertResponseIsSuccessful();
         $this->assertJsonContains(['hydra:totalItems' => 2]);
+    }
+
+    public function testModifyAnHospitalStay(): void
+    {
+        // Arrange
+        $patient = PatientFactory::new()->create();
+        $secretaryUser = UserFactory::new()->secretary()->create();
+        $doctor = DoctorFactory::new()->create();
+        $medicalOpinion = HospitalStayFactory::new()->create([
+            'startDate' => new DateTime('2024-04-10'),
+            'endDate' => new DateTime('2024-04-15'),
+            'reason' => 'Toursime médical',
+            'medicalSpeciality' => 'Généraliste',
+            'patient' => $patient,
+            'doctor' => $doctor,
+        ]);
+        $medicalOpinionId = $medicalOpinion->getId();
+
+        // Act
+        $payload = [
+            'checkin' => '2024-04-10 08:00:00',
+        ];
+
+        $client = static::createClientWithBearerFromUser($secretaryUser->object());
+        $client
+            ->request('PATCH', '/api/hospital_stays/'.$medicalOpinionId, [
+                'headers' => [
+                    'Content-Type' => 'application/merge-patch+json',
+                    'Accept' => 'application/ld+json',
+                ],
+                'json' => $payload,
+            ]);
+
+        // Assert
+        $this->assertResponseIsSuccessful();
+        $this->assertJsonContains([
+            'checkin' => '2024-04-10T08:00:00+00:00',
+        ]);
     }
 
     private function AllowedIris(array $ids): array
