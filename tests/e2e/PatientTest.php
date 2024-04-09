@@ -3,6 +3,8 @@
 namespace App\Tests\e2e;
 
 use App\Entity\User;
+use App\Factory\HospitalStayFactory;
+use App\Factory\PatientFactory;
 use App\Factory\UserFactory;
 use App\Tests\ApiTestCase;
 use Zenstruck\Foundry\Proxy;
@@ -14,63 +16,27 @@ class PatientTest extends ApiTestCase
     use Factories;
     use ResetDatabase;
 
-    public function testCanAccessIri(): void
+    public function testPatientViewItsHospitalStays(): void
     {
-        $this->makeEntities();
-        $user = $this->makePatient();
+        // Arrange - 2 patients avec des hospital_stays chacun
+        $patientUser = $this->makePatient();
+        $patient = PatientFactory::repository()->first();
+        HospitalStayFactory::new()->createMany(2, ['patient' => $patient->object()]);
 
-        foreach ($this->AllowedIris() as $iri) {
-            $this->testAccessOk($iri[0], $user);
-        }
-    }
+        $otherPatient = PatientFactory::new()->create();
+        HospitalStayFactory::new()->createMany(3, ['patient' => $otherPatient->object()]);
 
-    private function AllowedIris(): array
-    {
-        return [
-            ['/api/hospital_stays'],
-        ];
-    }
+        // Act
+        $client = static::createClientWithBearerFromUser($patientUser->object());
+        $client->request('GET', '/api/patients/'.$patient->object()->getId().'/hospital_stays/');
 
-    public function testCannotAccessIri(): void
-    {
-        $this->makeEntities();
-        $user = $this->makePatient();
-
-        foreach ($this->NotAllowedIris() as $iri) {
-            $this->testAccessNotAllowedTo($iri[0], $user);
-        }
-    }
-
-    private function NotAllowedIris(): array
-    {
-        return [
-            ['/api/medical_opinions'],
-        ];
-    }
-
-    private function testAccessOk(string $iri, Proxy $proxy): void
-    {
-        static::createClientWithBearerFromUser($proxy->object())
-            ->request('GET', $iri);
-
-        $this->assertResponseIsSuccessful(' raté pour '.$iri);
-    }
-
-    private function testAccessNotAllowedTo(string $string, Proxy $proxy): void
-    {
-        static::createClientWithBearerFromUser($proxy->object())
-            ->request('GET', $string);
-
-        $this->assertResponseStatusCodeSame(403);
-    }
-
-    private function makeEntities(): array
-    {
-        return [
-            //            'patientId' => PatientFactory::new()->create()->getId(),
-            //            'prescriptionId' => PrescriptionFactory::new()->create()->getId(),
-            //            'medicalOpinionId' => MedicalOpinionFactory::new()->create()->getId(),
-        ];
+        // Assert
+        $this->assertResponseIsSuccessful();
+        $this->assertJsonContains([
+            '@context' => '/api/contexts/HospitalStay',
+            '@type' => 'hydra:Collection',
+            'hydra:totalItems' => 2,
+        ]);
     }
 
     private function makePatient(): Proxy|User

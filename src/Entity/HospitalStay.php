@@ -49,6 +49,16 @@ use Doctrine\ORM\Mapping as ORM;
             controller: HospitalStayDoctorToday::class,
             security: "is_granted('ROLE_DOCTOR')",
         ),
+        new GetCollection(
+            uriTemplate: '/patients/{patient_id}/hospital_stays/',
+            uriVariables: [
+                'patient_id' => new Link(
+                    fromProperty: 'hospitalStays',
+                    fromClass: Patient::class
+                ),
+            ],
+            security: "is_granted('ROLE_PATIENT')",
+        ),
         new Get(),
         new Post(),
         new Patch(),
