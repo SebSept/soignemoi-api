@@ -31,8 +31,8 @@ fish_root:
 serve:
     {{symfony}} server:start --no-tls --daemon
 
-new-controller:
-    {{console}} make:controller
+new-controller classname='':
+    {{console}} make:controller {{classname}}
 
 new-api:
     {{console}} make:entity --api-resource
