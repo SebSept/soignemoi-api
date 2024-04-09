@@ -3,6 +3,7 @@
 namespace App\Tests\e2e;
 
 use App\Entity\User;
+use App\Factory\DoctorFactory;
 use App\Factory\UserFactory;
 use App\Tests\ApiTestCase;
 use Zenstruck\Foundry\Proxy;
@@ -13,6 +14,28 @@ class AdminTest extends ApiTestCase
 {
     use Factories;
     use ResetDatabase;
+
+    public function testUpdateADoctor(): void
+    {
+        $admin = $this->makeAdmin();
+        $doctor = DoctorFactory::new()->create();
+
+        $client = static::createClientWithBearerFromUser($admin->object());
+        $client->request('PATCH', '/api/doctors/' . $doctor->getId(), [
+            'headers' => [
+                'Content-Type' => 'application/merge-patch+json',
+                'Accept' => 'application/ld+json',
+            ],
+            'json' => [
+                'firstname' => 'mALLICK',
+            ]
+        ]);
+
+        $this->assertResponseIsSuccessful();
+        $this->assertJsonContains([
+            'firstname' => 'mALLICK',
+        ]);
+    }
 
     public function testCanAccessIri(): void
     {
@@ -55,7 +78,7 @@ class AdminTest extends ApiTestCase
         static::createClientWithBearerFromUser($proxy->object())
             ->request('GET', $iri);
 
-        $this->assertResponseIsSuccessful(' raté pour '.$iri);
+        $this->assertResponseIsSuccessful(' raté pour ' . $iri);
     }
 
     private function testAccessNotAllowedTo(string $string, Proxy $proxy): void

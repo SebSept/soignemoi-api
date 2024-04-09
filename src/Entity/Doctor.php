@@ -29,7 +29,9 @@ use Symfony\Component\Validator\Constraints as Assert;
         ),
         //        new Get(),
         new Post(),
-        new Patch(),
+        new Patch(
+            security: "is_granted('ROLE_ADMIN')",
+        ),
     ],
     normalizationContext: ['groups' => ['read']],
     denormalizationContext: ['groups' => ['write']],
@@ -37,7 +39,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 )
 ]
 #[UniqueEntity(['firstname', 'lastname'])]
-#[UniqueEntity(['email'])]
+#[UniqueEntity(['employeeId'])]
 class Doctor
 {
     #[ORM\Id]
