@@ -60,7 +60,9 @@ use Doctrine\ORM\Mapping as ORM;
             security: "is_granted('ROLE_PATIENT')",
         ),
         new Get(),
-        new Post(),
+        new Post(
+            security: "is_granted('ROLE_PATIENT')",
+        ),
         new Patch(),
     ],
     security: "is_granted('')",

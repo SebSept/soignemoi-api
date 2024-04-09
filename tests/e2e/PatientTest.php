@@ -3,6 +3,7 @@
 namespace App\Tests\e2e;
 
 use App\Entity\User;
+use App\Factory\DoctorFactory;
 use App\Factory\HospitalStayFactory;
 use App\Factory\PatientFactory;
 use App\Factory\UserFactory;
@@ -28,7 +29,7 @@ class PatientTest extends ApiTestCase
 
         // Act
         $client = static::createClientWithBearerFromUser($patientUser->object());
-        $client->request('GET', '/api/patients/'.$patient->object()->getId().'/hospital_stays/');
+        $client->request('GET', '/api/patients/' . $patient->object()->getId() . '/hospital_stays/');
 
         // Assert
         $this->assertResponseIsSuccessful();
@@ -37,6 +38,35 @@ class PatientTest extends ApiTestCase
             '@type' => 'hydra:Collection',
             'hydra:totalItems' => 2,
         ]);
+    }
+
+    public function testPatientCreatesAnHospitalStay(): void
+    {
+        // Arrange
+        $patientUser = $this->makePatient();
+        $patient = PatientFactory::repository()->first();
+        $doctor = DoctorFactory::new()->create();
+
+        // Act
+        $client = static::createClientWithBearerFromUser($patientUser->object());
+        $client->request(
+            'POST',
+            '/api/hospital_stays',
+            [                'headers' => [
+                'Content-Type' => 'application/ld+json',
+                'Accept' => 'application/ld+json',
+            ],
+                'json' => [
+                    'patient' => '/api/patients/' . $patient->object()->getId(),
+                    'startDate' => '2024-01-01',
+                    'endDate' => '2024-01-05',
+                    'reason' => 'Mal de tête',
+                    'medicalSpeciality' => 'Neurologie',
+                    'doctor' => '/api/doctors/'.$doctor->object()->getId(),
+                ]]);
+
+        // Assert
+        $this->assertResponseIsSuccessful();
     }
 
     private function makePatient(): Proxy|User
