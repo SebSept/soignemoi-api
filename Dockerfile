@@ -44,22 +44,22 @@ ADD --chown=climber:climber \
 RUN composer --version
 
 # Add box to make phar - https://github.com/box-project/box/
-ARG BOX_VERSION
-ARG BOX_CHECKSUM
-ADD --chown=climber:climber \
-    --chmod=744 \
-    --checksum=sha256:${BOX_CHECKSUM} \
-    https://github.com/box-project/box/releases/download/${BOX_VERSION}/box.phar \
-    /usr/local/bin/box
+#ARG BOX_VERSION
+#ARG BOX_CHECKSUM
+#ADD --chown=climber:climber \
+#    --chmod=744 \
+#    --checksum=sha256:${BOX_CHECKSUM} \
+#    https://github.com/box-project/box/releases/download/${BOX_VERSION}/box.phar \
+#    /usr/local/bin/box
 
 # Add phive - not yet available, gpg not installed
 # Phive require a gpg key
 # to choose the version, do not use RUN ["phive", "install phpmd --trust-gpg-keys 9093F8B32E4815AA"]
 # But use RUN ["phive", "install https://github.com/infection/infection/releases/download/0.27.8/infection.phar --trust-gpg-keys C5095986493B4AA0"]
-ADD --chown=climber:climber \
-    --chmod=744 \
-    https://github.com/phar-io/phive/releases/download/0.15.2/phive-0.15.2.phar \
-    /usr/local/bin/phive
+#ADD --chown=climber:climber \
+#    --chmod=744 \
+#    https://github.com/phar-io/phive/releases/download/0.15.2/phive-0.15.2.phar \
+#    /usr/local/bin/phive
 
 
 # Create app directory & vendor/bin (needed ?)
@@ -92,6 +92,8 @@ ADD --chown=climber:climber \
 
 # Add composer binaries to path
 RUN ["fish", "-c fish_add_path /app/vendor/bin"]
+# Add abbreviation for symfony console, 'c' expand to 'symfony console'
+RUN ["fish", "abbr c 'symfony console'"]
 
 # switch back to www-data user ?
 
