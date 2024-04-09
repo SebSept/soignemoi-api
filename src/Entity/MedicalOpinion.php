@@ -68,6 +68,7 @@ class MedicalOpinion
 
     #[ORM\ManyToOne(targetEntity: Doctor::class)]
     #[Groups(['medicalOpinion:read', 'medicalOpinion:write'])]
+    #[AssertCustom\UserIsDoctor]
     private ?Doctor $doctor = null;
 
     #[ORM\ManyToOne(targetEntity: Patient::class, inversedBy: 'medicalOpinions')]

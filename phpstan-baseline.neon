@@ -1,0 +1,11 @@
+parameters:
+	ignoreErrors:
+		-
+			message: "#^Method App\\\\Repository\\\\HospitalStayRepository\\:\\:findByDoctorForToday\\(\\) should return array\\<App\\\\Entity\\\\HospitalStay\\> but returns mixed\\.$#"
+			count: 1
+			path: src/Repository/HospitalStayRepository.php
+
+		-
+			message: "#^Access to an undefined property Symfony\\\\Component\\\\Validator\\\\Constraint\\:\\:\\$message\\.$#"
+			count: 1
+			path: src/Validator/UserIsDoctorValidator.php

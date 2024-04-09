@@ -68,6 +68,7 @@ class Prescription
     #[ORM\ManyToOne(targetEntity: Doctor::class)]
     #[Groups(['prescription:read', 'prescription:write'])]
     #[Assert\NotBlank]
+    #[AssertCustom\UserIsDoctor]
     private ?Doctor $doctor = null;
 
     /**

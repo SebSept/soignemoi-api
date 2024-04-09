@@ -196,7 +196,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         }
     }
 
-    private function isDoctor(): bool
+    public function isDoctor(): bool
     {
         return $this->doctor instanceof Doctor;
     }
@@ -204,5 +204,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private function isPatient(): bool
     {
         return $this->patient instanceof Patient;
+    }
+
+    public function getDoctor(): ?Doctor
+    {
+        return $this->doctor;
     }
 }

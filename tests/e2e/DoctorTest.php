@@ -74,33 +74,24 @@ class DoctorTest extends ApiTestCase
         ];
     }
 
-    public function testCanViewTodayHospitalDays(): void
+    public function testCanViewTodayHospitalStays(): void
     {
-        //        // Arrange
-        //        $patient = PatientFactory::new()->create();
-        //        $patientIri = '/api/patients/' . $patient->getId();
+        // Arrange
         $doctorUser = $this->makeDoctorUser();
         $doctor = DoctorFactory::repository()->first()->object(); // on devrait le retrouver avec le user->getDoctor() mais ça ne marche pas.
-        //        $doctorIri = '/api/doctors/' . $doctor->getId();
-        //        $nbPrescriptions = PrescriptionFactory::repository()->count();
-        //
-        //        $payload = [
-        //            'patient' => $patientIri,
-        //            'doctor' => $doctorIri,
-        //            'items' => []
-        //        ];
 
         $client = static::createClientWithBearerFromUser($doctorUser->object());
         $client
             ->request('GET', '/api/doctors/'.$doctor->getId().'/hospital_stays/today', [
                 'headers' => [
-                    //                    'Content-Type' => 'application/ld+json',
+                    // 'Content-Type' => 'application/ld+json',
                     'Accept' => 'application/ld+json',
                 ],
             ]);
 
         // Assert
         $this->assertResponseIsSuccessful();
+        // pas de vérif sur le compte, on à un test du repository : \App\Tests\unit\DoctorHospitalStaysTest
     }
 
     private function makeDoctorUser(): Proxy|User
@@ -221,16 +212,18 @@ trait prescriptions
         // Arrange
         $patient = PatientFactory::new()->create();
         $doctorUser = $this->makeDoctorUser();
-        $doctor = DoctorFactory::repository()->first()->object();
+        DoctorFactory::repository()->first()->object();
         $otherDoctor = DoctorFactory::new()->create();
+
         $prescription = PrescriptionFactory::new()->create([
             'patient' => $patient,
-            'doctor' => $doctor, // docteur authentifié
+            'doctor' => $otherDoctor,
         ]);
         $prescriptionId = $prescription->getId();
 
         // Act
         $payload = [
+            // qu'importe les données, ces champs doctor et patient ne sont pas traités, pas dispo en écriture
             'patient' => '/api/patients/'.$patient->getId(),
             'doctor' => '/api/doctors/'.$otherDoctor->getId(),
             // passer le champs 'items' vide cause une erreur
@@ -247,12 +240,7 @@ trait prescriptions
             ]);
 
         // Assert
-        // on a une réponse en 200, mais le docteur ne doit pas avoir changé
-        // on le vérifie dans le contenu de la réponse
-        $this->assertResponseStatusCodeSame(200);
-        $this->assertJsonContains([
-            'doctor' => '/api/doctors/'.$doctor->getId(),
-        ]);
+        $this->assertResponseStatusCodeSame(422);
     }
 }
 
@@ -371,11 +359,11 @@ trait medicalOpinions
         // Arrange
         $patient = PatientFactory::new()->create();
         $doctorUser = $this->makeDoctorUser();
-        $doctor = DoctorFactory::repository()->first()->object();
+        DoctorFactory::repository()->first()->object();
         $otherDoctor = DoctorFactory::new()->create();
         $medicalOpinion = MedicalOpinionFactory::new()->create([
             'patient' => $patient,
-            'doctor' => $doctor, // docteur authentifié
+            'doctor' => $otherDoctor,
         ]);
         $medicalOpinionId = $medicalOpinion->getId();
 
@@ -396,12 +384,6 @@ trait medicalOpinions
             ]);
 
         // Assert
-        // on a une réponse en 200, mais le docteur ne doit pas avoir changé
-        // on le vérifie dans le contenu de la réponse
-        $this->assertResponseStatusCodeSame(200);
-        $this->assertJsonContains([
-            'doctor' => '/api/doctors/'.$doctor->getId(),
-            'patient' => '/api/patients/'.$patient->getId(),
-        ]);
+        $this->assertResponseStatusCodeSame(422);
     }
 }
