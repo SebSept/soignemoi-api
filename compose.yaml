@@ -1,31 +1,7 @@
 # https://docs.docker.com/compose/compose-file/05-services/#image
 services:
   php:
-    build:
-      context: .
-      dockerfile: ./Dockerfile
-      args:
-        ARG COMPOSER_VERSION: 2.6.5
-        ARG PHP_VERSION: 8.2
-        ARG BOX_VERSION: 4.5.1
-        ARG BOX_CHECKSUM: c24c400c424a68041d7af146c71943bf1acc0c5abafa45297c503b832b9c6b16
-        ARG GIT_EMAIL: "seb@local.fr"
-        ARG GIT_USERNAME: "seb"
-        ARG ALPINE_VERSION: 3.19
-        ARG PHP_CS_FIXER_VERSION: 3.52.1
-#    expose:
-#      - 8000
-    expose:
-      # php-fpm
-      - 9000
-#    ports:
-      # symfony dev server
-#      - target: 8000
-#        published: 32771
-#    configs:
-#      - source: maconfig
-#        target: /dockerconfig
-#        mode: 0444
+    image: ghcr.io/sebsept/docker-php-symfony-starter:main
     volumes:
       - type: bind
         source: ./
@@ -55,11 +31,10 @@ services:
     ports:
       - target: 5432
         published: 32770
-    # mettre en place volumes en prod @todo
-    #    volumes:
-    #      - type: volume
-    #        source: postgres_data
-    #        target: /var/lib/postgresql/data
+    volumes:
+      - type: volume
+        source: postgres_data
+        target: /var/lib/postgresql/data
     restart: unless-stopped
     networks:
       - postgres
@@ -93,8 +68,8 @@ services:
 
 # https://docs.docker.com/compose/compose-file/10-fragments/
 
-#volumes:
-#  postgres_data:
+volumes:
+  postgres_data:
 
 networks:
   nginx:
