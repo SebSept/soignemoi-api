@@ -58,7 +58,7 @@ services:
     restart: unless-stopped
     networks:
       - nginx
-
+      - partage
 
 # https://docs.docker.com/compose/compose-file/08-configs/
 
@@ -75,3 +75,5 @@ networks:
   nginx:
   postgres:
   php:
+  partage:
+    external: true
