@@ -218,4 +218,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         $this->patient = $patient;
     }
+
+    public function setDoctor(?Doctor $doctor): void
+    {
+        $this->doctor = $doctor;
+    }
+
+    public function getPatient(): ?Patient
+    {
+        return $this->patient;
+    }
 }

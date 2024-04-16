@@ -35,11 +35,12 @@ final class PatientFactory extends ModelFactory
     protected function getDefaults(): array
     {
         return [
-            'address1' => self::faker()->text(255),
-            'address2' => self::faker()->text(255),
-            'firstname' => self::faker()->text(255),
-            'lastname' => self::faker()->text(255),
-            'password' => self::faker()->text(255),
+            'address1' => self::faker()->postcode().' '.self::faker()->city(),
+            'address2' => self::faker()->address(),
+            'firstname' => self::faker()->firstName(),
+            'lastname' => self::faker()->lastName(),
+            'password' => self::faker()->word(),
+//            'hospital_stays' => HospitalStayFactory::new()->many(3,5), // cette factory va demander aussi la création d'un patient
         ];
     }
 

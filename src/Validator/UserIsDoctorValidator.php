@@ -24,7 +24,7 @@ class UserIsDoctorValidator extends ConstraintValidator
     }
 
     /**
-     * Le docteur choisi ($value) est bien le docteur associé au user identifié.
+     * Le docteur choisi (pour la prescription, l'avis) ($value) correspond aux docteur identifié.
      *
      * @param Doctor $value
      */

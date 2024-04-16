@@ -262,4 +262,9 @@ class Patient
 
         return $this;
     }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
 }

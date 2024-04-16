@@ -34,6 +34,7 @@ final class UserFactory extends ModelFactory
     public const VALID_TOKEN = 'this-is-a-valid-token-value';
 
     public const VALID_DOCTOR_TOKEN = 'this-is-a-valid-token-value-doctor';
+    public const VALID_PATIENT_TOKEN = 'this-is-a-valid-token-value-patient';
 
     /**
      * @see https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html#factories-as-services
@@ -53,30 +54,43 @@ final class UserFactory extends ModelFactory
         );
     }
 
+    public function withHospitalStays(): self
+    {
+        return $this->addState(
+            [
+//                'hospitalStays' => HospitalStayFactory::repository()->randomRange(3, 5)
+                'hospital_stays' => HospitalStayFactory::new()->many(3, 5)
+            ]
+        );
+    }
+
+
     public function secretary(): self
     {
         return self::new()->withValidToken();
     }
 
-    //    public function patient(): self
-    //    {
-    //        $patient = PatientFactory::new()->create();
-    //        return self::new()->withValidToken()->create(['patient' => $patient]);
-    //    }
     public function doctor(): self
     {
-        $userFactory = self::new()->withValidToken();
-        DoctorFactory::new(['user' => $userFactory])->create();
-
-        return $userFactory;
+        return $this->addState(
+            ['doctor' => DoctorFactory::new()]
+        );
     }
 
     public function patient(): self
     {
-        $userFactory = self::new()->withValidToken();
-        PatientFactory::new(['user' => $userFactory])->create();
+//        $user = self::new()->create();
+//        $patient = PatientFactory::new()->create(['user' => $user]);
+//        if(!in_array('ROLE_PATIENT', $user->object()->getRoles())) {
+//            throw new \Exception('User Patient non associé à un patient');
+//        }
 
-        return $userFactory;
+//        return $user;
+
+        throw new \Exception('ne plus utiliser - ne fonctionne pas - a retester');
+//        return $this->addState(
+//            ['patient' => PatientFactory::new()]
+//        );
     }
 
     public function admin(): self

@@ -20,9 +20,9 @@ class DoctorHospitalStaysTest extends KernelTestCase
         $kernel = self::bootKernel();
         $hospitalStayRepository = $kernel->getContainer()->get('doctrine')->getRepository(HospitalStay::class);
 
-        $patient = PatientFactory::new()->create();
         $doctor = DoctorFactory::new()->create();
         $otherDoctor = DoctorFactory::new()->create();
+        $patient = PatientFactory::new()->create();
         $expected = 5; // pas un multiple de 2, on utilise 2 pour les données à ne pas renvoyer.
 
         // cas possibles : 3 * 2 docteurs

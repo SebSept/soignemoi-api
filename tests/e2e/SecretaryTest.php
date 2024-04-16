@@ -45,6 +45,7 @@ class SecretaryTest extends ApiTestCase
     public function testCountTodayEntries(): void
     {
         // Arrange
+        PatientFactory::new()->many(10)->create();
         HospitalStayFactory::new()->entryBeforeToday()->many(3)->create();
         HospitalStayFactory::new()->entryToday()->many(5)->create();
         HospitalStayFactory::new()->exitToday()->many(2)->create();
@@ -63,6 +64,7 @@ class SecretaryTest extends ApiTestCase
     public function testCountTodayExits(): void
     {
         // Arrange
+        PatientFactory::new()->many(10)->create();
         HospitalStayFactory::new()->exitBeforeToday()->many(3)->create();
         HospitalStayFactory::new()->exitToday()->many(2)->create();
         HospitalStayFactory::new()->entryToday()->many(2)->create();

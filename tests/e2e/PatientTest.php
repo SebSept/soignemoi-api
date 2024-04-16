@@ -2,6 +2,8 @@
 
 namespace App\Tests\e2e;
 
+use DateTime;
+use Exception;
 use App\Entity\User;
 use App\Factory\DoctorFactory;
 use App\Factory\HospitalStayFactory;
@@ -50,16 +52,17 @@ class PatientTest extends ApiTestCase
     public function testPatientViewItsHospitalStays(): void
     {
         // Arrange - 2 patients avec des hospital_stays chacun
-        $patientUser = $this->makePatient();
-        $patient = PatientFactory::repository()->first();
-        HospitalStayFactory::new()->createMany(2, ['patient' => $patient->object()]);
+        $patientUser = $this->makePatientUser();
+        $patient = $patientUser->getPatient();
+
+        HospitalStayFactory::new()->createMany(2, ['patient' => $patient]);
 
         $otherPatient = PatientFactory::new()->create();
         HospitalStayFactory::new()->createMany(3, ['patient' => $otherPatient->object()]);
 
         // Act
         $client = static::createClientWithBearerFromUser($patientUser->object());
-        $client->request('GET', '/api/patients/' . $patient->object()->getId() . '/hospital_stays/');
+        $client->request('GET', '/api/patients/' . $patient->getId() . '/hospital_stays/');
 
         // Assert
         $this->assertResponseIsSuccessful();
@@ -73,8 +76,8 @@ class PatientTest extends ApiTestCase
     public function testPatientCreatesAnHospitalStay(): void
     {
         // Arrange
-        $patientUser = $this->makePatient();
-        $patient = PatientFactory::repository()->first();
+        $patientUser = $this->makePatientUser();
+        $patient = $patientUser->getPatient();
         $doctor = DoctorFactory::new()->create();
 
         // Act
@@ -87,7 +90,7 @@ class PatientTest extends ApiTestCase
                 'Accept' => 'application/ld+json',
             ],
                 'json' => [
-                    'patient' => '/api/patients/' . $patient->object()->getId(),
+                    'patient' => '/api/patients/' . $patient->getId(),
                     'startDate' => '2024-01-01',
                     'endDate' => '2024-01-05',
                     'reason' => 'Mal de tête',
@@ -99,11 +102,36 @@ class PatientTest extends ApiTestCase
         $this->assertResponseIsSuccessful();
     }
 
-    
-    
-    private function makePatient(): Proxy|User
+    private function makePatientUser(): Proxy|User
     {
-        return UserFactory::new()->patient()->create();
+        $user = UserFactory::new()->create(
+            [
+                'email' => 'patient@patient.com',
+                'password' => 'hello',
+                'roles' => [],
+                'access_token' => UserFactory::VALID_PATIENT_TOKEN,
+                'token_expiration' => new DateTime('+30 day'),
+            ]
+        );
+        PatientFactory::new()->create(
+            [
+                'user' => $user,
+                'hospital_stays' => []
+
+            ]);
+        if(!in_array('ROLE_PATIENT', $user->object()->getRoles())) {
+            throw new Exception('User Patient non associé à un patient');
+        }
+
+        return $user;
+
+        // ----
+//        $patient = UserFactory::new()->patient()->create();
+//        if(!in_array('ROLE_PATIENT', $patient->object()->getRoles())) {
+//            throw new \Exception('User Patient non associé à un patient');
+//        }
+
+//        return $patient;
     }
 }
 

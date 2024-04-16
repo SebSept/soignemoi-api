@@ -2,6 +2,7 @@
 
 namespace App\Tests\e2e;
 
+use Exception;
 use App\Entity\User;
 use App\Factory\DoctorFactory;
 use App\Factory\MedicalOpinionFactory;
@@ -23,7 +24,6 @@ class DoctorTest extends ApiTestCase
 
     public function testCanAccessIri(): void
     {
-        $this->makeEntities();
         $user = $this->makeDoctorUser();
 
         foreach ($this->AllowedIris() as $iri) {
@@ -47,7 +47,6 @@ class DoctorTest extends ApiTestCase
      */
     public function testCannotAccessIri(): void
     {
-        $this->makeEntities();
         $user = $this->makeDoctorUser();
 
         foreach ($this->NotAllowedIris() as $iri) {
@@ -65,24 +64,13 @@ class DoctorTest extends ApiTestCase
         ];
     }
 
-    private function makeEntities(): array
-    {
-        return [
-            //            'patientId' => PatientFactory::new()->create()->getId(),
-            //            'prescriptionId' => PrescriptionFactory::new()->create()->getId(),
-            //            'medicalOpinionId' => MedicalOpinionFactory::new()->create()->getId(),
-        ];
-    }
-
     public function testCanViewTodayHospitalStays(): void
     {
         // Arrange
         $doctorUser = $this->makeDoctorUser();
-        $doctor = DoctorFactory::repository()->first()->object(); // on devrait le retrouver avec le user->getDoctor() mais ça ne marche pas.
-
         $client = static::createClientWithBearerFromUser($doctorUser->object());
         $client
-            ->request('GET', '/api/doctors/'.$doctor->getId().'/hospital_stays/today', [
+            ->request('GET', '/api/doctors/'.$doctorUser->object()->getDoctor()->getId().'/hospital_stays/today', [
                 'headers' => [
                     // 'Content-Type' => 'application/ld+json',
                     'Accept' => 'application/ld+json',
@@ -96,7 +84,12 @@ class DoctorTest extends ApiTestCase
 
     private function makeDoctorUser(): Proxy|User
     {
-        return UserFactory::new()->doctor()->create();
+        $doctor = UserFactory::new()->doctor()->create();
+        if(!in_array('ROLE_DOCTOR', $doctor->object()->getRoles())) {
+            throw new Exception('User Doctor non associé à un docteur');
+        }
+
+        return $doctor;
     }
 }
 
@@ -108,8 +101,7 @@ trait prescriptions
         $patient = PatientFactory::new()->create();
         $patientIri = '/api/patients/'.$patient->getId();
         $doctorUser = $this->makeDoctorUser();
-        $doctor = DoctorFactory::repository()->first()->object(); // on devrait le retrouver avec le user->getDoctor() mais ça ne marche pas.
-        $doctorIri = '/api/doctors/'.$doctor->getId();
+        $doctorIri = '/api/doctors/'.$doctorUser->getDoctor()->getId();
         $nbPrescriptions = PrescriptionFactory::repository()->count();
 
         $payload = [
@@ -139,15 +131,14 @@ trait prescriptions
         // Arrange
         $patient = PatientFactory::new()->create();
         $doctorUser = $this->makeDoctorUser();
-        $doctor = DoctorFactory::repository()->first()->object();
         PrescriptionFactory::new()->create([
             'patient' => $patient,
-            'doctor' => $doctor,
+            'doctor' => $doctorUser->getDoctor(),
         ]);
 
         // Act
         $patientIri = '/api/patients/'.$patient->getId();
-        $doctorIri = '/api/doctors/'.$doctor->getId();
+        $doctorIri = '/api/doctors/'.$doctorUser->getDoctor()->getId();
 
         $payload = [
             'patient' => $patientIri,
@@ -175,10 +166,9 @@ trait prescriptions
         // Arrange
         $patient = PatientFactory::new()->create();
         $doctorUser = $this->makeDoctorUser();
-        $doctor = DoctorFactory::repository()->first()->object();
         $prescription = PrescriptionFactory::new()->create([
             'patient' => $patient,
-            'doctor' => $doctor,
+            'doctor' => $doctorUser->getDoctor(),
         ]);
         $prescriptionId = $prescription->getId();
 
@@ -252,8 +242,7 @@ trait medicalOpinions
         $patient = PatientFactory::new()->create();
         $patientIri = '/api/patients/'.$patient->getId();
         $doctorUser = $this->makeDoctorUser();
-        $doctor = DoctorFactory::repository()->first()->object();
-        $doctorIri = '/api/doctors/'.$doctor->getId();
+        $doctorIri = '/api/doctors/'.$doctorUser->getDoctor()->getId();
         $nbMedicalOpinions = MedicalOpinionFactory::repository()->count();
 
         $payload = [
@@ -264,7 +253,6 @@ trait medicalOpinions
         ];
 
         // Act
-
         $client = static::createClientWithBearerFromUser($doctorUser->object());
         $client
             ->request('POST', '/api/medical_opinions', [
@@ -285,15 +273,14 @@ trait medicalOpinions
         // Arrange
         $patient = PatientFactory::new()->create();
         $doctorUser = $this->makeDoctorUser();
-        $doctor = DoctorFactory::repository()->first()->object();
         MedicalOpinionFactory::new()->create([
             'patient' => $patient,
-            'doctor' => $doctor,
+            'doctor' => $doctorUser->getDoctor(),
         ]);
 
         // Act
         $patientIri = '/api/patients/'.$patient->getId();
-        $doctorIri = '/api/doctors/'.$doctor->getId();
+        $doctorIri = '/api/doctors/'.$doctorUser->getDoctor()->getId();
 
         $payload = [
             'patient' => $patientIri,
@@ -322,10 +309,9 @@ trait medicalOpinions
         // Arrange
         $patient = PatientFactory::new()->create();
         $doctorUser = $this->makeDoctorUser();
-        $doctor = DoctorFactory::repository()->first()->object();
         $medicalOpinion = MedicalOpinionFactory::new()->create([
             'patient' => $patient,
-            'doctor' => $doctor,
+            'doctor' => $doctorUser->getDoctor(),
         ]);
         $medicalOpinionId = $medicalOpinion->getId();
 

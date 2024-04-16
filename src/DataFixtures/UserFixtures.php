@@ -3,6 +3,7 @@
 namespace App\DataFixtures;
 
 use App\Factory\DoctorFactory;
+use App\Factory\PatientFactory;
 use App\Factory\UserFactory;
 use DateTime;
 use Doctrine\Bundle\FixturesBundle\Fixture;
@@ -15,9 +16,9 @@ class UserFixtures extends Fixture
         // secrétaire - pas de docteur ou patient associé
         UserFactory::new()->create(
             [
-                'email' => 'test@test.com',
+                'email' => 'secretaire@secretaire.com',
                 'password' => 'hello',
-                'roles' => [''],
+                'roles' => [],
                 'access_token' => UserFactory::VALID_TOKEN,
                 'token_expiration' => new DateTime('+30 day'),
             ]
@@ -28,7 +29,7 @@ class UserFixtures extends Fixture
             [
                 'email' => 'doctor@doctor.com',
                 'password' => 'hello',
-                'roles' => [''],
+                'roles' => [],
                 'access_token' => UserFactory::VALID_DOCTOR_TOKEN,
                 'token_expiration' => new DateTime('+30 day'),
             ]
