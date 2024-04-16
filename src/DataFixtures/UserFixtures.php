@@ -35,5 +35,18 @@ class UserFixtures extends Fixture
             ]
         );
         DoctorFactory::new()->create(['user' => $user]);
+
+        // Patient
+        $user = UserFactory::new()->create(
+                 [
+                    'email' => 'patient@patient.com',
+                    'password' => 'hello',
+                    'roles' => [],
+                    'access_token' => UserFactory::VALID_PATIENT_TOKEN,
+                    'token_expiration' => new DateTime('+30 day'),
+                ]
+            );
+        PatientFactory::new()->create(['user' => $user]);
+
     }
 }
