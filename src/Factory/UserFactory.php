@@ -77,6 +77,9 @@ final class UserFactory extends ModelFactory
         );
     }
 
+    /**
+     * @deprecated see src/DataFixtures/UserFixtures.php:39
+     */
     public function patient(): self
     {
 //        $user = self::new()->create();
