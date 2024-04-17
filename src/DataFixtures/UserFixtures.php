@@ -46,7 +46,7 @@ class UserFixtures extends Fixture
                     'token_expiration' => new DateTime('+30 day'),
                 ]
             );
-        PatientFactory::new()->create(['user' => $user]);
+        PatientFactory::new()->withHospitalStays()->create(['user' => $user]);
 
     }
 }

@@ -29,6 +29,13 @@ use Zenstruck\Foundry\RepositoryProxy;
  */
 final class PatientFactory extends ModelFactory
 {
+    public function withHospitalStays(): self
+    {
+        return $this->addState([
+           'hospitalStays' => HospitalStayFactory::new()->many(7)
+        ]);
+    }
+
     /**
      * @see https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html#model-factories
      */
