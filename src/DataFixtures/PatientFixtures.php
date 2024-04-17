@@ -15,7 +15,6 @@ class PatientFixtures extends Fixture
 {
     public function load(ObjectManager $objectManager): void
     {
-        // patients non associés à des users
-        PatientFactory::new()->many(15)->create();
+        PatientFactory::new()->many(15)->create(['user' => UserFactory::new()]);
     }
 }
