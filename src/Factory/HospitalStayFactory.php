@@ -42,6 +42,14 @@ final class HospitalStayFactory extends ModelFactory
         parent::__construct();
     }
 
+    public function withExistingPatient(): self
+    {
+        return $this->addState(
+            ['patient' => PatientFactory::repository()->random()]
+        );
+
+    }
+
     /**
      * @see https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html#model-factories
      */
@@ -50,13 +58,6 @@ final class HospitalStayFactory extends ModelFactory
         $randomDateGenerator = static fn() => faker()->dateTimeBetween('-4 months', '4 months');
 
         $doctorRepository = repository(Doctor::class);
-        $patientRepository = repository(Patient::class);
-
-        if(PatientFactory::repository()->count() === 0) {
-            PatientFactory::new();
-        }
-
-//        dump(PatientFactory::repository()->count(), $patientRepository->count());
 
         $startDate = $randomDateGenerator();
         $endDate = (clone $startDate)->modify('+' . faker()->numberBetween(0, 5) . ' days');
@@ -82,7 +83,6 @@ final class HospitalStayFactory extends ModelFactory
             'doctor' => $doctorRepository->random(),
             'medicalSpeciality' => self::faker()
                 ->randomElement(['cardilolgie', 'oncologie', 'dermatologie', 'pédiatrie', 'gynécologie', 'urologie', 'neurologie', 'psychiatrie', 'ophtalmologie', 'ORL']),
-            'patient' => $patientRepository->random(),
             'reason' => self::faker()->text(255),
         ];
     }

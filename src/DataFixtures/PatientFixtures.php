@@ -3,6 +3,7 @@
 namespace App\DataFixtures;
 
 use App\Entity\Patient;
+use App\Factory\HospitalStayFactory;
 use App\Factory\PatientFactory;
 use App\Factory\UserFactory;
 use Doctrine\Bundle\FixturesBundle\Fixture;
@@ -15,6 +16,10 @@ class PatientFixtures extends Fixture
 {
     public function load(ObjectManager $objectManager): void
     {
-        PatientFactory::new()->many(15)->create(['user' => UserFactory::new()]);
+        PatientFactory::new()->many(15)->create(
+            [
+                'user' => UserFactory::new(),
+                'hospitalStays' => HospitalStayFactory::new()->many(1,5)
+            ]);
     }
 }

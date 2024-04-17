@@ -56,6 +56,7 @@ class GetTokenTest extends ApiTestCase
 
         $user = UserFactory::repository()->first();
         $user->getRoles();
+
         $token = $user->getAccessToken();
 
         $this->assertResponseIsSuccessful();
@@ -101,6 +102,7 @@ class GetTokenTest extends ApiTestCase
 
         $user = UserFactory::repository()->first();
         $user->getRoles();
+
         $token = $user->getAccessToken();
 //        $expiration = $user->getTokenExpiration();
 

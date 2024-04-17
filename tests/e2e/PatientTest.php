@@ -116,7 +116,7 @@ class PatientTest extends ApiTestCase
         PatientFactory::new()->create(
             [
                 'user' => $user,
-                'hospital_stays' => []
+                'hospitalStays' => []
 
             ]);
         if(!in_array('ROLE_PATIENT', $user->object()->getRoles())) {
@@ -124,14 +124,6 @@ class PatientTest extends ApiTestCase
         }
 
         return $user;
-
-        // ----
-//        $patient = UserFactory::new()->patient()->create();
-//        if(!in_array('ROLE_PATIENT', $patient->object()->getRoles())) {
-//            throw new \Exception('User Patient non associé à un patient');
-//        }
-
-//        return $patient;
     }
 }
 

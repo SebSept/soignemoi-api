@@ -58,8 +58,7 @@ final class UserFactory extends ModelFactory
     {
         return $this->addState(
             [
-//                'hospitalStays' => HospitalStayFactory::repository()->randomRange(3, 5)
-                'hospital_stays' => HospitalStayFactory::new()->many(3, 5)
+                'hospitalStays' => HospitalStayFactory::new()->many(3, 5)
             ]
         );
     }

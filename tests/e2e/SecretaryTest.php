@@ -46,10 +46,10 @@ class SecretaryTest extends ApiTestCase
     {
         // Arrange
         PatientFactory::new()->many(10)->create();
-        HospitalStayFactory::new()->entryBeforeToday()->many(3)->create();
-        HospitalStayFactory::new()->entryToday()->many(5)->create();
-        HospitalStayFactory::new()->exitToday()->many(2)->create();
-        HospitalStayFactory::new()->entryAfterToday()->many(3)->create();
+        HospitalStayFactory::new()->withExistingPatient()->entryBeforeToday()->many(3)->create();
+        HospitalStayFactory::new()->withExistingPatient()->entryToday()->many(5)->create();
+        HospitalStayFactory::new()->withExistingPatient()->exitToday()->many(2)->create();
+        HospitalStayFactory::new()->withExistingPatient()->entryAfterToday()->many(3)->create();
 
         // Act
         $secretary = UserFactory::new()->secretary()->create();
@@ -65,10 +65,10 @@ class SecretaryTest extends ApiTestCase
     {
         // Arrange
         PatientFactory::new()->many(10)->create();
-        HospitalStayFactory::new()->exitBeforeToday()->many(3)->create();
-        HospitalStayFactory::new()->exitToday()->many(2)->create();
-        HospitalStayFactory::new()->entryToday()->many(2)->create();
-        HospitalStayFactory::new()->exitAfterToday()->many(3)->create();
+        HospitalStayFactory::new()->withExistingPatient()->exitBeforeToday()->many(3)->create();
+        HospitalStayFactory::new()->withExistingPatient()->exitToday()->many(2)->create();
+        HospitalStayFactory::new()->withExistingPatient()->entryToday()->many(2)->create();
+        HospitalStayFactory::new()->withExistingPatient()->exitAfterToday()->many(3)->create();
 
         // Act
         $secretary = UserFactory::new()->secretary()->create();

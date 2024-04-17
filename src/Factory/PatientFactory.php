@@ -40,7 +40,7 @@ final class PatientFactory extends ModelFactory
             'firstname' => self::faker()->firstName(),
             'lastname' => self::faker()->lastName(),
             'password' => self::faker()->word(),
-//            'hospital_stays' => HospitalStayFactory::new()->many(3,5), // cette factory va demander aussi la création d'un patient
+//            'hospitalStays' => HospitalStayFactory::new()->many(3,5), // cette factory va demander aussi la création d'un patient
         ];
     }
 
