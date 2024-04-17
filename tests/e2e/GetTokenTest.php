@@ -62,6 +62,7 @@ class GetTokenTest extends ApiTestCase
         $this->assertResponseIsSuccessful();
         $this->assertJsonContains(['role' => 'ROLE_SECRETARY']);
         $this->assertJsonContains(['accessToken' => $token]);
+        $this->assertJsonContains(['id' => $user->getId()]);
     }
 
     public function testAdminGetTokenAndRequetDoctors(): void
@@ -109,6 +110,7 @@ class GetTokenTest extends ApiTestCase
         $this->assertResponseIsSuccessful();
         $this->assertJsonContains(['role' => 'ROLE_DOCTOR']);
         $this->assertJsonContains(['accessToken' => $token]);
+        $this->assertJsonContains(['id' => $user->getId()]);
     }
 
     public function testPatientGetToken(): void
@@ -156,7 +158,8 @@ class GetTokenTest extends ApiTestCase
         $this->assertResponseIsSuccessful();
         $this->assertJsonContains(['accessToken' => $token]);
         $this->assertJsonContains(['role' => 'ROLE_PATIENT']);
-        
+        $this->assertJsonContains(['id' => $user->getId()]);
+
         // test bd
         $this->assertGreaterThan(new DateTime(), $expiration);
         $this->assertSame('ROLE_PATIENT', $role);
