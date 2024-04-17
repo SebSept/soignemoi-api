@@ -36,7 +36,7 @@ class GetTokenTest extends ApiTestCase
         ]);
 
         // Act
-        $response = $client->request(
+        $client->request(
             'POST',
             '/token',
             ['json' => [
@@ -50,12 +50,12 @@ class GetTokenTest extends ApiTestCase
         );
         $user = UserFactory::repository()->first();
         $token = $user->getAccessToken();
-        $expiration = $user->getTokenExpiration();
+        $user->getTokenExpiration();
 
         // Assert
 
         $user = UserFactory::repository()->first();
-        $role = $user->getRoles()[0];
+        $user->getRoles();
         $token = $user->getAccessToken();
 
         $this->assertResponseIsSuccessful();
@@ -86,7 +86,7 @@ class GetTokenTest extends ApiTestCase
 
         // Act 2.1 request a token
         $client = static::createClient(); // important de refaire un client sans headers sinon echec de l'auth
-        $response = $client->request(
+        $client->request(
             'POST',
             '/token',
             ['json' => [
@@ -100,7 +100,7 @@ class GetTokenTest extends ApiTestCase
         );
 
         $user = UserFactory::repository()->first();
-        $role = $user->getRoles()[0];
+        $user->getRoles();
         $token = $user->getAccessToken();
 //        $expiration = $user->getTokenExpiration();
 
@@ -157,6 +157,6 @@ class GetTokenTest extends ApiTestCase
         
         // test bd
         $this->assertGreaterThan(new DateTime(), $expiration);
-        $this->assertEquals('ROLE_PATIENT', $role);
+        $this->assertSame('ROLE_PATIENT', $role);
     }
 }

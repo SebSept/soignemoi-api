@@ -108,7 +108,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getRoles(): array
     {
         $roles = $this->roles;
-//        $roles[] = 'ROLE_USER'; // @todo doit être supprimable, pour le moment, on le garde -> security.yaml : access_control
+        //        $roles[] = 'ROLE_USER'; // @todo doit être supprimable, pour le moment, on le garde -> security.yaml : access_control
         $roles[] = match (true) {
             $this->isDoctor() => 'ROLE_DOCTOR',
             $this->isPatient() => 'ROLE_PATIENT',
@@ -128,15 +128,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * Le role principal du user
      * // il faudrait avoir plusieurs roles possible pour l'extensibilité. Pour le moment, on fait avec ça.
-     * @return string
      */
     #[Groups('user:token')]
     public function getRole(): string
     {
         $role = $this->getRoles()[0] ?? null;
         if (is_null($role)) {
-            throw new \Exception('Echec extraction role '.var_export($this->getRoles(), true));
+            throw new Exception('Echec extraction role '.var_export($this->getRoles(), true));
         }
+
         return $role;
     }
 
