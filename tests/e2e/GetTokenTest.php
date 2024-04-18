@@ -62,22 +62,21 @@ class GetTokenTest extends ApiTestCase
         $this->assertResponseIsSuccessful();
         $this->assertJsonContains(['role' => 'ROLE_SECRETARY']);
         $this->assertJsonContains(['accessToken' => $token]);
-        $this->assertJsonContains(['id' => $user->getId()]);
+        $this->assertJsonContains(['id' => null]);
     }
 
-    public function testAdminGetTokenAndRequetDoctors(): void
+    public function testDoctorGetTokenAndRequetDoctors(): void
     {
         // Arrange
-        $email = 'admin@admin.com'; // email spécial pour les admins - src/Entity/User.php:ADMIN_EMAIL
-        $password = 'admin-password';
+        $email = 'doctor@doctor.com';
+        $password = 'hello';
         $user = UserFactory::new()->create([
             'email' => $email,
             'password' => $password,
             'accessToken' => null,
             'tokenExpiration' => null,
         ]);
-        DoctorFactory::new()->create(['user' => $user]);
-
+        $doctor = DoctorFactory::new()->create(['user' => $user]);
 
         // Act 1 - request resource fails without valid token
         $client = static::createClientWithInvalidBearer();
@@ -110,7 +109,7 @@ class GetTokenTest extends ApiTestCase
         $this->assertResponseIsSuccessful();
         $this->assertJsonContains(['role' => 'ROLE_DOCTOR']);
         $this->assertJsonContains(['accessToken' => $token]);
-        $this->assertJsonContains(['id' => $user->getId()]);
+        $this->assertJsonContains(['id' => $doctor->getId()]);
     }
 
     public function testPatientGetToken(): void
@@ -129,7 +128,7 @@ class GetTokenTest extends ApiTestCase
                 'token_expiration' => new DateTime('+30 day'),
             ]
         );
-        PatientFactory::new()->create(['user' => $user]);
+        $patient = PatientFactory::new()->create(['user' => $user]);
 
         // Act
         $response = $client->request(
@@ -158,10 +157,56 @@ class GetTokenTest extends ApiTestCase
         $this->assertResponseIsSuccessful();
         $this->assertJsonContains(['accessToken' => $token]);
         $this->assertJsonContains(['role' => 'ROLE_PATIENT']);
-        $this->assertJsonContains(['id' => $user->getId()]);
+        $this->assertJsonContains(['id' => $patient->getId()]);
 
         // test bd
         $this->assertGreaterThan(new DateTime(), $expiration);
         $this->assertSame('ROLE_PATIENT', $role);
+    }
+
+    public function testAdminGetTokenAndRequetDoctors(): void
+    {
+        // Arrange
+        $email = 'admin@admin.com'; // email spécial pour les admins - src/Entity/User.php:ADMIN_EMAIL
+        $password = 'admin-password';
+        $user = UserFactory::new()->create([
+            'email' => $email,
+            'password' => $password,
+            'accessToken' => null,
+            'tokenExpiration' => null,
+        ]);
+
+        // Act 1 - request resource fails without valid token
+        $client = static::createClientWithInvalidBearer();
+        $client->request('GET', '/api/doctors');
+        $this->assertResponseStatusCodeSame(401);
+
+        // Act 2 - request resource succeeds with valid token
+
+        // Act 2.1 request a token
+        $client = static::createClient(); // important de refaire un client sans headers sinon echec de l'auth
+        $client->request(
+            'POST',
+            '/token',
+            ['json' => [
+                'email' => $email,
+                'password' => $password,
+            ],
+                'headers' => [
+                    'Content-Type' => 'application/json',
+                    'Accept' => 'application/json',
+                ]]
+        );
+
+        $user = UserFactory::repository()->first();
+        $user->getRoles();
+
+        $token = $user->getAccessToken();
+//        $expiration = $user->getTokenExpiration();
+
+        $this->assertResponseIsSuccessful();
+        $this->assertJsonContains(['role' => 'ROLE_ADMIN']);
+        $this->assertJsonContains(['accessToken' => $token]);
+        $this->assertJsonContains(['id' => null]);
     }
 }

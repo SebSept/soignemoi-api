@@ -33,7 +33,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups('user:token')]
     private ?int $id = null;
 
     #[ORM\Column(length: 180)]
@@ -59,6 +58,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?DateTimeInterface $dateTime = null;
 
     #[ORM\OneToOne(targetEntity: Doctor::class, mappedBy: 'user')]
+    #[Groups(['user:token'])]
     private ?Doctor $doctor = null;
 
     /**
@@ -72,6 +72,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private const ADMIN_EMAIL = 'admin@admin.com';
 
     #[ORM\OneToOne(targetEntity: Patient::class, mappedBy: 'user', cascade: ['persist'])]
+    #[Groups('user:token')]
     private ?Patient $patient = null;
 
     public function getId(): ?int
