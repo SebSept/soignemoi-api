@@ -18,6 +18,7 @@ use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use App\Controller\CreatePatientController;
 use App\Repository\PatientRepository;
+use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -101,6 +102,12 @@ class Patient
         $this->medicalOpinions = new ArrayCollection();
         $this->hospitalStays = new ArrayCollection();
         $this->prescriptions = new ArrayCollection();
+    }
+
+    #[Groups(['hospital_stay:read'])]
+    public function getFullName(): string
+    {
+        return sprintf('%s %s', $this->lastname, $this->firstname);
     }
 
     public function getId(): ?int
@@ -267,5 +274,13 @@ class Patient
     public function getUser(): ?User
     {
         return $this->user;
+    }
+
+    public function getTodayPrescriptionByDoctor(?Doctor $doctor): ?Prescription
+    {
+        return $this->getPrescriptions()
+            ->filter(static fn (Prescription $p): bool => $p->getDoctor() === $doctor)
+            ->filter(static fn (Prescription $prescription): bool => $prescription->getDate()->format('Y-m-d') === (new DateTime())->format('Y-m-d'))
+            ->first() ?: null;
     }
 }

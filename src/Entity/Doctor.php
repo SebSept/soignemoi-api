@@ -16,6 +16,8 @@ use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use App\Repository\DoctorRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Serializer\Attribute\Groups;
@@ -74,6 +76,23 @@ class Doctor
 
     #[ORM\OneToOne(targetEntity: User::class, inversedBy: 'doctor')]
     private ?User $user = null;
+
+    /**
+     * @var Collection<int, HospitalStay>
+     */
+    #[ORM\OneToMany(targetEntity: HospitalStay::class, mappedBy: 'doctor')]
+    private Collection $hospitalStays;
+
+    public function __construct()
+    {
+        $this->hospitalStays = new ArrayCollection();
+    }
+
+    #[Groups(['hospital_stay:read'])]
+    public function getFullName(): string
+    {
+        return sprintf('%s %s', $this->lastname, $this->firstname);
+    }
 
     public function getId(): ?int
     {
@@ -148,6 +167,34 @@ class Doctor
     public function setUser(?User $user): static
     {
         $this->user = $user;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, HospitalStay>
+     */
+    public function getHospitalStays(): Collection
+    {
+        return $this->hospitalStays;
+    }
+
+    public function addHospitalStay(HospitalStay $hospitalStay): static
+    {
+        if (!$this->hospitalStays->contains($hospitalStay)) {
+            $this->hospitalStays->add($hospitalStay);
+            $hospitalStay->setDoctor($this);
+        }
+
+        return $this;
+    }
+
+    public function removeHospitalStay(HospitalStay $hospitalStay): static
+    {
+        // set the owning side to null (unless already changed)
+        if ($this->hospitalStays->removeElement($hospitalStay) && $hospitalStay->getDoctor() === $this) {
+            $hospitalStay->setPatient(null);
+        }
 
         return $this;
     }

@@ -44,7 +44,7 @@ use Symfony\Component\Validator\Constraints as Assert;
             security: "is_granted('ROLE_DOCTOR')",
         ),
     ],
-    normalizationContext: ['groups' => 'prescription:read'],
+    normalizationContext: ['groups' => ['prescription:read']],
     denormalizationContext: ['groups' => 'prescription:write'],
     security: "is_granted('')",
 )]
@@ -54,16 +54,17 @@ class Prescription
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['hospital_stay:read'])]
     private ?int $id = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     #[Groups(['prescription:read'])]
-    private ?DateTimeInterface $dateTime = null; // @todo supprimer les nullables
+    private DateTimeInterface $dateTime;
 
     #[ORM\ManyToOne(targetEntity: Patient::class, inversedBy: 'prescriptions')]
     #[Groups(['prescription:read', 'prescription:write'])]
     #[Assert\NotBlank]
-    private ?Patient $patient = null;
+    private ?Patient $patient = null;  // @todo supprimer les nullables
 
     #[ORM\ManyToOne(targetEntity: Doctor::class)]
     #[Groups(['prescription:read', 'prescription:write'])]
@@ -91,17 +92,10 @@ class Prescription
         return $this->id;
     }
 
-    public function getDate(): ?DateTimeInterface
+    public function getDate(): DateTimeInterface
     {
         return $this->dateTime;
     }
-
-    //    public function setDate(\DateTimeInterface $date): static
-    //    {
-    //        $this->date = $date;
-    //
-    //        return $this;
-    //    }
 
     public function getPatient(): ?Patient
     {

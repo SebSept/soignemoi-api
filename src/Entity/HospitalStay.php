@@ -24,6 +24,7 @@ use App\Repository\HospitalStayRepository;
 use DateTimeInterface;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Entity(repositoryClass: HospitalStayRepository::class)]
 #[ApiResource(
@@ -49,6 +50,7 @@ use Doctrine\ORM\Mapping as ORM;
             ],
             controller: HospitalStayDoctorToday::class,
             security: "is_granted('ROLE_DOCTOR')",
+            normalizationContext: ['groups' => 'hospital_stay:read'],
         ),
         new GetCollection(
             uriTemplate: '/patients/{patient_id}/hospital_stays/',
@@ -58,6 +60,7 @@ use Doctrine\ORM\Mapping as ORM;
                     fromClass: Patient::class
                 ),
             ],
+            normalizationContext: ['groups' => 'hospital_stay:read'],
             security: "is_granted('ROLE_PATIENT')",
         ),
         new Get(),
@@ -77,37 +80,62 @@ class HospitalStay
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['hospital_stay:read'])]
     private ?int $id = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
+    #[Groups(['hospital_stay:read'])]
     private ?DateTimeInterface $startDate = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
+    #[Groups(['hospital_stay:read'])]
     private ?DateTimeInterface $endDate = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    #[Groups(['hospital_stay:read'])]
     private ?DateTimeInterface $checkin = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    #[Groups(['hospital_stay:read'])]
     private ?DateTimeInterface $checkout = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['hospital_stay:read'])]
     private ?string $reason = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['hospital_stay:read'])]
     private ?string $medicalSpeciality = null;
 
     #[ORM\ManyToOne(inversedBy: 'hospitalStays')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['hospital_stay:read'])]
     private ?Patient $patient = null;
 
     #[ORM\ManyToOne(targetEntity: Doctor::class)]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['hospital_stay:read'])]
     private ?Doctor $doctor = null;
 
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    #[Groups(['hospital_stay:read'])]
+    public function getTodayPrescription(): ?Prescription
+    {
+        if(is_null($this->patient)) {
+            return null;
+        }
+
+        return $this->patient->getTodayPrescriptionByDoctor($this->doctor);
+    }
+
+    #[Groups(['hospital_stay:read'])]
+    public function getTodayMedicalOpinion(): ?MedicalOpinion
+    {
+        return null;
     }
 
     public function getStartDate(): ?DateTimeInterface
