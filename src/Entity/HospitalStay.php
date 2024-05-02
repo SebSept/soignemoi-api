@@ -125,7 +125,7 @@ class HospitalStay
     #[Groups(['hospital_stay:read'])]
     public function getTodayPrescription(): ?Prescription
     {
-        if(is_null($this->patient)) {
+        if (is_null($this->patient)) {
             return null;
         }
 

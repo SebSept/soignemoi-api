@@ -97,7 +97,10 @@ final class UserFactory extends ModelFactory
 
     public function admin(): self
     {
-        return self::new(['email' => 'admin@admin.com'])->withValidToken();
+        return self::new([
+            'email' => 'admin@admin.com',
+            'password' => 'hello'
+        ])->withValidToken();
     }
 
     /**

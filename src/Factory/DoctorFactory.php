@@ -37,6 +37,17 @@ final class DoctorFactory extends ModelFactory
         parent::__construct();
     }
 
+    public function withHospitalStays(): self
+    {
+        return $this->addState([
+            'hospitalStays' => HospitalStayFactory::new()
+                ->withExistingPatient()
+                ->entryBeforeToday()
+                ->exitAfterToday()
+                ->many(2,3)
+        ]);
+    }
+
     /**
      * @see https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html#model-factories
      */

@@ -23,5 +23,6 @@ class DoctorFixtures extends Fixture
             'employeeId' => faker()->numerify('##-####-###'),
             'password' => password_hash(faker()->unique()->password(), null, ['cost' => 4]),
         ]);
+
     }
 }

@@ -45,7 +45,7 @@ final class HospitalStayFactory extends ModelFactory
     public function withExistingPatient(): self
     {
         return $this->addState(
-            ['patient' => PatientFactory::repository()->random()]
+            fn() => ['patient' => PatientFactory::repository()->random()]
         );
 
     }
@@ -90,7 +90,7 @@ final class HospitalStayFactory extends ModelFactory
     public
     function entryBeforeToday(): self
     {
-        return $this->addState(['startDate' => new DateTime('-' . random_int(1, 25) . ' days')]);
+        return $this->addState( fn() => ['startDate' => new DateTime('-' . random_int(1, 25) . ' days')]);
     }
 
     public

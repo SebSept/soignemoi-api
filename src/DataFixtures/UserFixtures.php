@@ -13,6 +13,9 @@ class UserFixtures extends Fixture
 {
     public function load(ObjectManager $objectManager): void
     {
+        // admin
+        UserFactory::new()->admin()->create();
+
         // secrétaire - pas de docteur ou patient associé
         UserFactory::new()->create(
             [
@@ -34,7 +37,10 @@ class UserFixtures extends Fixture
                 'token_expiration' => new DateTime('+30 day'),
             ]
         );
-        DoctorFactory::new()->create(['user' => $user]);
+        DoctorFactory::new()
+            ->withHospitalStays()
+            ->create(['user' => $user]);
+
 
         // Patient
         $user = UserFactory::new()->create(

@@ -55,10 +55,10 @@ class PatientTest extends ApiTestCase
         $patientUser = $this->makePatientUser();
         $patient = $patientUser->getPatient();
 
-        HospitalStayFactory::new()->createMany(2, ['patient' => $patient]);
+        HospitalStayFactory::new()->many(2)->create(['patient' => $patient]);
 
         $otherPatient = PatientFactory::new()->create();
-        HospitalStayFactory::new()->createMany(3, ['patient' => $otherPatient->object()]);
+        HospitalStayFactory::new()->many(3)->create(['patient' => $otherPatient->object()]);
 
         // Act
         $client = static::createClientWithBearerFromUser($patientUser->object());
