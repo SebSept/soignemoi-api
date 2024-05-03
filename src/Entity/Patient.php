@@ -165,11 +165,13 @@ class Patient
 
     public function getPassword(): ?string
     {
+        // @todo remove
         return $this->password;
     }
 
     public function setPassword(string $password): static
     {
+        // @todo remove
         $this->password = $password;
 
         return $this;
