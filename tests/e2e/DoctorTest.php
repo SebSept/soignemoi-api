@@ -257,8 +257,8 @@ trait medicalOpinions
         $client
             ->request('POST', '/api/medical_opinions', [
                 'headers' => [
-                    'Content-Type' => 'application/ld+json',
-                    'Accept' => 'application/ld+json',
+                    'Content-Type' => 'application/json',
+                    'Accept' => 'application/json',
                 ],
                 'json' => $payload,
             ]);
