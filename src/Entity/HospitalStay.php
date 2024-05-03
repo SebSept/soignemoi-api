@@ -135,7 +135,11 @@ class HospitalStay
     #[Groups(['hospital_stay:read'])]
     public function getTodayMedicalOpinion(): ?MedicalOpinion
     {
-        return null;
+        if (is_null($this->patient)) {
+            return null;
+        }
+
+        return $this->patient->getTodayMedicalOpinionByDoctor($this->doctor);
     }
 
     public function getStartDate(): ?DateTimeInterface

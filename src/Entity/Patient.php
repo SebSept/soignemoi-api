@@ -283,4 +283,12 @@ class Patient
             ->filter(static fn (Prescription $prescription): bool => $prescription->getDate()->format('Y-m-d') === (new DateTime())->format('Y-m-d'))
             ->first() ?: null;
     }
+
+    public function getTodayMedicalOpinionByDoctor(?Doctor $doctor): ?MedicalOpinion
+    {
+        return $this->getMedicalOpinions()
+            ->filter(static fn (MedicalOpinion $p): bool => $p->getDoctor() === $doctor)
+            ->filter(static fn (MedicalOpinion $medicalOpinion): bool => $medicalOpinion->getDate()->format('Y-m-d') === (new DateTime())->format('Y-m-d'))
+            ->first() ?: null;
+    }
 }

@@ -2,9 +2,11 @@
 
 namespace App\Tests\integration;
 
+use App\Entity\MedicalOpinion;
 use App\Entity\Prescription;
 use App\Factory\DoctorFactory;
 use App\Factory\HospitalStayFactory;
+use App\Factory\MedicalOpinionFactory;
 use App\Factory\PatientFactory;
 use App\Factory\PrescriptionFactory;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
@@ -15,6 +17,7 @@ class PatientTest extends KernelTestCase
 {
     use Factories;
     use ResetDatabase;
+
     public function testGetTodayPrescriptionByDoctorReturnsAPrescription(): void
     {
         // Arrange
@@ -23,14 +26,14 @@ class PatientTest extends KernelTestCase
         HospitalStayFactory::new()
             ->exitAfterToday()
             ->entryBeforeToday()
-            ->create(                [
-                'patient' => $patient,
-                'doctor' => $doctor,
+            ->create([
+                    'patient' => $patient,
+                    'doctor' => $doctor,
 
                 ]
             );
 
-        PrescriptionFactory::new()->create(                [
+        PrescriptionFactory::new()->create([
                 'patient' => $patient,
                 'doctor' => $doctor,
             ]
@@ -38,7 +41,6 @@ class PatientTest extends KernelTestCase
 
 
         // Act
-        // $patient = PatientFactory::repository()            ->find($patient->object());
         $foundPrescription = $patient->getTodayPrescriptionByDoctor($doctor->object());
 
         // Assert
@@ -53,9 +55,9 @@ class PatientTest extends KernelTestCase
         HospitalStayFactory::new()
             ->exitAfterToday()
             ->entryBeforeToday()
-            ->create(                [
-                'patient' => $patient,
-                'doctor' => $doctor,
+            ->create([
+                    'patient' => $patient,
+                    'doctor' => $doctor,
 
                 ]
             );
@@ -66,5 +68,56 @@ class PatientTest extends KernelTestCase
 
         // Assert
         $this->assertNull($foundPrescription);
+    }
+
+    public function testGetTodayMedicalOpinionByDoctorReturnsAMedicalOpinion(): void
+    {
+        // Arrange
+        $patient = PatientFactory::new()->create();
+        $doctor = DoctorFactory::new()->create();
+        HospitalStayFactory::new()
+            ->exitAfterToday()
+            ->entryBeforeToday()
+            ->create([
+                    'patient' => $patient,
+                    'doctor' => $doctor,
+
+                ]
+            );
+
+        MedicalOpinionFactory::new()->create([
+                'patient' => $patient,
+                'doctor' => $doctor,
+            ]
+        );
+
+        // Act
+        $foundMedicalOpinion = $patient->getTodayMedicalOpinionByDoctor($doctor->object());
+
+        // Assert
+        $this->assertInstanceOf(MedicalOpinion::class, $foundMedicalOpinion);
+    }
+
+    public function testGetTodayMedicalOpinionByDoctorReturnsNull(): void
+    {
+        // Arrange
+        $patient = PatientFactory::new()->create();
+        $doctor = DoctorFactory::new()->create();
+        HospitalStayFactory::new()
+            ->exitAfterToday()
+            ->entryBeforeToday()
+            ->create([
+                    'patient' => $patient,
+                    'doctor' => $doctor,
+
+                ]
+            );
+        // no medicalOpinion added
+
+        // Act
+        $foundMedicalOpinion = $patient->getTodayMedicalOpinionByDoctor($doctor->object());
+
+        // Assert
+        $this->assertNull($foundMedicalOpinion);
     }
 }
