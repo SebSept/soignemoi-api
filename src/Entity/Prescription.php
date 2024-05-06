@@ -34,7 +34,7 @@ use Symfony\Component\Validator\Constraints as Assert;
             security: "is_granted('ROLE_SECRETARY')",
         ),
         new Get(
-            security: "is_granted('ROLE_SECRETARY') ",
+            security: "is_granted('ROLE_SECRETARY') or is_granted('ROLE_DOCTOR')",
         ),
         new Post(
             security: "is_granted('ROLE_DOCTOR')",
@@ -54,7 +54,7 @@ class Prescription
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['hospital_stay:read'])]
+    #[Groups(['hospital_stay:read', 'prescription:read'])]
     private ?int $id = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]

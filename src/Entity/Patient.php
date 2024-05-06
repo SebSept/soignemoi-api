@@ -48,7 +48,7 @@ class Patient
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['user:token', 'hospital_stay:read'])]
+    #[Groups(['user:token', 'hospital_stay:read', 'prescription:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]

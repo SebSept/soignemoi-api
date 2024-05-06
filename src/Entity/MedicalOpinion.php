@@ -31,7 +31,7 @@ use Symfony\Component\Serializer\Attribute\Groups;
             security: "is_granted('ROLE_SECRETARY')",
         ),
         new Get(
-            security: "is_granted('ROLE_SECRETARY')",
+            security: "is_granted('ROLE_SECRETARY') or is_granted('ROLE_DOCTOR')",
         ),
         new Post(
             security: "is_granted('ROLE_DOCTOR')",
@@ -52,6 +52,7 @@ class MedicalOpinion
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['hospital_stay:read', 'medicalOpinion:read'])]
     private ?int $id = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
