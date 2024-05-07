@@ -245,4 +245,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         return $this->patient;
     }
+
+    public function hasRole(string $role): bool
+    {
+        return in_array($role, $this->getRoles());
+    }
 }

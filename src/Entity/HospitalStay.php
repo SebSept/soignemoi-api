@@ -21,6 +21,7 @@ use App\Controller\HospitalStayDoctorToday;
 use App\Controller\HospitalStayTodayEntries;
 use App\Controller\HospitalStayTodayExits;
 use App\Repository\HospitalStayRepository;
+use App\State\PatientHospitalStaysProvider;
 use DateTimeInterface;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
@@ -30,7 +31,6 @@ use Symfony\Component\Serializer\Attribute\Groups;
 #[ApiResource(
     operations: [
         new GetCollection(
-            // @todo trop de droits ?
             security: "is_granted('ROLE_DOCTOR') or is_granted('ROLE_PATIENT') or is_granted('ROLE_ADMIN')",
         ),
         new GetCollection(
@@ -43,6 +43,7 @@ use Symfony\Component\Serializer\Attribute\Groups;
             controller: HospitalStayTodayExits::class,
             security: "is_granted('ROLE_SECRETARY')",
         ),
+        // @todo faire la même chose que pour les patients, opération suivante : supprimer le paramètre.
         new GetCollection(
             uriTemplate: '/doctors/{doctor_id}/hospital_stays/today',
             uriVariables: [
@@ -53,15 +54,10 @@ use Symfony\Component\Serializer\Attribute\Groups;
             normalizationContext: ['groups' => 'hospital_stay:read'],
         ),
         new GetCollection(
-            uriTemplate: '/patients/{patient_id}/hospital_stays/',
-            uriVariables: [
-                'patient_id' => new Link(
-                    fromProperty: 'hospitalStays',
-                    fromClass: Patient::class
-                ),
-            ],
+            uriTemplate: '/patients/hospital_stays',
             normalizationContext: ['groups' => 'hospital_stay:read'],
             security: "is_granted('ROLE_PATIENT')",
+            provider: PatientHospitalStaysProvider::class
         ),
         new Get(),
         new Post(

@@ -5,6 +5,9 @@ parameters:
     excludePaths:
         - src/Factory/*
         - src/DataFixtures/*
+        - phpstan-stubs.stub
+    stubFiles:
+        - phpstan-stubs.stub
 includes:
     - vendor/phpstan/phpstan-doctrine/extension.neon
     - vendor/phpstan/phpstan-doctrine/rules.neon
