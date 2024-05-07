@@ -10,6 +10,7 @@ use App\Factory\HospitalStayFactory;
 use App\Factory\PatientFactory;
 use App\Factory\UserFactory;
 use App\Tests\ApiTestCase;
+use Symfony\Component\HttpFoundation\Response;
 use Zenstruck\Foundry\Proxy;
 use Zenstruck\Foundry\Test\Factories;
 use Zenstruck\Foundry\Test\ResetDatabase;
@@ -71,6 +72,25 @@ class PatientTest extends ApiTestCase
             '@type' => 'hydra:Collection',
             'hydra:totalItems' => 2,
         ]);
+    }
+
+    public function testPatientCannotViewAnotherPatientHospitalStays(): void
+    {
+        // Arrange - 2 patients avec des hospital_stays chacun
+        $patientUser = $this->makePatientUser();
+        $patient = $patientUser->getPatient();
+
+        HospitalStayFactory::new()->many(2)->create(['patient' => $patient]);
+
+        $otherPatient = PatientFactory::new()->create();
+        HospitalStayFactory::new()->many(3)->create(['patient' => $otherPatient->object()]);
+
+        // Act
+        $client = static::createClientWithBearerFromUser($patientUser->object());
+        $client->request('GET', '/api/patients/' . $otherPatient->getId() . '/hospital_stays/');
+
+        // Assert
+        $this->assertResponseStatusCodeSame(Response::HTTP_UNAUTHORIZED);
     }
 
     public function testPatientCreatesAnHospitalStay(): void
