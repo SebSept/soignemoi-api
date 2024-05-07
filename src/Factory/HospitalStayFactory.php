@@ -87,34 +87,54 @@ final class HospitalStayFactory extends ModelFactory
         ];
     }
 
-    public
-    function entryBeforeToday(): self
+    public function entryBeforeToday(): self
     {
-        return $this->addState( fn() => ['startDate' => new DateTime('-' . random_int(1, 25) . ' days')]);
+        return $this->addState( function () {
+            $startDate = new DateTime('-' . random_int(1, 25) . ' days');
+            $checkinDate = (clone $startDate)->modify('+ '.random_int(1, 8).' hours');
+            return [
+                'startDate' => $startDate,
+                'checkin' => $checkinDate
+            ];
+        });
     }
 
-    public
-    function entryAfterToday(): self
+    public function entryAfterToday(): self
     {
-        return $this->addState(['startDate' => new DateTime('+' . random_int(1, 25) . ' days')]);
+        return $this->addState( function () {
+            $startDate = new DateTime('+' . random_int(1, 25) . ' days');
+            return ['startDate' => $startDate];
+        });
     }
 
-    public
-    function entryToday(): self
+    public function entryToday(): self
     {
-        return $this->addState(['startDate' => new DateTime()]);
+        return $this->addState( function () {
+         return [
+             'startDate' => new DateTime(),
+             'checkin' => new DateTime('+' . random_int(1, 25) . ' hours')
+             ];
+        });
     }
 
     public
     function exitBeforeToday(): self
     {
-        return $this->addState(['endDate' => new DateTime('-' . random_int(1, 25) . ' days')]);
+        return $this->addState( function() {
+            $endDate = new DateTime('-' . random_int(1, 25) . ' days');
+            $checkout = (clone $endDate)->modify('+ '.random_int(1,7).' hours');
+            return [
+                'endDate' => $endDate,
+                'checkout' => $checkout
+            ];
+        }
+        );
     }
 
     public
     function exitAfterToday(): self
     {
-        return $this->addState(['endDate' => new DateTime('+' . random_int(1, 25) . ' days')]);
+        return $this->addState(fn() => ['endDate' => new DateTime('+' . random_int(1, 25) . ' days')]);
     }
 
     public
