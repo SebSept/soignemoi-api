@@ -16,10 +16,15 @@ class PatientFixtures extends Fixture
 {
     public function load(ObjectManager $objectManager): void
     {
-        PatientFactory::new()->many(15)->create(
-            [
+        // patients avec des séjours
+        PatientFactory::new()->many(5)->create(
+            fn() => [
                 'user' => UserFactory::new(),
                 'hospitalStays' => HospitalStayFactory::new()->many(1,5)
             ]);
+        // patients avec entrées et/sorties aujourd'hui
+        HospitalStayFactory::new()->withExistingPatient()->entryToday()->many(3)->create();
+        HospitalStayFactory::new()->withExistingPatient()->exitToday()->many(2)->create();
+        HospitalStayFactory::new()->withExistingPatient()->exitToday()->entryToday()->many(1)->create();
     }
 }

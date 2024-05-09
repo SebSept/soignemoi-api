@@ -24,7 +24,7 @@ class PrescriptionTest extends KernelTestCase
         ]);
 
         $this->assertSame(
-            $prescription->getDate()->format('Y-m-d'),
+            $prescription->getDateTime()->format('Y-m-d'),
             (new DateTime('now'))->format('Y-m-d')
         );
     }

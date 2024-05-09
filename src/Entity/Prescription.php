@@ -54,11 +54,11 @@ class Prescription
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['hospital_stay:read', 'prescription:read'])]
+    #[Groups(['hospital_stay:read', 'prescription:read', 'hospital_stay:details'])]
     private ?int $id = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
-    #[Groups(['prescription:read'])]
+    #[Groups(['prescription:read', 'hospital_stay:details'])]
     private DateTimeInterface $dateTime;
 
     #[ORM\ManyToOne(targetEntity: Patient::class, inversedBy: 'prescriptions')]
@@ -76,7 +76,7 @@ class Prescription
      * @var Collection<int, PrescriptionItem>
      */
     #[ORM\OneToMany(targetEntity: PrescriptionItem::class, mappedBy: 'prescription', cascade: ['persist', 'remove'], orphanRemoval: true)]
-    #[Groups(['prescription:read', 'prescription:write', 'prescription:update'])]
+    #[Groups(['prescription:read', 'prescription:write', 'prescription:update', 'hospital_stay:details'])]
     #[Assert\NotBlank]
     #[Assert\Valid]
     private Collection $items;
@@ -92,7 +92,7 @@ class Prescription
         return $this->id;
     }
 
-    public function getDate(): DateTimeInterface
+    public function getDateTime(): DateTimeInterface
     {
         return $this->dateTime;
     }

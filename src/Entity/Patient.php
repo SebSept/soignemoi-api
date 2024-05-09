@@ -19,8 +19,10 @@ use ApiPlatform\Metadata\Post;
 use App\Controller\CreatePatientController;
 use App\Repository\PatientRepository;
 use DateTime;
+use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ReadableCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -52,9 +54,11 @@ class Patient
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['hospital_stay:details'])]
     private ?string $firstname = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['hospital_stay:details'])]
     private ?string $lastname = null;
 
     #[ORM\Column(length: 255)]
@@ -282,7 +286,7 @@ class Patient
     {
         return $this->getPrescriptions()
             ->filter(static fn (Prescription $p): bool => $p->getDoctor() === $doctor)
-            ->filter(static fn (Prescription $prescription): bool => $prescription->getDate()->format('Y-m-d') === (new DateTime())->format('Y-m-d'))
+            ->filter(static fn (Prescription $prescription): bool => $prescription->getDateTime()->format('Y-m-d') === (new DateTime())->format('Y-m-d'))
             ->first() ?: null;
     }
 
@@ -292,5 +296,21 @@ class Patient
             ->filter(static fn (MedicalOpinion $p): bool => $p->getDoctor() === $doctor)
             ->filter(static fn (MedicalOpinion $medicalOpinion): bool => $medicalOpinion->getDate()->format('Y-m-d') === (new DateTime())->format('Y-m-d'))
             ->first() ?: null;
+    }
+
+    /**
+     * @return ReadableCollection<int, Prescription>
+     */
+    public function getPrescriptionsBetween(DateTimeInterface $checkin, ?DateTimeInterface $checkout): ReadableCollection
+    {
+        $prescriptions = $this->getPrescriptions()
+            ->filter(static fn (Prescription $p): bool => $p->getDateTime()->format('Y-m-d') >= $checkin->format('Y-m-d'));
+
+        if (!is_null($checkout)) {
+            $prescriptions
+                ->filter(static fn (Prescription $p): bool => $p->getDateTime()->format('Y-m-d') <= $checkout->format('Y-m-d'));
+        }
+
+        return $prescriptions;
     }
 }

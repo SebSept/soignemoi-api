@@ -80,4 +80,16 @@ class DoctorHospitalStaysTest extends KernelTestCase
 
         $this->assertCount($expected, $hospitalStayRepository->findByDoctorForToday($doctor->getId()));
     }
+
+    public function testHospitalStayGetPrescriptionsBetween(): void
+    {
+        // quelques prescriptions dans la base de données
+        // @todo écrire ce test
+//        PrescriptionFactory::new()->many(2,5)->create();
+//
+//        $patient = PatientFactory::new()->create();
+//        HospitalStayFactory::new()->withPrescriptions(3)->create([
+//            'patient' => $patient
+//        ]);
+    }
 }

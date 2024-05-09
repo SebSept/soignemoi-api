@@ -23,6 +23,8 @@ use App\Controller\HospitalStayTodayExits;
 use App\Repository\HospitalStayRepository;
 use App\State\PatientHospitalStaysProvider;
 use DateTimeInterface;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\ReadableCollection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Attribute\Groups;
@@ -37,6 +39,7 @@ use Symfony\Component\Serializer\Attribute\Groups;
             uriTemplate: '/hospital_stays/today_entries',
             controller: HospitalStayTodayEntries::class,
             security: "is_granted('ROLE_SECRETARY') or is_granted('ROLE_DOCTOR')",
+            normalizationContext: ['groups' => 'hospital_stay:read'],
         ),
         new GetCollection(
             uriTemplate: '/hospital_stays/today_exits',
@@ -59,7 +62,10 @@ use Symfony\Component\Serializer\Attribute\Groups;
             security: "is_granted('ROLE_PATIENT')",
             provider: PatientHospitalStaysProvider::class
         ),
-        new Get(),
+        new Get(
+            security: "is_granted('ROLE_SECRETARY')",
+            normalizationContext: ['groups' => 'hospital_stay:details'],
+        ),
         new Post(
             security: "is_granted('ROLE_PATIENT')",
         ),
@@ -76,41 +82,41 @@ class HospitalStay
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['hospital_stay:read'])]
+    #[Groups(['hospital_stay:read', 'hospital_stay:details'])]
     private ?int $id = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
-    #[Groups(['hospital_stay:read'])]
+    #[Groups(['hospital_stay:read', 'hospital_stay:details'])]
     private ?DateTimeInterface $startDate = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
-    #[Groups(['hospital_stay:read'])]
+    #[Groups(['hospital_stay:read', 'hospital_stay:details'])]
     private ?DateTimeInterface $endDate = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
-    #[Groups(['hospital_stay:read'])]
+    #[Groups(['hospital_stay:read', 'hospital_stay:details'])]
     private ?DateTimeInterface $checkin = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
-    #[Groups(['hospital_stay:read'])]
+    #[Groups(['hospital_stay:read', 'hospital_stay:details'])]
     private ?DateTimeInterface $checkout = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['hospital_stay:read'])]
+    #[Groups(['hospital_stay:read', 'hospital_stay:details'])]
     private ?string $reason = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['hospital_stay:read'])]
+    #[Groups(['hospital_stay:read', 'hospital_stay:details'])]
     private ?string $medicalSpeciality = null;
 
     #[ORM\ManyToOne(inversedBy: 'hospitalStays')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['hospital_stay:read'])]
+    #[Groups(['hospital_stay:read', 'hospital_stay:details'])]
     private ?Patient $patient = null;
 
     #[ORM\ManyToOne(targetEntity: Doctor::class)]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['hospital_stay:read'])]
+    #[Groups(['hospital_stay:read', 'hospital_stay:details'])]
     private ?Doctor $doctor = null;
 
     public function getId(): ?int
@@ -126,6 +132,19 @@ class HospitalStay
         }
 
         return $this->patient->getTodayPrescriptionByDoctor($this->doctor);
+    }
+
+    /**
+     * @return ReadableCollection<int, Prescription>
+     */
+    #[Groups(['hospital_stay:details'])]
+    public function getPrescriptions(): ReadableCollection
+    {
+        if (is_null($this->patient) || is_null($this->checkin)) {
+            return new ArrayCollection();
+        }
+
+        return $this->patient->getPrescriptionsBetween($this->checkin, $this->checkout);
     }
 
     #[Groups(['hospital_stay:read'])]
