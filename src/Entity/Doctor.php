@@ -27,7 +27,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ApiResource(
     operations: [
         new GetCollection(
-            security: "is_granted('ROLE_ADMIN')",
+            security: "is_granted('ROLE_ADMIN') or is_granted('ROLE_PATIENT')",
         ),
         new Post(
             security: "is_granted('ROLE_ADMIN')",
@@ -36,7 +36,7 @@ use Symfony\Component\Validator\Constraints as Assert;
             security: "is_granted('ROLE_ADMIN')",
         ),
     ],
-    normalizationContext: ['groups' => ['read']],
+    normalizationContext: ['groups' => ['doctor:read']],
     denormalizationContext: ['groups' => ['write']],
     security: "is_granted('')",
 )
@@ -48,24 +48,24 @@ class Doctor
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['user:token'])]
+    #[Groups(['user:token', 'doctor:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['read', 'write'])]
+    #[Groups(['doctor:read', 'write'])]
     #[Assert\NoSuspiciousCharacters] // https://symfony.com/doc/current/reference/constraints/NoSuspiciousCharacters.html
     private ?string $firstname = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['read', 'write'])]
+    #[Groups(['doctor:read', 'write'])]
     private ?string $lastname = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['read', 'write'])]
+    #[Groups(['doctor:read', 'write'])]
     private ?string $medicalSpeciality = null;
 
     #[ORM\Column(length: 25)]
-    #[Groups(['read', 'write'])]
+    #[Groups(['doctor:read', 'write'])]
     private ?string $employeeId = null;
 
     // @todo ce champs est supprimable, il n'est pas utilisé.
@@ -88,7 +88,7 @@ class Doctor
         $this->hospitalStays = new ArrayCollection();
     }
 
-    #[Groups(['hospital_stay:read'])]
+    #[Groups(['hospital_stay:read', 'doctor:read'])]
     public function getFullName(): string
     {
         return sprintf('%s %s', $this->lastname, $this->firstname);
