@@ -36,7 +36,7 @@ final class MedicalOpinionFactory extends ModelFactory
     {
         return [
             'description' => self::faker()->text(),
-            'patient' => PatientFactory::random(),
+//            'patient' => PatientFactory::random(),
             'doctor' => DoctorFactory::random(),
             'title' => self::faker()->text(255),
         ];

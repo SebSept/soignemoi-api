@@ -4,6 +4,7 @@ namespace App\Factory;
 
 use App\Entity\Doctor;
 use App\Entity\HospitalStay;
+use App\Entity\MedicalOpinion;
 use App\Entity\Patient;
 use App\Repository\HospitalStayRepository;
 use App\Repository\PatientRepository;
@@ -47,7 +48,35 @@ final class HospitalStayFactory extends ModelFactory
         return $this->addState(
             fn() => ['patient' => PatientFactory::repository()->random()]
         );
+    }
 
+    /**
+     * @param bool $withPrescriptions ne fonctionne pas de façon régulière...
+     * @param bool $withMedicalOpinions ne fonctionne pas de façon régulière...
+     * @return self
+     */
+    public function withNewPatient(
+        bool $withPrescriptions = false,
+        bool $withMedicalOpinions = false,
+
+    ): self
+    {
+        return $this->addState(
+            function () use ($withPrescriptions, $withMedicalOpinions)
+            {
+                $patient = PatientFactory::new();
+
+                if($withPrescriptions) {
+                    $patient = $patient->withPrescriptions();
+                }
+
+                if($withMedicalOpinions) {
+                    $patient = $patient->withMedicalOpinions();
+                }
+
+                return ['patient' => $patient];
+            }
+        );
     }
 
     /**
@@ -107,12 +136,14 @@ final class HospitalStayFactory extends ModelFactory
         });
     }
 
-    public function entryToday(): self
+    public function entryToday(bool $done = true): self
     {
-        return $this->addState( function () {
+        return $this->addState( function () use ($done) {
          return [
              'startDate' => new DateTime(),
-             'checkin' => new DateTime('+' . random_int(1, 25) . ' hours')
+             'checkin' => $done
+                 ? new DateTime('+' . random_int(1, 25) . ' hours')
+                 : null
              ];
         });
     }
@@ -137,10 +168,18 @@ final class HospitalStayFactory extends ModelFactory
         return $this->addState(fn() => ['endDate' => new DateTime('+' . random_int(1, 25) . ' days')]);
     }
 
-    public
-    function exitToday(): self
+    public function exitToday(bool $done = true): self
     {
-        return $this->addState(['endDate' => new DateTime()]);
+        $this->entryBeforeToday();
+        return $this->addState(function () use ($done) {
+            return [
+                'endDate' => new DateTime(),
+                'checkout' => $done
+                    ? (new DateTime())->setTime(random_int(6, 22), random_int(0,59))
+                    : null
+                ];
+        }
+        );
     }
 
     /**

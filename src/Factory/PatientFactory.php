@@ -29,13 +29,6 @@ use Zenstruck\Foundry\RepositoryProxy;
  */
 final class PatientFactory extends ModelFactory
 {
-    public function withHospitalStays(): self
-    {
-        return $this->addState([
-           'hospitalStays' => HospitalStayFactory::new()->many(7)
-        ]);
-    }
-
     /**
      * @see https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html#model-factories
      */
@@ -49,6 +42,27 @@ final class PatientFactory extends ModelFactory
             'password' => self::faker()->word(),
 //            'hospitalStays' => HospitalStayFactory::new()->many(3,5), // cette factory va demander aussi la création d'un patient
         ];
+    }
+
+    public function withHospitalStays(): self
+    {
+        return $this->addState([
+           'hospitalStays' => HospitalStayFactory::new()->many(7)
+        ]);
+    }
+
+    public function withPrescriptions(): self
+    {
+        return $this->addState(
+            fn() => ['prescriptions' => PrescriptionFactory::new()->many(1, 3)]
+        );
+    }
+
+    public function withMedicalOpinions(): self
+    {
+        return $this->addState(
+            fn() => ['medicalOpinions' => medicalOpinionFactory::new()->many(1, 3)]
+        );
     }
 
     /**

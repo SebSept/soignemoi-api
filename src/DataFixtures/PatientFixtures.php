@@ -17,14 +17,33 @@ class PatientFixtures extends Fixture
     public function load(ObjectManager $objectManager): void
     {
         // patients avec des séjours
-        PatientFactory::new()->many(5)->create(
-            fn() => [
-                'user' => UserFactory::new(),
-                'hospitalStays' => HospitalStayFactory::new()->many(1,5)
-            ]);
+//        PatientFactory::new()->many(5)->create(
+//            fn() => [
+//                'user' => UserFactory::new(),
+//                'hospitalStays' => HospitalStayFactory::new()->many(1,5)
+//            ]);
         // patients avec entrées et/sorties aujourd'hui
-        HospitalStayFactory::new()->withExistingPatient()->entryToday()->many(3)->create();
-        HospitalStayFactory::new()->withExistingPatient()->exitToday()->many(2)->create();
-        HospitalStayFactory::new()->withExistingPatient()->exitToday()->entryToday()->many(1)->create();
+//         entrées à faire
+        HospitalStayFactory::new()
+            ->withNewPatient()
+            ->entryToday(false)
+            ->many(2)->create();
+//        // entrées faites
+        HospitalStayFactory::new()
+            ->withNewPatient()
+            ->entryToday()
+            ->many(3)->create();
+
+        // sorties faites
+        HospitalStayFactory::new()
+            ->withNewPatient(withPrescriptions: true, withMedicalOpinions: true)
+            ->exitToday()
+            ->many(1,3)->create();
+        // sorties à faire
+        HospitalStayFactory::new()
+            ->withNewPatient(withPrescriptions: true, withMedicalOpinions: true)
+            ->exitToday(false)
+            ->many(2)->create();
+
     }
 }
