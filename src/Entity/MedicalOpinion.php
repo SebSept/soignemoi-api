@@ -56,15 +56,15 @@ class MedicalOpinion
     private ?int $id = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
-    #[Groups(['medicalOpinion:read'])]
+    #[Groups(['medicalOpinion:read', 'hospital_stay:details'])]
     private DateTimeInterface $dateTime;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['medicalOpinion:read', 'medicalOpinion:write', 'medicalOpinion:update'])]
+    #[Groups(['medicalOpinion:read', 'medicalOpinion:write', 'medicalOpinion:update', 'hospital_stay:details'])]
     private ?string $title = null;
 
     #[ORM\Column(type: Types::TEXT)]
-    #[Groups(['medicalOpinion:read', 'medicalOpinion:write', 'medicalOpinion:update'])]
+    #[Groups(['medicalOpinion:read', 'medicalOpinion:write', 'medicalOpinion:update', 'hospital_stay:details'])]
     private ?string $description = null;
 
     #[ORM\ManyToOne(targetEntity: Doctor::class)]
@@ -86,7 +86,7 @@ class MedicalOpinion
         return $this->id;
     }
 
-    public function getDate(): DateTimeInterface
+    public function getDateTime(): DateTimeInterface
     {
         return $this->dateTime;
     }

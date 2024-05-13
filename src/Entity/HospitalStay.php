@@ -45,6 +45,7 @@ use Symfony\Component\Serializer\Attribute\Groups;
             uriTemplate: '/hospital_stays/today_exits',
             controller: HospitalStayTodayExits::class,
             security: "is_granted('ROLE_SECRETARY')",
+            normalizationContext: ['groups' => 'hospital_stay:read'],
         ),
         // @todo faire la même chose que pour les patients, opération suivante : supprimer le paramètre.
         new GetCollection(
@@ -145,6 +146,19 @@ class HospitalStay
         }
 
         return $this->patient->getPrescriptionsBetween($this->checkin, $this->checkout);
+    }
+
+    /**
+     * @return ReadableCollection<int, MedicalOpinion>
+     */
+    #[Groups(['hospital_stay:details'])]
+    public function getMedicalOpinions(): ReadableCollection
+    {
+        if (is_null($this->patient) || is_null($this->checkin)) {
+            return new ArrayCollection();
+        }
+
+        return $this->patient->getMedicalOpinionsBetween($this->checkin, $this->checkout);
     }
 
     #[Groups(['hospital_stay:read'])]

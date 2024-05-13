@@ -294,7 +294,7 @@ class Patient
     {
         return $this->getMedicalOpinions()
             ->filter(static fn (MedicalOpinion $p): bool => $p->getDoctor() === $doctor)
-            ->filter(static fn (MedicalOpinion $medicalOpinion): bool => $medicalOpinion->getDate()->format('Y-m-d') === (new DateTime())->format('Y-m-d'))
+            ->filter(static fn (MedicalOpinion $medicalOpinion): bool => $medicalOpinion->getDateTime()->format('Y-m-d') === (new DateTime())->format('Y-m-d'))
             ->first() ?: null;
     }
 
@@ -312,5 +312,21 @@ class Patient
         }
 
         return $prescriptions;
+    }
+
+    /**
+     * @return ReadableCollection<int, MedicalOpinion>
+     */
+    public function getMedicalOpinionsBetween(DateTimeInterface $checkin, ?DateTimeInterface $checkout): ReadableCollection
+    {
+        $medicalOpinions = $this->getMedicalOpinions()
+            ->filter(static fn (MedicalOpinion $p): bool => $p->getDateTime()->format('Y-m-d') >= $checkin->format('Y-m-d'));
+
+        if (!is_null($checkout)) {
+            $medicalOpinions
+                ->filter(static fn (MedicalOpinion $p): bool => $p->getDateTime()->format('Y-m-d') <= $checkout->format('Y-m-d'));
+        }
+
+        return $medicalOpinions;
     }
 }
