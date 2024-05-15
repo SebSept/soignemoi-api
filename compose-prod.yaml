@@ -1,7 +1,7 @@
 # https://docs.docker.com/compose/compose-file/05-services/#image
 services:
   php:
-    image: ghcr.io/sebsept/docker-php-symfony-starter:main
+    image: ghcr.io/sebsept/docker-php-symfony-starter:prod
     volumes:
       - type: bind
         source: ./
@@ -18,22 +18,14 @@ services:
 
   postgres:
     # service name is the hostname
-    # @todo : utiliser un fichier de config pour la version de postgres
     image: postgres:16.1
-    environment:
-      # @todo : changer ces valeurs pour la prod, utiliser un fichier de config
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: soignemoi
+    env_file:
+      - .env.local
     expose:
       - 5432
-    # ports : pour debogage - ne pas  utiliser en prod @todo
-    ports:
-      - target: 5432
-        published: 32770
     volumes:
       - type: volume
-        source: postgres_data
+        source: postgres_data_prod
         target: /var/lib/postgresql/data
     restart: unless-stopped
     networks:
@@ -43,7 +35,7 @@ services:
     image: nginx:1.21.3
     ports:
       - target: 80
-        published: 32772
+        published: 80
     volumes:
       # nginx config
       - type: bind
@@ -58,22 +50,11 @@ services:
     restart: unless-stopped
     networks:
       - nginx
-      - partage
-
-# https://docs.docker.com/compose/compose-file/08-configs/
-
-#configs:
-#  nginx_config:
-#    file: ./configs/nginx.conf
-
-# https://docs.docker.com/compose/compose-file/10-fragments/
 
 volumes:
-  postgres_data:
+  postgres_data_prod:
 
 networks:
   nginx:
   postgres:
   php:
-  partage:
-    external: true

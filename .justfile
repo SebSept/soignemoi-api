@@ -1,4 +1,4 @@
-docker_php_exec := "docker compose exec -it -u climber php"
+docker_php_exec := "docker compose -f compose-dev.yaml exec -it -u climber php"
 symfony := docker_php_exec + " symfony "
 # peut-être utiliser symfony + "composer"
 composer := docker_php_exec + " composer "
@@ -6,15 +6,13 @@ console := symfony + "console "
 docker_exec_nginx := "docker compose exec -it -u root nginx"
 
 up:
-    docker compose up -d
-#    docker exec -it -u climber {{container}} composer install
+    docker compose -f compose-dev.yaml up -d
 
 update: && tests
     git pull
-    docker compose down
-    docker compose up -d --build
+    docker compose -f compose-dev.yaml down
+    docker compose -f compose-dev.yaml up -d --build
     {{composer}} install
-
 
 reload_nginx:
    {{docker_exec_nginx}} nginx -s reload
@@ -25,7 +23,7 @@ fish:
 
 [private]
 fish_root:
-    docker compose exec -it -u root php fish
+    docker compose -f compose-dev.yaml exec -it -u root php fish
 
 [confirm("Démarrer le serveur symfony (et pas le serveur nginx), êtes-vous sûr ?")]
 serve:
@@ -107,5 +105,5 @@ psysh:
 
 [confirm("Écraser .git/hooks/pre-commit ?")]
 install-pre-commit-hook:
-    echo "docker compose exec php symfony composer run-script pre-commit" > .git/hooks/pre-commit
+    echo "docker compose -f compose-dev.yaml exec php symfony composer run-script pre-commit" > .git/hooks/pre-commit
     {{docker_php_exec}} chmod +x .git/hooks/pre-commit
