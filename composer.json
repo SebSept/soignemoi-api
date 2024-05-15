@@ -107,6 +107,7 @@
     "cs-fixer": "php-cs-fixer fix",
     "phpstan": "phpstan",
     "pre-commit": [
+      "symfony console doctrine:migrations:status",
       "symfony composer validate",
       "@rector",
       "@cs-fixer",
