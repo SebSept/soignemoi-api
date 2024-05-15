@@ -18,4 +18,12 @@ jobs:
           host: api.ecf.seb7.fr
           username: root
           key: ${{ secrets.SERVER_SSH_KEY }}
-          script: whoami
+          script: |
+            if [ ! -d "/app" ]; then
+              git clone --depth=1 --branch main git@github.com:SebSept/soignemoi-api.git /app
+            fi
+            cd /app
+            git fetch origin main --depth=1
+            git reset --hard origin/main --
+            docker compose -f compose-prod.yaml up -d --build
+            docker compose exec service_name composer install
