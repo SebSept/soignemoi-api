@@ -16,7 +16,7 @@ use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
-use App\Controller\CreatePatientController;
+use App\ApiResource\Controller\CreatePatient;
 use App\Repository\PatientRepository;
 use DateTime;
 use DateTimeInterface;
@@ -37,7 +37,7 @@ use Symfony\Component\Validator\Constraints as Assert;
         // access pour tous
         new Post(
             security: "is_granted('PUBLIC_ACCESS')",
-            controller: CreatePatientController::class,
+            controller: CreatePatient::class,
             read: false,
             normalizationContext: ['groups' => 'patient:create'],
         ),

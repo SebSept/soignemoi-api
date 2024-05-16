@@ -9,14 +9,15 @@ declare(strict_types=1);
  * 2024
  */
 
-namespace App\Controller;
+namespace App\ApiResource\Controller;
 
 use App\Entity\HospitalStay;
 use App\Repository\HospitalStayRepository;
+use DateTime;
 use Symfony\Component\HttpKernel\Attribute\AsController;
 
 #[AsController]
-readonly class HospitalStayDoctorToday
+readonly class HospitalStayTodayEntries
 {
     public function __construct(private HospitalStayRepository $hospitalStayRepository)
     {
@@ -25,8 +26,8 @@ readonly class HospitalStayDoctorToday
     /**
      * @return HospitalStay[]
      */
-    public function __invoke(int $doctor_id): array
+    public function __invoke(): array
     {
-        return $this->hospitalStayRepository->findByDoctorForToday($doctor_id);
+        return $this->hospitalStayRepository->findBy(['startDate' => new DateTime()]);
     }
 }
