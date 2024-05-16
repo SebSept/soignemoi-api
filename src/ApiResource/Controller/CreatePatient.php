@@ -9,7 +9,7 @@ declare(strict_types=1);
  * 2024
  */
 
-namespace App\Controller;
+namespace App\ApiResource\Controller;
 
 use ApiPlatform\Validator\Exception\ValidationException;
 use App\Entity\Patient;
@@ -21,7 +21,7 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 #[AsController]
-class CreatePatientController extends AbstractController
+class CreatePatient extends AbstractController
 {
     public function __construct(
         private readonly ValidatorInterface $validator,
