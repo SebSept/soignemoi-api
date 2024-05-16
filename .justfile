@@ -60,6 +60,10 @@ db-fixtures-make entity:
 db-fixtures-load:
     {{console}} doctrine:fixture:load --no-interaction
 
+[private]
+db-dump-with-fixtures: db-fixtures-load
+    docker exec -it api-postgres-1 pg_dump -d soignemoi -U postgres --clean | gzip -c > db.sql.gz
+
 console command:
     {{console}} {{command}}
 # composer require
