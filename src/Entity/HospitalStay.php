@@ -17,9 +17,9 @@ use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Link;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
-use App\ApiResource\Controller\HospitalStayDoctorToday;
 use App\ApiResource\Controller\HospitalStayTodayEntries;
 use App\ApiResource\Controller\HospitalStayTodayExits;
+use App\ApiResource\StateProvider\HospitalStayDoctorToday;
 use App\ApiResource\StateProvider\PatientHospitalStaysProvider;
 use App\Repository\HospitalStayRepository;
 use DateTimeInterface;
@@ -53,9 +53,9 @@ use Symfony\Component\Serializer\Attribute\Groups;
             uriVariables: [
                 'doctor_id' => new Link(fromClass: Doctor::class),
             ],
-            controller: HospitalStayDoctorToday::class,
             security: "is_granted('ROLE_DOCTOR')",
             normalizationContext: ['groups' => 'hospital_stay:read'],
+            provider: HospitalStayDoctorToday::class
         ),
         new GetCollection(
             uriTemplate: '/patients/hospital_stays',
