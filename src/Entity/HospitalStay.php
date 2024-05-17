@@ -17,9 +17,9 @@ use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Link;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
-use App\ApiResource\Controller\HospitalStayTodayEntries;
-use App\ApiResource\Controller\HospitalStayTodayExits;
 use App\ApiResource\StateProvider\HospitalStayDoctorToday;
+use App\ApiResource\StateProvider\HospitalStayTodayEntries;
+use App\ApiResource\StateProvider\HospitalStayTodayExits;
 use App\ApiResource\StateProvider\PatientHospitalStaysProvider;
 use App\Repository\HospitalStayRepository;
 use DateTimeInterface;
@@ -37,15 +37,15 @@ use Symfony\Component\Serializer\Attribute\Groups;
         ),
         new GetCollection(
             uriTemplate: '/hospital_stays/today_entries',
-            controller: HospitalStayTodayEntries::class,
             security: "is_granted('ROLE_SECRETARY') or is_granted('ROLE_DOCTOR')",
             normalizationContext: ['groups' => 'hospital_stay:read'],
+            provider: HospitalStayTodayEntries::class
         ),
         new GetCollection(
             uriTemplate: '/hospital_stays/today_exits',
-            controller: HospitalStayTodayExits::class,
             security: "is_granted('ROLE_SECRETARY')",
             normalizationContext: ['groups' => 'hospital_stay:read'],
+            provider: HospitalStayTodayExits::class
         ),
         // @todo faire la même chose que pour les patients, opération suivante : supprimer le paramètre.
         new GetCollection(

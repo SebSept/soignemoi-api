@@ -9,24 +9,27 @@ declare(strict_types=1);
  * 2024
  */
 
-namespace App\ApiResource\Controller;
+namespace App\ApiResource\StateProvider;
 
+use ApiPlatform\Metadata\Operation;
+use ApiPlatform\State\ProviderInterface;
 use App\Entity\HospitalStay;
 use App\Repository\HospitalStayRepository;
 use DateTime;
-use Symfony\Component\HttpKernel\Attribute\AsController;
 
-#[AsController]
-readonly class HospitalStayTodayExits
+/**
+ * @implements ProviderInterface<HospitalStay>
+ */
+readonly class HospitalStayTodayExits implements ProviderInterface
 {
     public function __construct(private HospitalStayRepository $hospitalStayRepository)
     {
     }
 
     /**
-     * @return array<int, HospitalStay>
+     * @return HospitalStay[]
      */
-    public function __invoke(): array
+    public function provide(Operation $operation, array $uriVariables = [], array $context = []): array
     {
         return $this->hospitalStayRepository->findBy(['endDate' => new DateTime()]);
     }
