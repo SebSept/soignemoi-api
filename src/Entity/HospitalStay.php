@@ -20,7 +20,7 @@ use ApiPlatform\Metadata\Post;
 use App\ApiResource\Controller\HospitalStayDoctorToday;
 use App\ApiResource\Controller\HospitalStayTodayEntries;
 use App\ApiResource\Controller\HospitalStayTodayExits;
-use App\ApiResource\State\PatientHospitalStaysProvider;
+use App\ApiResource\StateProvider\PatientHospitalStaysProvider;
 use App\Repository\HospitalStayRepository;
 use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
