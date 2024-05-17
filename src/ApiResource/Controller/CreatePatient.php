@@ -32,6 +32,8 @@ class CreatePatient extends AbstractController
 
     public function __invoke(Patient $patient): Patient
     {
+        // @todo remplacer par un stateProcessor
+        // https://api-platform.com/docs/core/state-processors/
         $violations = $this->validator->validate($patient);
         if (0 !== count($violations)) {
             throw new ValidationException((string) $violations->get(0)->getMessage());
