@@ -9,7 +9,7 @@ declare(strict_types=1);
  * 2024
  */
 
-namespace App\ApiResource\State;
+namespace App\ApiResource\StateProvider;
 
 use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\ProviderInterface;
