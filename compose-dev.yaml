@@ -17,11 +17,9 @@ services:
       - postgres
 
   postgres:
-    # service name is the hostname
     # @todo : utiliser un fichier de config pour la version de postgres
     image: postgres:16.1
     environment:
-      # @todo : changer ces valeurs pour la prod, utiliser un fichier de config
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: soignemoi
@@ -47,7 +45,7 @@ services:
     volumes:
       # nginx config
       - type: bind
-        source: ./configs/nginx_default.conf
+        source: ./docker/nginx_dev.conf
         target: /etc/nginx/conf.d/default.conf
       # assets
       - type: bind
@@ -59,14 +57,6 @@ services:
     networks:
       - nginx
       - partage
-
-# https://docs.docker.com/compose/compose-file/08-configs/
-
-#configs:
-#  nginx_config:
-#    file: ./configs/nginx.conf
-
-# https://docs.docker.com/compose/compose-file/10-fragments/
 
 volumes:
   postgres_data:
