@@ -105,11 +105,19 @@
       "assets:install %PUBLIC_DIR%": "symfony-cmd",
       "importmap:install": "symfony-cmd"
     },
+    "ci": [
+      "symfony composer validate --strict",
+      "@rector --dry-run --no-progress-bar",
+      "php-cs-fixer check --show-progress none --diff",
+      "symfony composer normalize",
+      "@phpstan",
+      "@tests"
+    ],
     "cs-fixer": "php-cs-fixer fix",
-    "phpstan": "phpstan",
+    "phpstan": "phpstan analyse",
     "pre-commit": [
       "symfony console doctrine:migrations:status",
-      "symfony composer validate",
+      "symfony composer validate --strict",
       "@rector",
       "@cs-fixer",
       "symfony composer normalize",
