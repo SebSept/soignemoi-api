@@ -21,6 +21,9 @@ class ApiTestCase extends \ApiPlatform\Symfony\Bundle\Test\ApiTestCase
         return parent::createClient([], $defaultOptions);
     }
 
+    /**
+     * @deprecated
+     */
     protected function createClientWithBearerFromUser(User $user, bool $enableProfiler = false): Client
     {
         $defaultOptions = ['headers' => ['Authorization' => 'Bearer '.$user->getAccessToken()]];
