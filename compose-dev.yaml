@@ -2,12 +2,22 @@
 services:
   php:
     image: ghcr.io/sebsept/docker-php-symfony-starter:dev
+    ports:
+      - 9003:9003
     volumes:
+      # code
       - type: bind
         source: ./
         target: /app
+      # cache
       - type: tmpfs
         target: /app/var
+      # config
+      # pour appliquer les changements de config, il faut redémarrer le container
+      - type: bind
+        source: ./docker/docker-php-ext-xdebug.ini
+        target: /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+        read_only: true
     user: "0:1000"
     networks:
       - nginx
