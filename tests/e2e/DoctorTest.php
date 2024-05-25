@@ -2,7 +2,6 @@
 
 namespace App\Tests\e2e;
 
-use Exception;
 use App\Entity\User;
 use App\Factory\DoctorFactory;
 use App\Factory\MedicalOpinionFactory;
@@ -10,6 +9,9 @@ use App\Factory\PatientFactory;
 use App\Factory\PrescriptionFactory;
 use App\Factory\UserFactory;
 use App\Tests\ApiTestCase;
+use Symfony\Component\HttpFoundation\Response;
+use Zenstruck\Browser\HttpOptions;
+use Zenstruck\Browser\Test\HasBrowser;
 use Zenstruck\Foundry\Proxy;
 use Zenstruck\Foundry\Test\Factories;
 use Zenstruck\Foundry\Test\ResetDatabase;
@@ -18,6 +20,7 @@ class DoctorTest extends ApiTestCase
 {
     use Factories;
     use ResetDatabase;
+    use HasBrowser;
 
     use prescriptions;
     use medicalOpinions;
@@ -27,10 +30,9 @@ class DoctorTest extends ApiTestCase
         $user = $this->makeDoctorUser();
 
         foreach ($this->AllowedIris() as $iri) {
-            static::createClientWithBearerFromUser($user->object())
-                ->request('GET', $iri[0]);
-
-            $this->assertResponseIsSuccessful(' raté pour '.$iri[0]);
+            $this->browser()->actingAs($user->object())
+                ->get($iri[0])
+                ->assertSuccessful();
         }
     }
 
@@ -50,10 +52,9 @@ class DoctorTest extends ApiTestCase
         $user = $this->makeDoctorUser();
 
         foreach ($this->NotAllowedIris() as $iri) {
-            static::createClientWithBearerFromUser($user->object())
-                ->request('GET', $iri[0]);
-
-            $this->assertResponseStatusCodeSame(403);
+            $this->browser()->actingAs($user->object())
+                ->get($iri[0])
+                ->assertStatus(Response::HTTP_FORBIDDEN);
         }
     }
 
@@ -68,26 +69,16 @@ class DoctorTest extends ApiTestCase
     {
         // Arrange
         $doctorUser = $this->makeDoctorUser();
-        $client = static::createClientWithBearerFromUser($doctorUser->object());
-        $client
-            ->request('GET', '/api/doctors/'.$doctorUser->object()->getDoctor()->getId().'/hospital_stays/today', [
-                'headers' => [
-                    // 'Content-Type' => 'application/ld+json',
-                    'Accept' => 'application/ld+json',
-                ],
-            ]);
-
-        // Assert
-        $this->assertResponseIsSuccessful();
+        $this->browser()->actingAs($doctorUser->object())
+            ->get('/api/doctors/'.$doctorUser->object()->getDoctor()->getId().'/hospital_stays/today',HttpOptions::json())
+            ->assertSuccessful();
         // pas de vérif sur le compte, on à un test du repository : \App\Tests\unit\DoctorHospitalStaysTest
     }
 
     private function makeDoctorUser(): Proxy|User
     {
         $doctor = UserFactory::new()->doctor()->create();
-        if(!in_array('ROLE_DOCTOR', $doctor->object()->getRoles())) {
-            throw new Exception('User Doctor non associé à un docteur');
-        }
+        assert(in_array('ROLE_DOCTOR', $doctor->object()->getRoles()), 'User Doctor non associé à un docteur');
 
         return $doctor;
     }
@@ -111,18 +102,10 @@ trait prescriptions
         ];
 
         // Act
-        $client = static::createClientWithBearerFromUser($doctorUser->object());
-        $client
-            ->request('POST', '/api/prescriptions', [
-                'headers' => [
-                    'Content-Type' => 'application/ld+json',
-                    'Accept' => 'application/ld+json',
-                ],
-                'json' => $payload,
-            ]);
+        $this->browser()->actingAs($doctorUser->object())
+            ->post('/api/prescriptions', HttpOptions::json($payload))
+            ->assertSuccessful();
 
-        // Assert
-        $this->assertResponseIsSuccessful();
         PrescriptionFactory::repository()->assert()->count($nbPrescriptions + 1);
     }
 
@@ -145,20 +128,11 @@ trait prescriptions
             'doctor' => $doctorIri,
             'items' => [],
         ];
-        $client = static::createClientWithBearerFromUser($doctorUser->object());
-        $client
-            ->request('POST', '/api/prescriptions', [
-                'headers' => [
-                    'Content-Type' => 'application/ld+json',
-                    'Accept' => 'application/ld+json',
-                ],
-                'json' => $payload,
-            ]);
-
-        $this->assertResponseStatusCodeSame(422);
-        $this->assertJsonContains([
-            'hydra:description' => 'La création de cet objet est limitée à 1 par jour par patient et par docteur',
-        ]);
+        $this->browser()->actingAs($doctorUser->object())
+            ->post('/api/prescriptions', HttpOptions::json($payload))
+            ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
+            ->assertJsonMatches('detail' ,  'La création de cet objet est limitée à 1 par jour par patient et par docteur',
+            );
     }
 
     public function testPatchExistingPrescription(): void
@@ -182,18 +156,19 @@ trait prescriptions
             ],
         ];
 
-        $client = static::createClientWithBearerFromUser($doctorUser->object());
-        $client
-            ->request('PATCH', '/api/prescriptions/'.$prescriptionId, [
-                'headers' => [
+        $this->browser()->actingAs($doctorUser->object())
+            ->patch(
+                '/api/prescriptions/'.$prescriptionId,
+                HttpOptions::create(['headers' =>
+                    [
                     'Content-Type' => 'application/merge-patch+json',
-                    'Accept' => 'application/ld+json',
-                ],
-                'json' => $payload,
-            ]);
-
+                    'Accept' => 'application/ld+json'
+                    ],
+                    'json' => $payload])
+            )
         // Assert
-        $this->assertResponseIsSuccessful();
+            ->assertSuccessful();
+
         PrescriptionFactory::repository()->assert()->count(1);
     }
 
@@ -219,18 +194,18 @@ trait prescriptions
             // passer le champs 'items' vide cause une erreur
         ];
 
-        $client = static::createClientWithBearerFromUser($doctorUser->object());
-        $client
-            ->request('PATCH', '/api/prescriptions/'.$prescriptionId, [
-                'headers' => [
+        $this->browser()->actingAs($doctorUser->object())
+            ->patch(
+                '/api/prescriptions/'.$prescriptionId,
+                HttpOptions::create(['headers' =>
+                    [
                     'Content-Type' => 'application/merge-patch+json',
-                    'Accept' => 'application/ld+json',
-                ],
-                'json' => $payload,
-            ]);
-
+                    'Accept' => 'application/ld+json'
+                    ],
+                    'json' => $payload])
+            )
         // Assert
-        $this->assertResponseStatusCodeSame(422);
+        ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 }
 
@@ -253,18 +228,11 @@ trait medicalOpinions
         ];
 
         // Act
-        $client = static::createClientWithBearerFromUser($doctorUser->object());
-        $client
-            ->request('POST', '/api/medical_opinions', [
-                'headers' => [
-                    'Content-Type' => 'application/json',
-                    'Accept' => 'application/json',
-                ],
-                'json' => $payload,
-            ]);
+        $this->browser()->actingAs($doctorUser->object())->post('/api/medical_opinions', HttpOptions::json($payload))
 
         // Assert
-        $this->assertResponseIsSuccessful();
+        ->assertSuccessful();
+
         MedicalOpinionFactory::repository()->assert()->count($nbMedicalOpinions + 1);
     }
 
@@ -288,20 +256,12 @@ trait medicalOpinions
             'title' => 'un avis médical',
             'description' => 'une description bla bla',
         ];
-        $client = static::createClientWithBearerFromUser($doctorUser->object());
-        $client
-            ->request('POST', '/api/medical_opinions', [
-                'headers' => [
-                    'Content-Type' => 'application/ld+json',
-                    'Accept' => 'application/ld+json',
-                ],
-                'json' => $payload,
-            ]);
 
-        $this->assertResponseStatusCodeSame(422);
-        $this->assertJsonContains([
-            'hydra:description' => 'La création de cet objet est limitée à 1 par jour par patient et par docteur',
-        ]);
+        $this->browser()->actingAs($doctorUser->object())
+            ->post('/api/medical_opinions', HttpOptions::json($payload))
+            ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
+            ->assertJsonMatches('detail' ,  'La création de cet objet est limitée à 1 par jour par patient et par docteur',
+            );
     }
 
     public function testPatchExistingMedicalOpinion(): void
@@ -321,22 +281,21 @@ trait medicalOpinions
             'description' => 'description modifiée',
         ];
 
-        $client = static::createClientWithBearerFromUser($doctorUser->object());
-        $client
-            ->request('PATCH', '/api/medical_opinions/'.$medicalOpinionId, [
-                'headers' => [
+        $this->browser()->actingAs($doctorUser->object())
+            ->patch(
+                '/api/medical_opinions/'.$medicalOpinionId,
+                HttpOptions::create(['headers' =>
+                    [
                     'Content-Type' => 'application/merge-patch+json',
-                    'Accept' => 'application/ld+json',
-                ],
-                'json' => $payload,
-            ]);
+                    'Accept' => 'application/ld+json'
+                    ],
+                    'json' => $payload])
+            )
+            // Assert
+            ->assertSuccessful()
+            ->assertJsonMatches('title', 'un avis médical modifié')
+            ->assertJsonMatches('description', 'description modifiée');
 
-        // Assert
-        $this->assertResponseIsSuccessful();
-        $this->assertJsonContains([
-            'title' => 'un avis médical modifié',
-            'description' => 'description modifiée',
-        ]);
         MedicalOpinionFactory::repository()->assert()->count(1);
     }
 
@@ -359,17 +318,17 @@ trait medicalOpinions
             'doctor' => '/api/doctors/'.$otherDoctor->getId(),
         ];
 
-        $client = static::createClientWithBearerFromUser($doctorUser->object());
-        $client
-            ->request('PATCH', '/api/medical_opinions/'.$medicalOpinionId, [
-                'headers' => [
+        $this->browser()->actingAs($doctorUser->object())
+            ->patch(
+                '/api/medical_opinions/'.$medicalOpinionId,
+                HttpOptions::create(['headers' =>
+                    [
                     'Content-Type' => 'application/merge-patch+json',
-                    'Accept' => 'application/ld+json',
-                ],
-                'json' => $payload,
-            ]);
-
-        // Assert
-        $this->assertResponseStatusCodeSame(422);
+                    'Accept' => 'application/ld+json'
+                    ],
+                    'json' => $payload])
+            )
+            // Assert
+            ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 }

@@ -11,9 +11,13 @@ use App\Entity\User;
 use App\Factory\DoctorFactory;
 use App\Factory\HospitalStayFactory;
 use App\Factory\PatientFactory;
+use Zenstruck\Browser\HttpOptions;
+use Zenstruck\Browser\Test\HasBrowser;
 
 trait HospitalStays
 {
+    use HasBrowser;
+
     public function modifyAnHospitalStay(User $actor): void
     {
         // Arrange
@@ -34,20 +38,18 @@ trait HospitalStays
             'checkin' => '2024-04-10 08:00:00',
         ];
 
-        $client = static::createClientWithBearerFromUser($actor);
-        $client
-            ->request('PATCH', '/api/hospital_stays/'.$medicalOpinionId, [
-                'headers' => [
+        $this->browser()->actingAs($actor)
+            ->patch(
+                '/api/hospital_stays/'.$medicalOpinionId,
+                HttpOptions::create(['headers' =>
+                [
                     'Content-Type' => 'application/merge-patch+json',
-                    'Accept' => 'application/ld+json',
+                    'Accept' => 'application/ld+json'
                 ],
-                'json' => $payload,
-            ]);
-
-        // Assert
-        $this->assertResponseIsSuccessful();
-        $this->assertJsonContains([
-            'checkin' => '2024-04-10T08:00:00+00:00',
-        ]);
+                'json' => $payload])
+            )
+            // Assert
+            ->assertSuccessful()
+            ->assertJsonMatches('checkin', '2024-04-10T08:00:00+00:00');
     }
 }
