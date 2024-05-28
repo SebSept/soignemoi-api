@@ -17,8 +17,8 @@ services:
       - postgres
 
   postgres:
-    # service name is the hostname
-    image: postgres:16.1
+    # https://hub.docker.com/_/postgres/tags?page=&page_size=&ordering=&name=
+    image: postgres:16.3-alpine3.20
     env_file:
       - .env.local
     expose:
@@ -32,7 +32,8 @@ services:
       - postgres
 
   nginx:
-    image: nginx:1.21.3
+    # https://hub.docker.com/r/library/nginx/tags
+    image: nginx:1.26.0
     ports:
       - target: 80
         published: 80
