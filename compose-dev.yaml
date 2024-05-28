@@ -27,8 +27,8 @@ services:
       - postgres
 
   postgres:
-    # @todo : utiliser un fichier de config pour la version de postgres
-    image: postgres:16.1
+    # https://hub.docker.com/_/postgres/tags?page=&page_size=&ordering=&name=
+    image: postgres:16.3-alpine3.20
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
@@ -41,7 +41,7 @@ services:
         published: 32770
     volumes:
       - type: volume
-        source: postgres_data
+        source: postgres_data2
         target: /var/lib/postgresql/data
     restart: unless-stopped
     networks:
@@ -69,7 +69,7 @@ services:
       - partage
 
 volumes:
-  postgres_data:
+  postgres_data2:
 
 networks:
   nginx:
