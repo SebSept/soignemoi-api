@@ -38,7 +38,8 @@ services:
       - postgres
 
   nginx:
-    image: nginx:1.21.3
+    # https://hub.docker.com/r/library/nginx/tags
+    image: nginx:1.26.0
     ports:
       - target: 80
         published: 32772
