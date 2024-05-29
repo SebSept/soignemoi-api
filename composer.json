@@ -45,6 +45,7 @@
     "phpstan/phpstan-symfony": "^1.3",
     "phpunit/phpunit": "^9.5",
     "rector/rector": "^1.0",
+    "roave/security-advisories": "dev-latest",
     "symfony/browser-kit": "~7.0.0",
     "symfony/css-selector": "~7.0.0",
     "symfony/debug-bundle": "~7.0.0",
@@ -112,12 +113,14 @@
       "@rector --dry-run --no-progress-bar",
       "php-cs-fixer check --show-progress none --diff",
       "symfony composer normalize",
+      "@security",
       "@phpstan",
       "@tests"
     ],
     "cs-fixer": "php-cs-fixer fix",
     "phpstan": "phpstan analyse",
     "pre-commit": [
+      "@security",
       "symfony console doctrine:migrations:status",
       "symfony composer validate --strict",
       "@rector",
@@ -127,6 +130,10 @@
       "@tests"
     ],
     "rector": "php vendor/bin/rector",
+    "security": [
+      "symfony  composer audit",
+      "symfony check:security"
+    ],
     "tests": "php vendor/bin/paratest --runner WrapperRunner"
   }
 }
