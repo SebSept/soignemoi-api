@@ -11,6 +11,7 @@ up:
 update: && tests
     git pull
     docker compose -f compose-dev.yaml down
+    docker compose -f compose-dev.yaml pull
     docker compose -f compose-dev.yaml up -d --build
     {{composer}} install
 
