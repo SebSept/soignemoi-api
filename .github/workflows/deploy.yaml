@@ -1,19 +1,23 @@
-name: Deploy on push
+name: Déploiement
 
 on:
   push:
     branches:
       - main
+  pull_request:
+    branches:
+      - main
 
 jobs:
-  quality:
+  # tests
+  composer-ci:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: docker compose
+      - name: composer ci
         run: |
           set -e
           docker network create partage
@@ -23,12 +27,13 @@ jobs:
       - name: composer ci
         run: docker compose -f compose-dev.yaml exec php composer run-script ci
 
+  # déploiement
   deploy:
-    needs: quality
+    needs: composer-ci
     runs-on: ubuntu-latest
 
     steps:
-      - name: Deploy to server
+      - name: Deploiement
         uses: appleboy/ssh-action@master
         with:
           host: api.ecf.seb7.fr
@@ -43,6 +48,7 @@ jobs:
             git fetch origin main --depth=1
             git reset --hard origin/main --
             docker compose -f compose-prod.yaml down
+            docker compose -f compose-prod.yaml pull
             docker compose -f compose-prod.yaml up -d --build
             docker compose -f compose-prod.yaml exec php composer install --no-dev
             docker compose -f compose-prod.yaml exec php ./bin/console doctrine:migrations:migrate --no-interaction --allow-no-migration

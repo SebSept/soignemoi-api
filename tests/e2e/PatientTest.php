@@ -10,6 +10,8 @@ use App\Factory\HospitalStayFactory;
 use App\Factory\PatientFactory;
 use App\Factory\UserFactory;
 use App\Tests\ApiTestCase;
+use Zenstruck\Browser\HttpOptions;
+use Zenstruck\Browser\Test\HasBrowser;
 use Zenstruck\Foundry\Proxy;
 use Zenstruck\Foundry\Test\Factories;
 use Zenstruck\Foundry\Test\ResetDatabase;
@@ -18,10 +20,12 @@ class PatientTest extends ApiTestCase
 {
     use Factories;
     use ResetDatabase;
+    use HasBrowser;
 
     public function testCreatePatient(): void
     {
-        static::createClient()->request('POST', '/api/patients', [
+        $this->browser()
+            ->request('POST', '/api/patients', [
             'headers' => [
                 'Content-Type' => 'application/ld+json',
                 'Accept' => 'application/ld+json',
@@ -36,9 +40,9 @@ class PatientTest extends ApiTestCase
                 'userCreationPassword' => 'password-verx-y7-strang'
             ]
             ]
-        );
+        )
+        ->assertSuccessful();
 
-        $this->assertResponseIsSuccessful();
         // 2 entités créés
         UserFactory::assert()->count(1);
         PatientFactory::assert()->count(1);
@@ -48,7 +52,7 @@ class PatientTest extends ApiTestCase
 //        $this->assertSame($patient->object(), $user->object()->getPatient());
 //        $this->assertInstanceOf(User::class, $patient->object()->getUser());
     }
-    
+
     public function testPatientViewItsHospitalStays(): void
     {
         // Arrange - 2 patients avec des hospital_stays chacun
@@ -61,17 +65,17 @@ class PatientTest extends ApiTestCase
         HospitalStayFactory::new()->many(3)->create(['patient' => $otherPatient->object()]);
 
         // Act
-        $client = static::createClientWithBearerFromUser($patientUser->object());
-        $client->request('GET', '/api/patients/hospital_stays');
+        $this->browser()
+            ->actingAs($patientUser->object())
+        ->request('GET', '/api/patients/hospital_stays')
 
         // Assert
-        $this->assertResponseIsSuccessful();
+        ->assertSuccessful()
         // se baser sur le nombre est déjà un indice pertinent
-        $this->assertJsonContains([
-            '@context' => '/api/contexts/HospitalStay',
-            '@type' => 'hydra:Collection',
-            'hydra:totalItems' => 2,
-        ]);
+        ->assertJsonMatches(            '"@context"', '/api/contexts/HospitalStay')
+            ->assertJsonMatches(            '"@type"' , 'hydra:Collection')
+            ->assertJsonMatches(            '"hydra:totalItems"', 2)
+        ;
     }
 
     public function testPatientCreatesAnHospitalStay(): void
@@ -82,26 +86,50 @@ class PatientTest extends ApiTestCase
         $doctor = DoctorFactory::new()->create();
 
         // Act
-        $client = static::createClientWithBearerFromUser($patientUser->object());
-        $client->request(
-            'POST',
+        $this->browser()->actingAs($patientUser->object())
+        ->post(
             '/api/hospital_stays',
-            [                'headers' => [
-                'Content-Type' => 'application/ld+json',
-                'Accept' => 'application/ld+json',
-            ],
-                'json' => [
-                    'patient' => '/api/patients/' . $patient->getId(),
-                    'startDate' => '2024-01-01',
-                    'endDate' => '2024-01-05',
-                    'reason' => 'Mal de tête',
-                    'medicalSpeciality' => 'Neurologie',
-                    'doctor' => '/api/doctors/'.$doctor->object()->getId(),
-                ]]);
+                HttpOptions::json([
+                'patient' => '/api/patients/' . $patient->getId(),
+                'startDate' => '2024-01-01',
+                'endDate' => '2024-01-05',
+                'reason' => 'Mal de tête',
+                'medicalSpeciality' => 'Neurologie',
+                'doctor' => '/api/doctors/'.$doctor->object()->getId(),
+                ]))
 
         // Assert
-        $this->assertResponseIsSuccessful();
+        ->assertSuccessful();
     }
+
+//    public function testPatientCannotCreatesAnHospitalStayStartingBeforeTomorrow(): void
+//    {
+//        // Arrange
+//        $patientUser = $this->makePatientUser();
+//        $patient = $patientUser->getPatient();
+//        $doctor = DoctorFactory::new()->create();
+//
+//        // Act
+//        $client = static::createClientWithBearerFromUser($patientUser->object());
+//        $client->request(
+//            'POST',
+//            '/api/hospital_stays',
+//            [                'headers' => [
+//                'Content-Type' => 'application/ld+json',
+//                'Accept' => 'application/ld+json',
+//            ],
+//                'json' => [
+//                    'patient' => '/api/patients/' . $patient->getId(),
+//                    'startDate' => '2024-01-01',
+//                    'endDate' => '2024-01-05',
+//                    'reason' => 'Mal de tête',
+//                    'medicalSpeciality' => 'Neurologie',
+//                    'doctor' => '/api/doctors/'.$doctor->object()->getId(),
+//                ]]);
+//
+//        // Assert
+//        $this->assertResponseIsSuccessful();
+//    }
 
     private function makePatientUser(): Proxy|User
     {
