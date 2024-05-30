@@ -2,12 +2,16 @@
 
 namespace App\Tests\e2e;
 
+use Zenstruck\Browser\Json;
 use App\Factory\HospitalStayFactory;
 use App\Factory\MedicalOpinionFactory;
 use App\Factory\PatientFactory;
 use App\Factory\PrescriptionFactory;
 use App\Factory\UserFactory;
 use App\Tests\ApiTestCase;
+use Symfony\Component\HttpFoundation\Response;
+use Zenstruck\Browser\HttpOptions;
+use Zenstruck\Browser\Test\HasBrowser;
 use Zenstruck\Foundry\Proxy;
 use Zenstruck\Foundry\Test\Factories;
 use Zenstruck\Foundry\Test\ResetDatabase;
@@ -17,6 +21,7 @@ class SecretaryTest extends ApiTestCase
     use Factories;
     use ResetDatabase;
     use HospitalStays;
+    use HasBrowser;
 
     public function testCanAccessIri(): void
     {
@@ -53,12 +58,15 @@ class SecretaryTest extends ApiTestCase
 
         // Act
         $secretary = UserFactory::new()->secretary()->create();
-        static::createClientWithBearerFromUser($secretary->object())
-            ->request('GET', '/api/hospital_stays/today_entries');
-
+        $this->browser()->actingAs($secretary->object())
+            ->get('/api/hospital_stays/today_entries', HttpOptions::json())
         // Assert
-        $this->assertResponseIsSuccessful();
-        $this->assertJsonContains(['hydra:totalItems' => 5]);
+            ->assertSuccessful()
+            ->use(static function (Json $json) : void {
+                // Json acts like a proxy of zenstruck/assert Expectation class
+                $json->hasCount(5);
+            })
+        ;
     }
 
     public function testCountTodayExits(): void
@@ -72,12 +80,13 @@ class SecretaryTest extends ApiTestCase
 
         // Act
         $secretary = UserFactory::new()->secretary()->create();
-        static::createClientWithBearerFromUser($secretary->object())
-            ->request('GET', '/api/hospital_stays/today_entries');
-
+        $this->browser()->actingAs($secretary->object())
+            ->get('/api/hospital_stays/today_entries', HttpOptions::json())
         // Assert
-        $this->assertResponseIsSuccessful();
-        $this->assertJsonContains(['hydra:totalItems' => 2]);
+            ->assertSuccessful()
+            ->use(static function (Json $json) : void {
+                $json->hasCount(2);
+            });
     }
 
     public function testModifyAnHospitalStay(): void
@@ -107,20 +116,19 @@ class SecretaryTest extends ApiTestCase
         ];
     }
 
-    private function testAccessOk(string $iri, Proxy $proxy): void
+    private function testAccessOk(string $uri, Proxy $user): void
     {
-        static::createClientWithBearerFromUser($proxy->object())
-            ->request('GET', $iri);
-
-        $this->assertResponseIsSuccessful(' raté pour '.$iri);
+        $this->browser()->actingAs($user->object())
+            ->get($uri)
+            ->assertSuccessful();
     }
 
-    private function testAccessNotAllowedTo(string $string, Proxy $proxy): void
+    private function testAccessNotAllowedTo(string $url, Proxy $user): void
     {
-        static::createClientWithBearerFromUser($proxy->object())
-            ->request('GET', $string);
-
-        $this->assertResponseStatusCodeSame(403);
+        $this->browser()
+            ->actingAs($user->object())
+            ->request('GET', $url)
+            ->assertStatus(Response::HTTP_FORBIDDEN);
     }
 
     /**

@@ -2,10 +2,12 @@
 
 namespace App\Tests\e2e;
 
+use Symfony\Component\HttpFoundation\Response;
 use App\Entity\User;
 use App\Factory\DoctorFactory;
 use App\Factory\UserFactory;
 use App\Tests\ApiTestCase;
+use Zenstruck\Browser\Test\HasBrowser;
 use Zenstruck\Foundry\Proxy;
 use Zenstruck\Foundry\Test\Factories;
 use Zenstruck\Foundry\Test\ResetDatabase;
@@ -14,7 +16,7 @@ class AdminTest extends ApiTestCase
 {
     use Factories;
     use ResetDatabase;
-
+    use HasBrowser;
     use HospitalStays;
 
     public function testModifyAnHospitalStay(): void
@@ -24,56 +26,72 @@ class AdminTest extends ApiTestCase
 
     public function testUpdateDoctor(): void
     {
+        // Arrange
         $admin = $this->makeAdmin();
         $doctor = DoctorFactory::new()->create();
 
-        $client = static::createClientWithBearerFromUser($admin->object());
-        $client->request('PATCH', '/api/doctors/' . $doctor->getId(), [
-            'headers' => [
-                'Content-Type' => 'application/merge-patch+json',
-                'Accept' => 'application/ld+json',
-            ],
-            'json' => [
-                'firstname' => 'mALLICK',
-            ]
-        ]);
+        // Act
+        $this->browser()->actingAs($admin->object())
+            ->request('PATCH', '/api/doctors/' . $doctor->getId(), [
+                'headers' => [
+                    'Content-Type' => 'application/merge-patch+json',
+                    'Accept' => 'application/ld+json',
+                ],
+                'json' => [
+                    'firstname' => 'mALLICK',
+                ]
+            ])
 
-        $this->assertResponseIsSuccessful();
-        $this->assertJsonContains([
-            'firstname' => 'mALLICK',
-        ]);
+        // Assert
+        ->assertSuccessful()
+        ->assertJsonMatches(            'firstname' , 'mALLICK')
+        ;
     }
 
     public function testCreateDoctor(): void
     {
+        // Arrange
         $admin = $this->makeAdmin();
-        DoctorFactory::new()->create();
 
-        $client = static::createClientWithBearerFromUser($admin->object());
-        $client->request('POST', '/api/doctors' , [
-            'headers' => [
-                'Content-Type' => 'application/ld+json',
-                'Accept' => 'application/ld+json',
-            ],
-            'json' => [
-                'firstname' => 'mALLICK',
-                'lastname' => 'Doe',
-                'medicalSpeciality' => 'Généraliste',
-                'employeeId' => '123',
-                'password' => 'password-verx-y7-strang',
-            ]
-        ]);
+        // Act
+        $this->browser()->actingAs($admin->object())
+            ->post('/api/doctors', [
+                'headers' => [
+                    'Content-Type' => 'application/ld+json',
+                    'Accept' => 'application/ld+json',
+                ],
+                'json' => [
+                    'firstname' => 'mALLICK',
+                    'lastname' => 'Doe',
+                    'medicalSpeciality' => 'Généraliste',
+                    'employeeId' => '123',
+                    'password' => 'password-verx-y7-strang',
+                ]
+            ])
 
-        $this->assertResponseIsSuccessful();
-        $this->assertJsonContains([
-            'firstname' => 'mALLICK',
-            'employeeId' => '123',
-        ]);
+            // Assert
+            ->assertSuccessful()
+            ->assertJsonMatches('firstname', 'mALLICK')
+            ->assertJsonMatches('employeeId', '123')
+            ;
+    }
+
+    public function testDeleteDoctor(): void
+    {
+        // Arrange
+        $admin = $this->makeAdmin();
+        $doctor = DoctorFactory::new()->create();
+
+        // Act
+        $this->browser()->actingAs($admin->object())
+            ->delete('/api/doctors/' . $doctor->getId())
+
+            // Assert
+            ->assertStatus(Response::HTTP_METHOD_NOT_ALLOWED);
     }
 
     public function testCanAccessIri(): void
     {
-        $this->makeEntities();
         $user = $this->makeAdmin();
 
         foreach ($this->AllowedIris() as $iri) {
@@ -91,7 +109,6 @@ class AdminTest extends ApiTestCase
 
     public function testCannotAccessIri(): void
     {
-        $this->makeEntities();
         $user = $this->makeAdmin();
 
         foreach ($this->NotAllowedIris() as $iri) {
@@ -109,28 +126,19 @@ class AdminTest extends ApiTestCase
 
     private function testAccessOk(string $iri, Proxy $proxy): void
     {
-        static::createClientWithBearerFromUser($proxy->object())
-            ->request('GET', $iri);
-
-        $this->assertResponseIsSuccessful(' raté pour ' . $iri);
+        $this->browser()->actingAs($proxy->object())
+            ->get($iri)
+            ->assertSuccessful();
     }
 
     private function testAccessNotAllowedTo(string $string, Proxy $proxy): void
     {
-        static::createClientWithBearerFromUser($proxy->object())
-            ->request('GET', $string);
-
-        $this->assertResponseStatusCodeSame(403);
+        $this->browser()->actingAs($proxy->object())
+            ->get($string)
+->assertStatus(Response::HTTP_FORBIDDEN);
     }
 
-    private function makeEntities(): array
-    {
-        return [
-            //            'patientId' => PatientFactory::new()->create()->getId(),
-            //            'prescriptionId' => PrescriptionFactory::new()->create()->getId(),
-            //            'medicalOpinionId' => MedicalOpinionFactory::new()->create()->getId(),
-        ];
-    }
+
 
     private function makeAdmin(): Proxy|User
     {
