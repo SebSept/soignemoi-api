@@ -4,6 +4,7 @@
 
 namespace App\Tests\Validator;
 
+use Override;
 use App\Entity\Doctor;
 use App\Entity\Patient;
 use App\Entity\Prescription;
@@ -15,6 +16,7 @@ use Symfony\Component\Validator\Test\ConstraintValidatorTestCase;
 
 class PrescriptionDateUnchangedValidatorTest extends ConstraintValidatorTestCase
 {
+    #[Override]
     protected function createValidator(): ConstraintValidatorInterface
     {
         $mockRepository = $this->createMock(PrescriptionRepository::class);

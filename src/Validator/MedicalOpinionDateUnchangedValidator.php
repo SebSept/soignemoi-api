@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace App\Validator;
 
+use Override;
 use App\Entity\Doctor;
 use App\Entity\MedicalOpinion;
 use App\Entity\Patient;
@@ -32,6 +33,7 @@ class MedicalOpinionDateUnchangedValidator extends ConstraintValidator
      * @param MedicalOpinion              $value
      * @param MedicalOpinionDateUnchanged $constraint
      */
+    #[Override]
     public function validate($value, Constraint $constraint): void
     {
         assert($value instanceof MedicalOpinion);

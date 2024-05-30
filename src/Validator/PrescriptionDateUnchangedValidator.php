@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace App\Validator;
 
+use Override;
 use App\Entity\Doctor;
 use App\Entity\Patient;
 use App\Entity\Prescription;
@@ -32,6 +33,7 @@ class PrescriptionDateUnchangedValidator extends ConstraintValidator
      * @param Prescription              $value
      * @param PrescriptionDateUnchanged $constraint
      */
+    #[Override]
     public function validate($value, Constraint $constraint): void
     {
         assert($value instanceof Prescription);

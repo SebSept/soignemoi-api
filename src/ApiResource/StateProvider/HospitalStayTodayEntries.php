@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace App\ApiResource\StateProvider;
 
+use Override;
 use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\ProviderInterface;
 use App\Entity\HospitalStay;
@@ -29,6 +30,7 @@ readonly class HospitalStayTodayEntries implements ProviderInterface
     /**
      * @return HospitalStay[]
      */
+    #[Override]
     public function provide(Operation $operation, array $uriVariables = [], array $context = []): array
     {
         return $this->hospitalStayRepository->findBy(['startDate' => new DateTime()]);

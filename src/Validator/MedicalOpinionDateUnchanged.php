@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace App\Validator;
 
+use Override;
 use Attribute;
 use Symfony\Component\Validator\Constraint;
 
@@ -27,6 +28,7 @@ class MedicalOpinionDateUnchanged extends Constraint
      */
     public string $message = 'La création de cet objet est limitée à 1 par jour par patient et par docteur';
 
+    #[Override]
     public function getTargets(): string
     {
         return self::CLASS_CONSTRAINT;

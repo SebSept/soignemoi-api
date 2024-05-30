@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace App\Validator;
 
+use Override;
 use App\Entity\Doctor;
 use App\Entity\User;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -28,6 +29,7 @@ class UserIsDoctorValidator extends ConstraintValidator
      *
      * @param Doctor $value
      */
+    #[Override]
     public function validate($value, Constraint $constraint): void
     {
         /** @var User $user */

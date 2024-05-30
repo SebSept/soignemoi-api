@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace App\Security;
 
+use Override;
 use App\Entity\User;
 use App\Repository\UserRepository;
 use SensitiveParameter;
@@ -24,6 +25,7 @@ readonly class AccessTokenHandler implements AccessTokenHandlerInterface
     {
     }
 
+    #[Override]
     public function getUserBadgeFrom(#[SensitiveParameter] string $accessToken): UserBadge
     {
         // "Bearer " est déjà retiré par Symfony

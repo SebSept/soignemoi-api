@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace App\ApiResource\StateProvider;
 
+use Override;
 use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\ProviderInterface;
 use App\Entity\HospitalStay;
@@ -32,6 +33,7 @@ readonly class PatientHospitalStaysProvider implements ProviderInterface
     ) {
     }
 
+    #[Override]
     public function provide(Operation $operation, array $uriVariables = [], array $context = []): object|array|null
     {
         /** @var ?User $user */
