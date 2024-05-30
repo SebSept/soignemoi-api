@@ -11,7 +11,6 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
-use Override;
 use App\Repository\UserRepository;
 use DateTime;
 use DateTimeInterface;
@@ -19,6 +18,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Exception;
 use LogicException;
+use Override;
 use RuntimeException;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;

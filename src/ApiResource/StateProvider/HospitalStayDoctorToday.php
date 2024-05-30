@@ -11,11 +11,11 @@ declare(strict_types=1);
 
 namespace App\ApiResource\StateProvider;
 
-use Override;
 use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\ProviderInterface;
 use App\Entity\HospitalStay;
 use App\Repository\HospitalStayRepository;
+use Override;
 use RuntimeException;
 
 /**

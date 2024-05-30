@@ -11,8 +11,8 @@ declare(strict_types=1);
 
 namespace App\Validator;
 
-use Override;
 use Attribute;
+use Override;
 use Symfony\Component\Validator\Constraint;
 
 /**

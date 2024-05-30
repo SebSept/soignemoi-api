@@ -11,9 +11,9 @@ declare(strict_types=1);
 
 namespace App\Validator;
 
-use Override;
 use App\Entity\Doctor;
 use App\Entity\User;
+use Override;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;

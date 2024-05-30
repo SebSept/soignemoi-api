@@ -11,12 +11,12 @@ declare(strict_types=1);
 
 namespace App\Validator;
 
-use Override;
 use App\Entity\Doctor;
 use App\Entity\MedicalOpinion;
 use App\Entity\Patient;
 use App\Repository\MedicalOpinionRepository;
 use DateTime;
+use Override;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 

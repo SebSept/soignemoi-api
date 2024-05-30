@@ -11,9 +11,9 @@ declare(strict_types=1);
 
 namespace App\Security;
 
-use Override;
 use App\Entity\User;
 use App\Repository\UserRepository;
+use Override;
 use SensitiveParameter;
 use Symfony\Component\Security\Core\Exception\BadCredentialsException;
 use Symfony\Component\Security\Http\AccessToken\AccessTokenHandlerInterface;
