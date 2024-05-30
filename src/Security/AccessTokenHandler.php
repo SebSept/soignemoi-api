@@ -13,6 +13,7 @@ namespace App\Security;
 
 use App\Entity\User;
 use App\Repository\UserRepository;
+use Override;
 use SensitiveParameter;
 use Symfony\Component\Security\Core\Exception\BadCredentialsException;
 use Symfony\Component\Security\Http\AccessToken\AccessTokenHandlerInterface;
@@ -24,6 +25,7 @@ readonly class AccessTokenHandler implements AccessTokenHandlerInterface
     {
     }
 
+    #[Override]
     public function getUserBadgeFrom(#[SensitiveParameter] string $accessToken): UserBadge
     {
         // "Bearer " est déjà retiré par Symfony

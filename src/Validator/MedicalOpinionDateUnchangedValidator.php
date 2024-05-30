@@ -16,6 +16,7 @@ use App\Entity\MedicalOpinion;
 use App\Entity\Patient;
 use App\Repository\MedicalOpinionRepository;
 use DateTime;
+use Override;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 
@@ -32,6 +33,7 @@ class MedicalOpinionDateUnchangedValidator extends ConstraintValidator
      * @param MedicalOpinion              $value
      * @param MedicalOpinionDateUnchanged $constraint
      */
+    #[Override]
     public function validate($value, Constraint $constraint): void
     {
         assert($value instanceof MedicalOpinion);

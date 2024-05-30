@@ -2,6 +2,7 @@
 
 namespace App\Tests\Validator;
 
+use Override;
 use App\Entity\Doctor;
 use App\Entity\MedicalOpinion;
 use App\Entity\Patient;
@@ -13,6 +14,7 @@ use Symfony\Component\Validator\Test\ConstraintValidatorTestCase;
 
 class MedicalOpinionDateUnchangedValidator2Test extends ConstraintValidatorTestCase
 {
+    #[Override]
     protected function createValidator(): ConstraintValidatorInterface
     {
         $existingMedicalOpinion = new MedicalOpinion();

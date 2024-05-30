@@ -17,6 +17,7 @@ use App\Entity\HospitalStay;
 use App\Entity\User;
 use App\Repository\HospitalStayRepository;
 use Exception;
+use Override;
 use Symfony\Bundle\SecurityBundle\Security;
 
 /**
@@ -32,6 +33,7 @@ readonly class PatientHospitalStaysProvider implements ProviderInterface
     ) {
     }
 
+    #[Override]
     public function provide(Operation $operation, array $uriVariables = [], array $context = []): object|array|null
     {
         /** @var ?User $user */

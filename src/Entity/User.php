@@ -18,6 +18,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Exception;
 use LogicException;
+use Override;
 use RuntimeException;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -69,7 +70,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * il faudrait passer par un evenement de Doctrine (ou kernel.request pour injecter la variable d'environement, suggéré par copilot)
      * @todo En fait, il suffit de mettre le role dans la base de données.
      */
-    private const ADMIN_EMAIL = 'admin@admin.com';
+    private const string ADMIN_EMAIL = 'admin@admin.com';
 
     #[ORM\OneToOne(targetEntity: Patient::class, mappedBy: 'user', cascade: ['persist'])]
     #[Groups('user:token')]
@@ -97,6 +98,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      *
      * @see UserInterface
      */
+    #[Override]
     public function getUserIdentifier(): string
     {
         return $this->email;
@@ -107,6 +109,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      *
      * @return list<string>
      */
+    #[Override]
     public function getRoles(): array
     {
         $roles = $this->roles;
@@ -155,6 +158,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @see PasswordAuthenticatedUserInterface
      */
+    #[Override]
     public function getPassword(): string
     {
         return $this->password;
@@ -170,6 +174,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @see UserInterface
      */
+    #[Override]
     public function eraseCredentials(): void
     {
         // If you store any temporary, sensitive data on the user, clear it here

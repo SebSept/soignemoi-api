@@ -15,6 +15,7 @@ use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\ProviderInterface;
 use App\Entity\HospitalStay;
 use App\Repository\HospitalStayRepository;
+use Override;
 use RuntimeException;
 
 /**
@@ -31,6 +32,7 @@ class HospitalStayDoctorToday implements ProviderInterface
     /**
      * @return HospitalStay[]
      */
+    #[Override]
     public function provide(Operation $operation, array $uriVariables = [], array $context = []): array
     {
         if (!isset($uriVariables['doctor_id'])) {

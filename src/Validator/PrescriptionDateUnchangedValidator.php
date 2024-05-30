@@ -16,6 +16,7 @@ use App\Entity\Patient;
 use App\Entity\Prescription;
 use App\Repository\PrescriptionRepository;
 use DateTime;
+use Override;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 
@@ -32,6 +33,7 @@ class PrescriptionDateUnchangedValidator extends ConstraintValidator
      * @param Prescription              $value
      * @param PrescriptionDateUnchanged $constraint
      */
+    #[Override]
     public function validate($value, Constraint $constraint): void
     {
         assert($value instanceof Prescription);
