@@ -109,30 +109,36 @@
       "importmap:install": "symfony-cmd"
     },
     "ci": [
-      "symfony composer validate --strict",
-      "@rector --dry-run --no-progress-bar",
-      "php-cs-fixer check --show-progress none --diff",
-      "symfony composer normalize",
+      "@lint-passive",
       "@security",
       "@phpstan",
       "@tests"
     ],
-    "cs-fixer": "php-cs-fixer fix",
+    "lint-active": [
+      "symfony composer validate --strict",
+      "symfony composer normalize",
+      "php-cs-fixer fix",
+      "@rector"
+    ],
+    "lint-passive": [
+      "symfony composer validate --strict",
+      "symfony composer normalize --dry-run --diff",
+      "php-cs-fixer check --show-progress none --diff",
+      "@rector --dry-run --no-progress-bar"
+    ],
     "phpstan": "phpstan analyse",
     "pre-commit": [
-      "@security",
+      "@lint-active",
       "symfony console doctrine:migrations:status",
-      "symfony composer validate --strict",
-      "@rector",
-      "@cs-fixer",
-      "symfony composer normalize",
+      "@security",
       "@phpstan",
       "@tests"
     ],
     "rector": "php vendor/bin/rector",
     "security": [
-      "symfony  composer audit",
-      "symfony check:security"
+      "symfony composer audit",
+      "symfony check:security",
+      "symfony console importmap:audit"
     ],
     "tests": "php vendor/bin/paratest --runner WrapperRunner"
   }
