@@ -137,7 +137,8 @@
     "rector": "php vendor/bin/rector",
     "security": [
       "symfony composer audit",
-      "symfony check:security"
+      "symfony check:security",
+      "symfony console importmap:audit"
     ],
     "tests": "php vendor/bin/paratest --runner WrapperRunner"
   }
