@@ -115,30 +115,29 @@
       "@tests"
     ],
     "lint-active": [
-      "symfony composer validate --strict",
-      "symfony composer normalize",
+      "composer validate --strict",
+      "composer normalize",
       "php-cs-fixer fix",
       "@rector"
     ],
     "lint-passive": [
-      "symfony composer validate --strict",
-      "symfony composer normalize --dry-run --diff",
+      "composer  validate --strict",
+      "composer normalize --dry-run --diff",
       "php-cs-fixer check --show-progress none --diff",
       "@rector --dry-run --no-progress-bar"
     ],
     "phpstan": "phpstan analyse",
     "pre-commit": [
       "@lint-active",
-      "symfony console doctrine:migrations:status",
+      "./bin/console  doctrine:migrations:status",
       "@security",
       "@phpstan",
       "@tests"
     ],
     "rector": "php vendor/bin/rector",
     "security": [
-      "symfony composer audit",
-      "symfony check:security",
-      "symfony console importmap:audit"
+      "composer audit",
+      "./bin/console  importmap:audit"
     ],
     "tests": "php vendor/bin/paratest --runner WrapperRunner"
   }
