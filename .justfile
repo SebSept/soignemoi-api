@@ -1,4 +1,4 @@
-docker_php_exec := "docker compose -f compose-dev.yaml exec -it -u climber php"
+docker_php_exec := "docker compose -f compose-dev.yaml exec -it -u www-data php"
 symfony := docker_php_exec + " symfony "
 # peut-être utiliser symfony + "composer"
 composer := docker_php_exec + " composer "
@@ -110,5 +110,5 @@ psysh:
 
 [confirm("Écraser .git/hooks/pre-commit ?")]
 install-pre-commit-hook:
-    echo "docker compose -f compose-dev.yaml exec php symfony composer run-script pre-commit" > .git/hooks/pre-commit
-    {{docker_php_exec}} chmod +x .git/hooks/pre-commit
+    echo "docker compose -f compose-dev.yaml exec php composer run-script pre-commit" > .git/hooks/pre-commit
+    chmod +x .git/hooks/pre-commit

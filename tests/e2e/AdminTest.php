@@ -38,13 +38,13 @@ class AdminTest extends ApiTestCase
                     'Accept' => 'application/ld+json',
                 ],
                 'json' => [
-                    'firstname' => 'mALLICK',
+                    'firstname' => 'ledoc',
                 ]
             ])
 
         // Assert
         ->assertSuccessful()
-        ->assertJsonMatches(            'firstname' , 'mALLICK')
+        ->assertJsonMatches('firstname' , 'ledoc')
         ;
     }
 

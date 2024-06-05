@@ -53,7 +53,9 @@ class Doctor
 
     #[ORM\Column(length: 255)]
     #[Groups(['doctor:read', 'write'])]
-    #[Assert\NoSuspiciousCharacters] // https://symfony.com/doc/current/reference/constraints/NoSuspiciousCharacters.html
+    // Commenté, ne fonctionne plus depuis le nouveau contenaire php
+    //    #[Assert\NoSuspiciousCharacters] // https://symfony.com/doc/current/reference/constraints/NoSuspiciousCharacters.html
+    #[Assert\NotBlank]
     private ?string $firstname = null;
 
     #[ORM\Column(length: 255)]

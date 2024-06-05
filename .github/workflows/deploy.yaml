@@ -14,15 +14,17 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: composer ci
+      - name: docker compose
         run: |
           set -e
           docker network create partage
           docker compose --progress quiet -f compose-dev.yaml up -d --build
-          docker compose -f compose-dev.yaml exec php composer install --quiet
+
+      - name: composer install
+        run: docker compose -f compose-dev.yaml exec -u root php composer install --quiet
 
       - name: composer ci
-        run: docker compose -f compose-dev.yaml exec php composer run-script ci
+        run: docker compose -f compose-dev.yaml exec -u root php composer run-script ci
 
   # déploiement
   deploy:
@@ -47,5 +49,9 @@ jobs:
             docker compose -f compose-prod.yaml down
             docker compose -f compose-prod.yaml pull
             docker compose -f compose-prod.yaml up -d --build
-            docker compose -f compose-prod.yaml exec php composer install --no-dev
+            docker compose -f compose-prod.yaml exec -u root php composer install --no-dev --working-dir=/app
             docker compose -f compose-prod.yaml exec php ./bin/console doctrine:migrations:migrate --no-interaction --allow-no-migration
+            docker compose -f compose-prod.yaml exec -u root php chown www-data:www-data /app/var /app/public 
+
+      - name: Check deploiement
+        run: curl -s --fail https://api.ecf.seb7.fr
