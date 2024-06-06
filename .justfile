@@ -1,8 +1,9 @@
 docker_php_exec := "docker compose -f compose-dev.yaml exec -it -u www-data php"
 symfony := docker_php_exec + " symfony "
 # peut-être utiliser symfony + "composer"
+docker_php_exec := "docker compose -f compose-dev.yaml exec -it -u www-data php"
 composer := docker_php_exec + " composer "
-console := symfony + "console "
+console := " console "
 docker_exec_nginx := "docker compose exec -it -u root nginx"
 
 up:
@@ -25,10 +26,6 @@ fish:
 [private]
 fish_root:
     docker compose -f compose-dev.yaml exec -it -u root php fish
-
-[confirm("Démarrer le serveur symfony (et pas le serveur nginx), êtes-vous sûr ?")]
-serve:
-    {{symfony}} server:start --no-tls --daemon
 
 new-controller classname='':
     {{console}} make:controller {{classname}}
