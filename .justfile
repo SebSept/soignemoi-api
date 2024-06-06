@@ -1,9 +1,6 @@
 docker_php_exec := "docker compose -f compose-dev.yaml exec -it -u www-data php"
-symfony := docker_php_exec + " symfony "
-# peut-être utiliser symfony + "composer"
-docker_php_exec := "docker compose -f compose-dev.yaml exec -it -u www-data php"
 composer := docker_php_exec + " composer "
-console := " console "
+console := docker_php_exec + " ./bin/console "
 docker_exec_nginx := "docker compose exec -it -u root nginx"
 
 up:
