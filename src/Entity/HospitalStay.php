@@ -77,7 +77,6 @@ use Symfony\Component\Serializer\Attribute\Groups;
     security: "is_granted('')",
     //    paginationItemsPerPage: 5,
 )]
-// #[ApiFilter(DateFilter::class, properties: ['startDate'])]
 class HospitalStay
 {
     #[ORM\Id]
