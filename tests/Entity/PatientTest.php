@@ -2,6 +2,7 @@
 
 namespace App\Tests\Entity;
 
+use DateTime;
 use App\Entity\MedicalOpinion;
 use App\Entity\Prescription;
 use App\Factory\DoctorFactory;
@@ -45,6 +46,35 @@ class PatientTest extends KernelTestCase
 
         // Assert
         $this->assertInstanceOf(Prescription::class, $foundPrescription);
+    }
+
+    public function testGetTodayPrescriptionByDoctorReturnsNullIfPrescriptionIsNotMadeToday(): void
+    {
+        // Arrange
+        $patient = PatientFactory::new()->create();
+        $doctor = DoctorFactory::new()->create();
+        HospitalStayFactory::new()
+            ->exitAfterToday()
+            ->entryBeforeToday()
+            ->create([
+                    'patient' => $patient,
+                    'doctor' => $doctor,
+                ]
+            );
+
+        $prescription = PrescriptionFactory::new()
+            ->create([
+                    'patient' => $patient,
+                    'doctor' => $doctor,
+                ]
+            );
+        $prescription->forceSet('dateTime', new DateTime('-1 day'));
+
+        // Act
+        $foundPrescription = $patient->getTodayPrescriptionByDoctor($doctor->object());
+
+        // Assert
+        $this->assertNull($foundPrescription);
     }
 
     public function testGetTodayPrescriptionByDoctorReturnsNull(): void
