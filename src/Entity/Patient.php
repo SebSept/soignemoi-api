@@ -27,6 +27,9 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
+/**
+ * @see \App\Tests\Entity\PatientTest
+ */
 #[ORM\Entity(repositoryClass: PatientRepository::class)]
 #[ApiResource(
     operations: [

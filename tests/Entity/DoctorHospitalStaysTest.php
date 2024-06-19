@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Tests\unit;
+namespace App\Tests\Entity;
 
 use DateTime;
 use App\Entity\HospitalStay;

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Tests\integration;
+namespace App\Tests\Entity;
 
 use App\Entity\MedicalOpinion;
 use App\Entity\Prescription;

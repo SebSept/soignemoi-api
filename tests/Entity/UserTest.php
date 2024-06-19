@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Tests\unit;
+namespace App\Tests\Entity;
 
 use App\Factory\UserFactory;
 use DateTime;
