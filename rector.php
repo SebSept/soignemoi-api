@@ -23,7 +23,7 @@ return RectorConfig::configure()
         __DIR__.'/rector.php',
     ])
     ->withSkipPath(__DIR__.'/config/bundles.php')
-    ->withSkip([__DIR__.'/src/DataFixtures', __DIR__.'/src/Factory'])
+    ->withSkip([__DIR__.'/src/DataFixtures', __DIR__.'/src/Factory', __DIR__.'/tests/e2e/PatientCreateTest.php'])
     ->withImportNames(removeUnusedImports: true)
     ->withPhpSets(php83: true)
     ->withSets([

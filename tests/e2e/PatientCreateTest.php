@@ -55,12 +55,109 @@ class PatientCreateTest extends ApiTestCase
 
     public function testCreatePatientFailsOnTooWeakPassword(): void
     {
-        $this->testCreationFails($this->validPayload([ 'userCreationPassword' => '1234567']));
+        $this->testCreationFails($this->validPayload(['userCreationPassword' => '1234567']));
     }
 
     public function testCreatePatientFailsOnEmptyPassword(): void
     {
-        $this->testCreationFails($this->validPayload([ 'userCreationPassword' => '']));
+        $this->testCreationFails($this->validPayload(['userCreationPassword' => '']));
+    }
+
+    public function testCreatePatientFailsOnEmptyFirstName(): void
+    {
+        $this->testCreationFails($this->validPayload(['firstname' => '']));
+    }
+
+    /**
+     * @dataProvider dataProviderXSS
+     */
+    public function testCreatePatientFailsOnFirstNameXSSAttack($payload): void
+    {
+        $this->testCreationFails($this->validPayload(['firstname' => $payload]));
+    }
+
+    /**
+     * @dataProvider dataProviderSQLInjection
+     */
+    public function testCreatePatientFailsOnFirstNameSQLInjection($payload): void
+    {
+        $this->testCreationFails($this->validPayload(['firstname' => $payload]));
+    }
+
+    public function testCreatePatientFailsOnEmptyLastname(): void
+    {
+        $this->testCreationFails($this->validPayload(['lastname' => '']));
+    }
+
+    /**
+     * @dataProvider dataProviderXSS
+     */
+    public function testCreatePatientFailsOnLastnameXSSAttack($payload): void
+    {
+        $this->testCreationFails($this->validPayload(['lastname' => $payload]));
+    }
+
+    /**
+     * @dataProvider dataProviderSQLInjection
+     */
+    public function testCreatePatientFailsOnLastnameSQLInjection($payload): void
+    {
+        $this->testCreationFails($this->validPayload(['lastname' => $payload]));
+    }
+
+    public function testCreatePatientFailsOnEmptyAddress1(): void
+    {
+        $this->testCreationFails($this->validPayload(['address1' => '']));
+    }
+
+    /**
+     * @dataProvider dataProviderXSS
+     */
+    public function testCreatePatientFailsOnAddress1XSSAttack($payload): void
+    {
+        $this->testCreationFails($this->validPayload(['address1' => $payload]));
+    }
+
+    /**
+     * @dataProvider dataProviderSQLInjection
+     */
+    public function testCreatePatientFailsOnAddress1SQLInjection($payload): void
+    {
+        $this->testCreationFails($this->validPayload(['address1' => $payload]));
+    }
+
+    public function testCreatePatientSuccessOnEmptyAddress2(): void
+    {
+        $this->browser()
+            ->request('POST', '/api/patients', [
+                    'headers' => [
+                        'Content-Type' => 'application/json',
+                        'Accept' => 'application/json',
+                    ],
+                    'json' => $this->validPayload(['address2' => ''])
+                ]
+            )
+            ->assertSuccessful();
+
+        // 2 entités créés
+        UserFactory::assert()->count(1);
+        PatientFactory::assert()->count(1);
+    }
+
+    /**
+     * @dataProvider dataProviderXSS
+     */
+    public function testCreatePatientFailsOnAddress2XSSAttack($payload): void
+    {
+        $this->testCreationFails($this->validPayload(['address2' => $payload]));
+    }
+
+    /**
+     * @dataProvider dataProviderSQLInjection
+     */
+    public function testCreatePatientFailsOnAddress2SqlInjection($payload): void
+    {
+        $this->testCreationFails($this->validPayload(['address2' => $payload]));
     }
 
     /**
@@ -72,7 +169,7 @@ class PatientCreateTest extends ApiTestCase
      * $stmt = $conn->prepare($sql);
      * $stmt->executeQuery();
      */
-    public function testCreatePatientNotVulnerableToSQLBlindInjection(): void
+    public function testCreatePatientNotVulnerableToSqlBlindInjection(): void
     {
         UserFactory::new(['email' => 'user@email.com'])->create();
 
@@ -122,7 +219,7 @@ class PatientCreateTest extends ApiTestCase
     {
         return
             $modified + [
-                'firstname' => 'newuser',
+                'firstname' => 'Jean-Maxime Henry',
                 'lastname' => 'Doe',
                 'address1' => '1 rue de la paix',
                 'address2' => '75000 Paris',
@@ -130,6 +227,23 @@ class PatientCreateTest extends ApiTestCase
                 'userCreationEmail' => 'pass@email.com',
                 'userCreationPassword' => 'password-verx-y7-strang'
             ];
+    }
+
+    private function dataProviderXSS(): array
+    {
+        return [
+            ["&lt;script&gt;alert('XSS')&lt;/script&gt;"],
+            ["http://example.com/search?term=%3Cscript%3Ealert('XSS')%3C%2Fscript%3E"],
+            ["#<img src=x onerror=alert('XSS')>"],
+            ["<script>alert('XSS')</script>"]
+        ];
+    }
+
+    private function dataProviderSQLInjection(): array
+    {
+        return [
+            ["bla\'||(SELECT (CHR(102)||CHR(70)||CHR(70)||CHR(90)) WHERE 8256=8256 AND 3022=CAST((CHR(113)||CHR(107)||CHR(120)||CHR(112)||CHR(113))||(SELECT (CASE WHEN (3022=3022) THEN 1 ELSE 0 END))::text||(CHR(113)||CHR(122)||CHR(113)||CHR(122)||CHR(113)) AS NUMERIC))||\'"],
+        ];
     }
 
 }

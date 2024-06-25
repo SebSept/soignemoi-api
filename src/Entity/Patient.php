@@ -55,18 +55,27 @@ class Patient
 
     #[ORM\Column(length: 255)]
     #[Groups(['hospital_stay:details', 'patient:create', 'patient:create_done'])]
+    #[Assert\NotBlank]
+    #[Assert\Regex('/^[\w\d,() \s\-]+$/i')]
+    //    #[Assert\NoSuspiciousCharacters(restrictionLevel: Assert\NoSuspiciousCharacters::RESTRICTION_LEVEL_HIGH)]
     private ?string $firstname = null;
 
     #[ORM\Column(length: 255)]
     #[Groups(['hospital_stay:details', 'patient:create', 'patient:create_done'])]
+    #[Assert\NotBlank]
+    #[Assert\Regex('/^[\w\d,() \s\-]+$/i')] // @todo faire une assertion custom repétée, autoriser les accents.
     private ?string $lastname = null;
 
     #[ORM\Column(length: 255)]
     #[Groups(['patient:create', 'patient:create_done'])]
+    #[Assert\NotBlank]
+    #[Assert\Regex('/^[\w\d,() \s\-]+$/i')]
     private ?string $address1 = null;
 
     #[ORM\Column(length: 255)]
     #[Groups(['patient:create', 'patient:create_done'])]
+    #[Assert\Regex('/^[\w\d,() \s\-]+$/i')]
+    //    #[Assert\NoSuspiciousCharacters(restrictionLevel: Assert\NoSuspiciousCharacters::RESTRICTION_LEVEL_HIGH)]
     private string $address2;
 
     // @todo ce champs est supprimable, il n'est pas utilisé.
