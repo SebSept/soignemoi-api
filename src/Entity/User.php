@@ -49,6 +49,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     /**
      * @var string The hashed password
+     *             La validation de la faiblesse du mot de passe se fait dans CreatePatient car on insère ici un mot de passe déjà hashé
+     *
+     * @todo faire le hashage ici avec un setter ?
      */
     #[ORM\Column]
     private string $password;
