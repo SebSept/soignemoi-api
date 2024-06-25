@@ -22,7 +22,7 @@ class PatientTest extends ApiTestCase
     use ResetDatabase;
     use HasBrowser;
 
-    public function testCreatePatient(): void
+    public function testCreatePatientSuccess(): void
     {
         $this->browser()
             ->request('POST', '/api/patients', [
@@ -106,6 +106,36 @@ class PatientTest extends ApiTestCase
         UserFactory::assert()->count(1);
         // aucune patient créé
         PatientFactory::assert()->count(0);
+    }
+
+    /**
+     * Pour vérifier la validé du test,  on peut modifier le fichier src/ApiResource/StateProcessor/CreatePatient.php : \App\ApiResource\StateProcessor\CreatePatient::process
+     * en y mettant :
+     * // Example de code qui comporte une possibilité d'injection sql
+     * $conn = $this->entityManager->getConnection();
+     * $sql = "INSERT INTO \"user\" (password) VALUES ('" . $patient->userCreationPassword . "') LIMIT 1";
+     * $stmt = $conn->prepare($sql);
+     * $stmt->executeQuery();
+     */
+    public function testCreatePatientNotVulnerableToSQLBlindInjection(): void
+    {
+        UserFactory::new(['email' => 'user@email.com'])->create();
+
+        $start = microtime(true);
+        $this->browser()
+            ->request('POST', '/api/patients', [
+                    'headers' => [
+                        'Content-Type' => 'application/json',
+                        'Accept' => 'application/json',
+                    ],
+                    // error based
+                    // 'body' => '{ "firstname": "string", "lastname": "string", "address1": "string", "address2": "string", "password": "string", "userCreationEmail": "user@example.com", "userCreationPassword": "password-verx-y7-strang\'||(SELECT (CHR(102)||CHR(70)||CHR(70)||CHR(90)) WHERE 8256=8256 AND 3022=CAST((CHR(113)||CHR(107)||CHR(120)||CHR(112)||CHR(113))||(SELECT (CASE WHEN (3022=3022) THEN 1 ELSE 0 END))::text||(CHR(113)||CHR(122)||CHR(113)||CHR(122)||CHR(113)) AS NUMERIC))||\'" }',
+
+                    'body' => '{ "firstname": "string", "lastname": "string", "address1": "string", "address2": "string", "password": "string", "userCreationEmail": "user@example.com", "userCreationPassword": "password-verx-y7-strang\'||(SELECT (CHR(113)||CHR(119)||CHR(111)||CHR(103)) WHERE 2442=2442 AND 1753=(SELECT 1753 FROM PG_SLEEP(5)))||\'" }'
+                ]
+            );
+
+        $this->assertLessThan(5, microtime(true) - $start, 'time based sql injection réussie.');
     }
 
     public function testPatientViewItsHospitalStays(): void
