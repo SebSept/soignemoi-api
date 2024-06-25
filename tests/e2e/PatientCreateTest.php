@@ -72,6 +72,32 @@ class PatientCreateTest extends ApiTestCase
         PatientFactory::assert()->count(0);
     }
 
+    public function testCreatePatientFailsOnEmptyEmail(): void
+    {
+        $this->browser()
+            ->request('POST', '/api/patients', [
+                    'headers' => [
+                        'Content-Type' => 'application/json',
+                        'Accept' => 'application/json',
+                    ],
+                    'json' => [
+                        'firstname' => 'newuser',
+                        'lastname' => 'Doe',
+                        'address1' => '1 rue de la paix',
+                        'address2' => '75000 Paris',
+                        // champs pour la création du user
+                        'userCreationEmail' => '',
+                        'userCreationPassword' => 'password-verx-y7-strang'
+                    ]
+                ]
+            )
+            ->assertStatus(422);
+
+        // aucune entité crée
+        UserFactory::assert()->count(0);
+        PatientFactory::assert()->count(0);
+    }
+
     public function testCreatePatientFailsOnAlreadyUsedEmail(): void
     {
         UserFactory::new(['email' => 'user@email.com'])->create();

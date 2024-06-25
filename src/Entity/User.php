@@ -40,6 +40,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(length: 180)]
     #[Assert\Email]
+    #[Assert\NotBlank]
     private string $email;
 
     /** @var string[] The user roles */
