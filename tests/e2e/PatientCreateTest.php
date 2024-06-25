@@ -34,104 +34,34 @@ class PatientCreateTest extends ApiTestCase
 
         $user = UserFactory::repository()->first();
         $this->assertTrue($user->object()->isPatient());
-//        $this->assertSame($patient->object(), $user->object()->getPatient());
-//        $this->assertInstanceOf(User::class, $patient->object()->getUser());
     }
 
     public function testCreatePatientFailsOnInvalidEmail(): void
     {
-        $this->browser()
-            ->request('POST', '/api/patients', [
-                    'headers' => [
-                        'Content-Type' => 'application/json',
-                        'Accept' => 'application/json',
-                    ],
-                    'json' => $this->validPayload(['userCreationEmail' => 'invalid'])
-                ]
-            )
-            ->assertStatus(422);
-
-        // aucune entité crée
-        UserFactory::assert()->count(0);
-        PatientFactory::assert()->count(0);
+        $this->testCreationFails($this->validPayload(['userCreationEmail' => 'invalid']));
     }
 
     public function testCreatePatientFailsOnEmptyEmail(): void
     {
-        $this->browser()
-            ->request('POST', '/api/patients', [
-                    'headers' => [
-                        'Content-Type' => 'application/json',
-                        'Accept' => 'application/json',
-                    ],
-                    'json' => $this->validPayload(['userCreationEmail' => ''])
-                ]
-            )
-            ->assertStatus(422);
-
-        // aucune entité crée
-        UserFactory::assert()->count(0);
-        PatientFactory::assert()->count(0);
+        $this->testCreationFails($this->validPayload(['userCreationEmail' => '']));
     }
 
     public function testCreatePatientFailsOnAlreadyUsedEmail(): void
     {
         $testEmail = 'user@email.com';
         UserFactory::new(['email' => $testEmail])->create();
-
-        $this->browser()
-            ->request('POST', '/api/patients', [
-                    'headers' => [
-                        'Content-Type' => 'application/json',
-                        'Accept' => 'application/json',
-                    ],
-                    'json' => $this->validPayload(['userCreationEmail' => $testEmail])
-                ]
-            )
-            ->assertStatus(422);
-
-        // pas de nouveau user (reste celui créé pour le test)
-        UserFactory::assert()->count(1);
-        // aucune patient créé
-        PatientFactory::assert()->count(0);
+        $this->testCreationFails($this->validPayload(['userCreationEmail' => $testEmail]));
     }
 
     public function testCreatePatientFailsOnTooWeakPassword(): void
     {
-        $this->browser()
-            ->request('POST', '/api/patients', [
-                    'headers' => [
-                        'Content-Type' => 'application/json',
-                        'Accept' => 'application/json',
-                    ],
-                    'json' => $this->validPayload([ 'userCreationPassword' => '1234567'])
-                    ]
-            )
-            ->assertStatus(422);
-
-        // pas de nouveau user, pas de patient créés
-        UserFactory::assert()->count(0);
-        PatientFactory::assert()->count(0);
+        $this->testCreationFails($this->validPayload([ 'userCreationPassword' => '1234567']));
     }
 
     public function testCreatePatientFailsOnEmptyPassword(): void
     {
-        $this->browser()
-            ->request('POST', '/api/patients', [
-                    'headers' => [
-                        'Content-Type' => 'application/json',
-                        'Accept' => 'application/json',
-                    ],
-                    'json' => $this->validPayload([ 'userCreationPassword' => ''])
-                ]
-            )
-            ->assertStatus(422);
-
-        // pas de nouveau user, pas de patient créés
-        UserFactory::assert()->count(0);
-        PatientFactory::assert()->count(0);
+        $this->testCreationFails($this->validPayload([ 'userCreationPassword' => '']));
     }
-
 
     /**
      * Pour vérifier la validé du test,  on peut modifier le fichier src/ApiResource/StateProcessor/CreatePatient.php : \App\ApiResource\StateProcessor\CreatePatient::process
@@ -161,6 +91,27 @@ class PatientCreateTest extends ApiTestCase
             );
 
         $this->assertLessThan(5, microtime(true) - $start, 'time based sql injection réussie.');
+    }
+
+    private function testCreationFails(array $payload): void
+    {
+        $usersCountsBefore = UserFactory::repository()->count();
+        $patientsCountsBefore = PatientFactory::repository()->count();
+
+        $this->browser()
+            ->request('POST', '/api/patients', [
+                    'headers' => [
+                        'Content-Type' => 'application/json',
+                        'Accept' => 'application/json',
+                    ],
+                    'json' => $payload
+                ]
+            )
+            ->assertStatus(422);
+
+        // aucune entité crée
+        UserFactory::assert()->count($usersCountsBefore);
+        PatientFactory::assert()->count($patientsCountsBefore);
     }
 
     /**
