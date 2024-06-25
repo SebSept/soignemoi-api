@@ -13,6 +13,7 @@ namespace App\ApiResource\StateProcessor;
 
 use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\ProcessorInterface;
+use ApiPlatform\Validator\ValidatorInterface;
 use App\Entity\Patient;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
@@ -29,7 +30,8 @@ class CreatePatient implements ProcessorInterface
 {
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
-        private readonly UserPasswordHasherInterface $passwordHasher
+        private readonly UserPasswordHasherInterface $passwordHasher,
+        private readonly ValidatorInterface $validator
     ) {
     }
 
@@ -48,6 +50,8 @@ class CreatePatient implements ProcessorInterface
         $user->setEmail($patient->userCreationEmail);
         $user->setPassword($this->passwordHasher->hashPassword($user, $patient->userCreationPassword));
         $user->setPatient($patient);
+
+        $this->validator->validate($user);
 
         $patient->setUser($user);
         $this->entityManager->persist($user);
