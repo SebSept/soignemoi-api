@@ -38,7 +38,8 @@ use Symfony\Component\Validator\Constraints as Assert;
         new Post(
             security: "is_granted('PUBLIC_ACCESS')",
             processor: CreatePatient::class,
-            normalizationContext: ['groups' => 'patient:create'],
+            denormalizationContext: ['groups' => 'patient:create'], // champs recevables
+            normalizationContext: ['groups' => 'patient:create_done'], // champs renvoyés après la création
         ),
         new Patch(),
     ],
@@ -49,21 +50,23 @@ class Patient
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['user:token', 'hospital_stay:read', 'prescription:read'])]
+    #[Groups(['user:token', 'hospital_stay:read', 'prescription:read', 'patient:create_done'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['hospital_stay:details'])]
+    #[Groups(['hospital_stay:details', 'patient:create', 'patient:create_done'])]
     private ?string $firstname = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['hospital_stay:details'])]
+    #[Groups(['hospital_stay:details', 'patient:create', 'patient:create_done'])]
     private ?string $lastname = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['patient:create', 'patient:create_done'])]
     private ?string $address1 = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['patient:create', 'patient:create_done'])]
     private string $address2;
 
     // @todo ce champs est supprimable, il n'est pas utilisé.
