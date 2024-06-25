@@ -2,21 +2,14 @@
 
 namespace App\Tests\e2e;
 
-use DateTime;
-use Exception;
-use App\Entity\User;
-use App\Factory\DoctorFactory;
-use App\Factory\HospitalStayFactory;
 use App\Factory\PatientFactory;
 use App\Factory\UserFactory;
 use App\Tests\ApiTestCase;
-use Zenstruck\Browser\HttpOptions;
 use Zenstruck\Browser\Test\HasBrowser;
-use Zenstruck\Foundry\Proxy;
 use Zenstruck\Foundry\Test\Factories;
 use Zenstruck\Foundry\Test\ResetDatabase;
 
-class PatientTest extends ApiTestCase
+class PatientCreateTest extends ApiTestCase
 {
     use Factories;
     use ResetDatabase;
@@ -138,106 +131,5 @@ class PatientTest extends ApiTestCase
         $this->assertLessThan(5, microtime(true) - $start, 'time based sql injection réussie.');
     }
 
-    public function testPatientViewItsHospitalStays(): void
-    {
-        // Arrange - 2 patients avec des hospital_stays chacun
-        $patientUser = $this->makePatientUser();
-        $patient = $patientUser->getPatient();
-
-        HospitalStayFactory::new()->many(2)->create(['patient' => $patient]);
-
-        $otherPatient = PatientFactory::new()->create();
-        HospitalStayFactory::new()->many(3)->create(['patient' => $otherPatient->object()]);
-
-        // Act
-        $this->browser()
-            ->actingAs($patientUser->object())
-        ->request('GET', '/api/patients/hospital_stays')
-
-        // Assert
-        ->assertSuccessful()
-        // se baser sur le nombre est déjà un indice pertinent
-        ->assertJsonMatches(            '"@context"', '/api/contexts/HospitalStay')
-            ->assertJsonMatches(            '"@type"' , 'hydra:Collection')
-            ->assertJsonMatches(            '"hydra:totalItems"', 2)
-        ;
-    }
-
-    public function testPatientCreatesAnHospitalStay(): void
-    {
-        // Arrange
-        $patientUser = $this->makePatientUser();
-        $patient = $patientUser->getPatient();
-        $doctor = DoctorFactory::new()->create();
-
-        // Act
-        $this->browser()->actingAs($patientUser->object())
-        ->post(
-            '/api/hospital_stays',
-                HttpOptions::json([
-                'patient' => '/api/patients/' . $patient->getId(),
-                'startDate' => '2024-01-01',
-                'endDate' => '2024-01-05',
-                'reason' => 'Mal de tête',
-                'medicalSpeciality' => 'Neurologie',
-                'doctor' => '/api/doctors/'.$doctor->object()->getId(),
-                ]))
-
-        // Assert
-        ->assertSuccessful();
-    }
-
-//    public function testPatientCannotCreatesAnHospitalStayStartingBeforeTomorrow(): void
-//    {
-//        // Arrange
-//        $patientUser = $this->makePatientUser();
-//        $patient = $patientUser->getPatient();
-//        $doctor = DoctorFactory::new()->create();
-//
-//        // Act
-//        $client = static::createClientWithBearerFromUser($patientUser->object());
-//        $client->request(
-//            'POST',
-//            '/api/hospital_stays',
-//            [                'headers' => [
-//                'Content-Type' => 'application/ld+json',
-//                'Accept' => 'application/ld+json',
-//            ],
-//                'json' => [
-//                    'patient' => '/api/patients/' . $patient->getId(),
-//                    'startDate' => '2024-01-01',
-//                    'endDate' => '2024-01-05',
-//                    'reason' => 'Mal de tête',
-//                    'medicalSpeciality' => 'Neurologie',
-//                    'doctor' => '/api/doctors/'.$doctor->object()->getId(),
-//                ]]);
-//
-//        // Assert
-//        $this->assertResponseIsSuccessful();
-//    }
-
-    private function makePatientUser(): Proxy|User
-    {
-        $user = UserFactory::new()->create(
-            [
-                'email' => 'patient@patient.com',
-                'password' => 'hello',
-                'roles' => [],
-                'access_token' => UserFactory::VALID_PATIENT_TOKEN,
-                'token_expiration' => new DateTime('+30 day'),
-            ]
-        );
-        PatientFactory::new()->create(
-            [
-                'user' => $user,
-                'hospitalStays' => []
-
-            ]);
-        if(!in_array('ROLE_PATIENT', $user->object()->getRoles())) {
-            throw new Exception('User Patient non associé à un patient');
-        }
-
-        return $user;
-    }
 }
 
