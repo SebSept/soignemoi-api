@@ -9,35 +9,39 @@ declare(strict_types=1);
  * 2024
  */
 
-namespace App\ApiResource\Controller;
+namespace App\ApiResource\StateProcessor;
 
-use ApiPlatform\Validator\Exception\ValidationException;
+use ApiPlatform\Metadata\Operation;
+use ApiPlatform\State\ProcessorInterface;
 use App\Entity\Patient;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpKernel\Attribute\AsController;
+use Exception;
+use Override;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
 
-#[AsController]
-class CreatePatient extends AbstractController
+/**
+ * Class CreatePatient.
+ *
+ * @implements ProcessorInterface<Patient, Patient>
+ */
+class CreatePatient implements ProcessorInterface
 {
     public function __construct(
-        private readonly ValidatorInterface $validator,
         private readonly EntityManagerInterface $entityManager,
         private readonly UserPasswordHasherInterface $passwordHasher
     ) {
     }
 
-    public function __invoke(Patient $patient): Patient
+    #[Override]
+    public function process(mixed $patient, Operation $operation, array $uriVariables = [], array $context = []): Patient
     {
-        // @todo remplacer par un stateProcessor
-        // https://api-platform.com/docs/core/state-processors/
-        $violations = $this->validator->validate($patient);
-        if (0 !== count($violations)) {
-            throw new ValidationException((string) $violations->get(0)->getMessage());
+        if (!$patient instanceof Patient) {
+            throw new Exception('On traite uniquement les Patient avec ce processeur');
         }
+
+        // pas de validation comme on avait dans le controlleur
+        // la validation est déjà faite par apiplatform
 
         // création du user + du patient par cascade
         $user = new User();
@@ -45,10 +49,10 @@ class CreatePatient extends AbstractController
         $user->setPassword($this->passwordHasher->hashPassword($user, $patient->userCreationPassword));
         $user->setPatient($patient);
 
-        $this->entityManager->persist($user);
-        $this->entityManager->flush();
-
         $patient->setUser($user);
+        $this->entityManager->persist($user);
+        $this->entityManager->persist($patient);
+        $this->entityManager->flush();
 
         return $patient;
     }

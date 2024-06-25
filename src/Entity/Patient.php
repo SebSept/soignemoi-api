@@ -16,7 +16,7 @@ use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
-use App\ApiResource\Controller\CreatePatient;
+use App\ApiResource\StateProcessor\CreatePatient;
 use App\Repository\PatientRepository;
 use DateTime;
 use DateTimeInterface;
@@ -37,8 +37,7 @@ use Symfony\Component\Validator\Constraints as Assert;
         // access pour tous
         new Post(
             security: "is_granted('PUBLIC_ACCESS')",
-            controller: CreatePatient::class,
-            read: false,
+            processor: CreatePatient::class,
             normalizationContext: ['groups' => 'patient:create'],
         ),
         new Patch(),
@@ -74,7 +73,7 @@ class Patient
     // champs lors de la création pour la création de l'utilisateur système
     #[Assert\Email]
     #[Groups(['patient:create'])]
-    public string $userCreationEmail;
+    public string $userCreationEmail = '';
 
     #[Assert\PasswordStrength(message: 'Mot de passe trop faible.')]
     #[Groups(['patient:create'])]

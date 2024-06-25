@@ -27,8 +27,8 @@ class PatientTest extends ApiTestCase
         $this->browser()
             ->request('POST', '/api/patients', [
             'headers' => [
-                'Content-Type' => 'application/ld+json',
-                'Accept' => 'application/ld+json',
+                'Content-Type' => 'application/json',
+                'Accept' => 'application/json',
             ],
             'json' => [
                 'firstname' => 'newuser',
@@ -51,6 +51,32 @@ class PatientTest extends ApiTestCase
         $this->assertTrue($user->object()->isPatient());
 //        $this->assertSame($patient->object(), $user->object()->getPatient());
 //        $this->assertInstanceOf(User::class, $patient->object()->getUser());
+    }
+
+    public function testCreatePatientFails(): void
+    {
+        $this->browser()
+            ->request('POST', '/api/patients', [
+            'headers' => [
+                'Content-Type' => 'application/json',
+                'Accept' => 'application/json',
+            ],
+            'json' => [
+                'firstname' => 'newuser',
+                'lastname' => 'Doe',
+                'address1' => '1 rue de la paix',
+                'address2' => '75000 Paris',
+                // champs pour la création du user
+                'userCreationEmail' => 'invalid',
+                'userCreationPassword' => 'password-verx-y7-strang'
+            ]
+            ]
+        )
+        ->assertStatus(422);
+
+        // aucune entité crée
+        UserFactory::assert()->count(0);
+        PatientFactory::assert()->count(0);
     }
 
     public function testPatientViewItsHospitalStays(): void
