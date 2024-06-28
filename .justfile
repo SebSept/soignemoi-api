@@ -102,7 +102,11 @@ sql query env='dev':
 psysh:
     {{docker_php_exec}} psysh
 
+fix-rights:
+    sudo chown seb:www-data ./ -R
+    sudo chmod g+w ./ -R
+
 [confirm("Écraser .git/hooks/pre-commit ?")]
 install-pre-commit-hook:
-    echo "docker compose -f compose-dev.yaml exec php composer run-script pre-commit" > .git/hooks/pre-commit
+    echo "docker compose -f compose-dev.yaml exec -u www-data php composer run-script pre-commit" > .git/hooks/pre-commit
     chmod +x .git/hooks/pre-commit
