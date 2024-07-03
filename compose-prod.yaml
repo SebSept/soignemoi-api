@@ -74,7 +74,8 @@ services:
       - certbot-etc:/etc/letsencrypt
       - certbot-var:/var/lib/letsencrypt
       - certbot-www:/var/www/certbot
-    restart: no
+    restart: "no"
+    entrypoint: ["/bin/sh", "-c", "echo 'hello, Certbot ne fonctionne qu à la demande.'"]
 
 volumes:
   postgres_data_prod2:
