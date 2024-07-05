@@ -20,6 +20,6 @@ class HomeController extends AbstractController
     #[Route('/', name: 'app_home')]
     public function index(): Response
     {
-        return new Response('Api SoigneMoi dans /api (en mode dev).');
+        return new Response('Api SoigneMoi.');
     }
 }

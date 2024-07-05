@@ -128,6 +128,7 @@
     ],
     "phpstan": "phpstan analyse",
     "pre-commit": [
+      "bin/console api:openapi:export --output=swagger_docs.json --output docs/openapi/docs.jsonopenapi",
       "@lint-active",
       "./bin/console  doctrine:migrations:status",
       "@security",
