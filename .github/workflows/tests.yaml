@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - dev
+  # chaque jour du lundi au vendredi à 8h
+  schedule:
+    - cron: '0 8 * * 1-5'
 
 jobs:
   quality:
