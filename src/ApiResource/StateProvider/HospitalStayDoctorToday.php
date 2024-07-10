@@ -23,9 +23,9 @@ use RuntimeException;
  *
  * @implements ProviderInterface<HospitalStay>
  */
-class HospitalStayDoctorToday implements ProviderInterface
+readonly class HospitalStayDoctorToday implements ProviderInterface
 {
-    public function __construct(private readonly HospitalStayRepository $hospitalStayRepository)
+    public function __construct(private HospitalStayRepository $hospitalStayRepository)
     {
     }
 

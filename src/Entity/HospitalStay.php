@@ -28,6 +28,7 @@ use Doctrine\Common\Collections\ReadableCollection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Attribute\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: HospitalStayRepository::class)]
 #[ApiResource(
@@ -103,10 +104,12 @@ class HospitalStay
 
     #[ORM\Column(length: 255)]
     #[Groups(['hospital_stay:read', 'hospital_stay:details'])]
+    #[Assert\NotBlank]
     private ?string $reason = null;
 
     #[ORM\Column(length: 255)]
     #[Groups(['hospital_stay:read', 'hospital_stay:details'])]
+    #[Assert\NotBlank]
     private ?string $medicalSpeciality = null;
 
     #[ORM\ManyToOne(inversedBy: 'hospitalStays')]
