@@ -22,7 +22,7 @@ class UserFixtures extends Fixture
                 'email' => 'secretaire@secretaire.com',
                 'password' => 'hello',
                 'roles' => [],
-                'access_token' => UserFactory::VALID_TOKEN,
+                'access_token' => UserFactory::VALID_TOKEN_SECRETARY,
                 'token_expiration' => new DateTime('+30 day'),
             ]
         );

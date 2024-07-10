@@ -31,10 +31,13 @@ use Zenstruck\Foundry\RepositoryProxy;
  */
 final class UserFactory extends ModelFactory
 {
-    public const VALID_TOKEN = 'this-is-a-valid-token-value';
-
-    public const VALID_DOCTOR_TOKEN = 'this-is-a-valid-token-value-doctor';
-    public const VALID_PATIENT_TOKEN = 'this-is-a-valid-token-value-patient';
+    /**
+     * @deprecated utiliser un token spécifiquement lié à un role.
+     */
+    public const string VALID_TOKEN = 'this-is-a-valid-token-value';
+    public const string VALID_TOKEN_SECRETARY = 'this-is-a-valid-token-value-secretary';
+    public const string VALID_DOCTOR_TOKEN = 'this-is-a-valid-token-value-doctor';
+    public const string VALID_PATIENT_TOKEN = 'this-is-a-valid-token-value-patient';
 
     /**
      * @see https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html#factories-as-services
