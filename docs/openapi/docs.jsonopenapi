@@ -2408,7 +2408,11 @@
                         "format": "iri-reference",
                         "example": "https://example.com/"
                     }
-                }
+                },
+                "required": [
+                    "reason",
+                    "medicalSpeciality"
+                ]
             },
             "HospitalStay-hospital_stay.details": {
                 "type": "object",
@@ -2469,7 +2473,11 @@
                             "$ref": "#/components/schemas/MedicalOpinion-hospital_stay.details"
                         }
                     }
-                }
+                },
+                "required": [
+                    "reason",
+                    "medicalSpeciality"
+                ]
             },
             "HospitalStay-hospital_stay.read": {
                 "type": "object",
@@ -2536,7 +2544,11 @@
                             }
                         ]
                     }
-                }
+                },
+                "required": [
+                    "reason",
+                    "medicalSpeciality"
+                ]
             },
             "HospitalStay.jsonld": {
                 "type": "object",
@@ -2656,7 +2668,11 @@
                         "format": "iri-reference",
                         "example": "https://example.com/"
                     }
-                }
+                },
+                "required": [
+                    "reason",
+                    "medicalSpeciality"
+                ]
             },
             "HospitalStay.jsonld-hospital_stay.details": {
                 "type": "object",
@@ -2752,7 +2768,11 @@
                             "$ref": "#/components/schemas/MedicalOpinion.jsonld-hospital_stay.details"
                         }
                     }
-                }
+                },
+                "required": [
+                    "reason",
+                    "medicalSpeciality"
+                ]
             },
             "HospitalStay.jsonld-hospital_stay.read": {
                 "type": "object",
@@ -2827,7 +2847,11 @@
                             }
                         ]
                     }
-                }
+                },
+                "required": [
+                    "reason",
+                    "medicalSpeciality"
+                ]
             },
             "MedicalOpinion-hospital_stay.details": {
                 "type": "object",
