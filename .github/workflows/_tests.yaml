@@ -1,12 +1,7 @@
-name: Deploy on push
+name: Composer check & CI
 
 on:
-  push:
-    branches:
-      - dev
-  # chaque jour du lundi au vendredi à 8h
-  schedule:
-    - cron: '0 8 * * 1-5'
+  workflow_call:
 
 jobs:
   quality:
@@ -23,8 +18,8 @@ jobs:
           docker compose --progress quiet -f compose-dev.yaml up -d --build
           docker compose -f compose-dev.yaml exec php composer install --quiet
 
-      - name: check composer version
+      - name: check composer vulnerabilities
         run: docker compose -f compose-dev.yaml exec -it php /app/check_composer.sh
 
-      - name: composer ci
+      - name: run composer ci script
         run: docker compose -f compose-dev.yaml exec php composer run-script ci

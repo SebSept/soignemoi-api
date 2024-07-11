@@ -1,0 +1,27 @@
+name: integration continue
+
+on:
+  workflow_call:
+  push:
+    branches:
+      - main
+      - dev
+  pull_request:
+    branches:
+      - main
+  # chaque jour du lundi au vendredi à 8h
+  schedule:
+    - cron: '0 8 * * 1-5'
+
+jobs:
+  docker-scout:
+    uses: ./.github/workflows/_docker_scout.yaml
+    permissions:
+      contents: read
+      pull-requests: write
+    secrets: inherit
+  composer:
+    permissions:
+      contents: read
+      pull-requests: write
+    uses: ./.github/workflows/_tests.yaml
