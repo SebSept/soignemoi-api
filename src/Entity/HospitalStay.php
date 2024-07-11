@@ -117,7 +117,7 @@ class HospitalStay
     #[Groups(['hospital_stay:read', 'hospital_stay:details'])]
     private ?Patient $patient = null;
 
-    #[ORM\ManyToOne(targetEntity: Doctor::class)]
+    #[ORM\ManyToOne(inversedBy: 'hospitalStays')]
     #[ORM\JoinColumn(nullable: false)]
     #[Groups(['hospital_stay:read', 'hospital_stay:details'])]
     private ?Doctor $doctor = null;
