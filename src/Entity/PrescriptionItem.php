@@ -17,6 +17,7 @@ use ApiPlatform\Metadata\Post;
 use App\Repository\PrescriptionItemRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Attribute\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: PrescriptionItemRepository::class)]
 #[ApiResource(
@@ -35,6 +36,7 @@ class PrescriptionItem
 
     #[ORM\Column(length: 255)]
     #[Groups(['prescription:read', 'prescription:write', 'prescription:update', 'hospital_stay:details'])]
+    #[Assert\NotBlank]
     private ?string $drug = null;
 
     #[ORM\Column(length: 255)]

@@ -3763,14 +3763,7 @@
                         "format": "date-time"
                     },
                     "patient": {
-                        "anyOf": [
-                            {
-                                "$ref": "#/components/schemas/Patient-prescription.read"
-                            },
-                            {
-                                "type": "null"
-                            }
-                        ]
+                        "$ref": "#/components/schemas/Patient-prescription.read"
                     },
                     "doctor": {
                         "type": [
@@ -3820,10 +3813,7 @@
                 ],
                 "properties": {
                     "patient": {
-                        "type": [
-                            "string",
-                            "null"
-                        ],
+                        "type": "string",
                         "format": "iri-reference",
                         "example": "https://example.com/"
                     },
@@ -3999,14 +3989,7 @@
                         "format": "date-time"
                     },
                     "patient": {
-                        "anyOf": [
-                            {
-                                "$ref": "#/components/schemas/Patient.jsonld-prescription.read"
-                            },
-                            {
-                                "type": "null"
-                            }
-                        ]
+                        "$ref": "#/components/schemas/Patient.jsonld-prescription.read"
                     },
                     "doctor": {
                         "type": [
@@ -4040,10 +4023,7 @@
                 ],
                 "properties": {
                     "patient": {
-                        "type": [
-                            "string",
-                            "null"
-                        ],
+                        "type": "string",
                         "format": "iri-reference",
                         "example": "https://example.com/"
                     },
@@ -4083,12 +4063,18 @@
                         "format": "iri-reference",
                         "example": "https://example.com/"
                     }
-                }
+                },
+                "required": [
+                    "drug"
+                ]
             },
             "PrescriptionItem-hospital_stay.details": {
                 "type": "object",
                 "description": "",
                 "deprecated": false,
+                "required": [
+                    "drug"
+                ],
                 "properties": {
                     "drug": {
                         "type": "string"
@@ -4102,6 +4088,9 @@
                 "type": "object",
                 "description": "",
                 "deprecated": false,
+                "required": [
+                    "drug"
+                ],
                 "properties": {
                     "drug": {
                         "type": "string"
@@ -4115,6 +4104,9 @@
                 "type": "object",
                 "description": "",
                 "deprecated": false,
+                "required": [
+                    "drug"
+                ],
                 "properties": {
                     "drug": {
                         "type": "string"
@@ -4131,6 +4123,9 @@
                 "type": "object",
                 "description": "",
                 "deprecated": false,
+                "required": [
+                    "drug"
+                ],
                 "properties": {
                     "drug": {
                         "type": "string"
@@ -4198,12 +4193,18 @@
                         "format": "iri-reference",
                         "example": "https://example.com/"
                     }
-                }
+                },
+                "required": [
+                    "drug"
+                ]
             },
             "PrescriptionItem.jsonld-hospital_stay.details": {
                 "type": "object",
                 "description": "",
                 "deprecated": false,
+                "required": [
+                    "drug"
+                ],
                 "properties": {
                     "@context": {
                         "readOnly": true,
@@ -4252,6 +4253,9 @@
                 "type": "object",
                 "description": "",
                 "deprecated": false,
+                "required": [
+                    "drug"
+                ],
                 "properties": {
                     "@context": {
                         "readOnly": true,
@@ -4300,6 +4304,9 @@
                 "type": "object",
                 "description": "",
                 "deprecated": false,
+                "required": [
+                    "drug"
+                ],
                 "properties": {
                     "drug": {
                         "type": "string"

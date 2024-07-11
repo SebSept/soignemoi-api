@@ -62,6 +62,7 @@ class Prescription
     private DateTimeInterface $dateTime;
 
     #[ORM\ManyToOne(targetEntity: Patient::class, inversedBy: 'prescriptions')]
+    #[ORM\JoinColumn(nullable: false)]
     #[Groups(['prescription:read', 'prescription:write'])]
     #[Assert\NotBlank]
     private ?Patient $patient = null;  // @todo supprimer les nullables
